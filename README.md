@@ -31,38 +31,28 @@ This repository is an educational and research-oriented synthetic benchmark.
 
 FairPrivacySignal is intended to illustrate engineering patterns for evaluating privacy, utility, and fairness tradeoffs in AI ranking and matching systems. It is not a production privacy system and does not provide formal privacy guarantees unless explicitly state.
 
-## First synthetic-data sanity checks
+## Results
 
-The first version of FairPrivacySignal generates a synthetic public-service outreach dataset and validates that it captures the core problem this project studies: underserved or low-signal populations can be harder for ranking systems to serve accurately when individual-level signals are limited.
+FairPrivacySignal demonstrates a privacy-utility-fairness tradeoff in a synthetic public-service outreach setting. The benchmark shows that low-signal households are more concentrated in underserved communities, signal loss can reduce ranking utility, and privacy-safe aggregate/contextual features can partially recover utility while keeping individual behavioral exposure reduced.
 
-### 1. Synthetic communities vary in underserved status
-
-![Underserved score distribution](docs/assets/underserved_score_distribution.png)
-
-### 2. Low-signal households concentrate in underserved communities
+### 1. Low-signal households concentrate in underserved communities
 
 ![Low signal by underserved bucket](docs/assets/low_signal_by_underserved_bucket.png)
 
-### 3. Service relevance differs by signal availability
-
-![Relevance by service and signal status](docs/assets/relevance_by_service_and_signal_status.png)
-
-These checks are not intended to model any real community. They verify that the synthetic dataset creates a meaningful privacy-utility-fairness scenario for later experiments.
-
-## Privacy-safe recovery experiment
-
-FairPrivacySignal now includes a baseline experiment comparing full-signal ranking, severe signal loss, policy-restricted signal access, and privacy-safe aggregate recovery.
-
-### 1. Ranking utility under signal loss and privacy-safe recovery
+### 2. Privacy-safe aggregate features partially recover ranking utility
 
 ![Privacy recovery NDCG](docs/assets/privacy_recovery_ndcg.png)
 
-### 2. Low-signal fairness gap
-
-![Privacy recovery fairness gap](docs/assets/privacy_recovery_fairness_gap.png)
-
-### 3. Privacy-utility tradeoff
+### 3. Privacy-utility tradeoff across signal-loss scenarios
 
 ![Privacy utility tradeoff](docs/assets/privacy_utility_tradeoff.png)
 
-These results illustrate the project’s core hypothesis: privacy restrictions can reduce raw behavioral exposure, but without recovery mechanisms they may also reduce utility or worsen low-signal gaps. Privacy-safe aggregate and contextual features can partially recover ranking utility while keeping individual-level behavioral signals suppressed.
+## Fairness diagnostics
+
+FairPrivacySignal also tracks low-signal ranking gaps to ensure that utility recovery does not hide unequal effects on low-signal or underserved populations. This diagnostic is intentionally reported separately from the utility-recovery claim.
+
+![Privacy recovery fairness gap](docs/assets/privacy_recovery_fairness_gap.png)
+
+## Notes on synthetic data
+
+All results are based on synthetic data. The benchmark is designed to illustrate engineering patterns for evaluating privacy, utility, and fairness tradeoffs; it is not intended to model any real community or provide production-grade privacy guarantees.
