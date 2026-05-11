@@ -48,3 +48,21 @@ The first version of FairPrivacySignal generates a synthetic public-service outr
 ![Relevance by service and signal status](docs/assets/relevance_by_service_and_signal_status.png)
 
 These checks are not intended to model any real community. They verify that the synthetic dataset creates a meaningful privacy-utility-fairness scenario for later experiments.
+
+## Privacy-safe recovery experiment
+
+FairPrivacySignal now includes a baseline experiment comparing full-signal ranking, severe signal loss, policy-restricted signal access, and privacy-safe aggregate recovery.
+
+### 1. Ranking utility under signal loss and privacy-safe recovery
+
+![Privacy recovery NDCG](docs/assets/privacy_recovery_ndcg.png)
+
+### 2. Low-signal fairness gap
+
+![Privacy recovery fairness gap](docs/assets/privacy_recovery_fairness_gap.png)
+
+### 3. Privacy-utility tradeoff
+
+![Privacy utility tradeoff](docs/assets/privacy_utility_tradeoff.png)
+
+These results illustrate the project’s core hypothesis: privacy restrictions can reduce raw behavioral exposure, but without recovery mechanisms they may also reduce utility or worsen low-signal gaps. Privacy-safe aggregate and contextual features can partially recover ranking utility while keeping individual-level behavioral signals suppressed.
