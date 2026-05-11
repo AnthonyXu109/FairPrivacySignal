@@ -30,3 +30,21 @@ This repository is an educational and research-oriented synthetic benchmark. It 
 ## Intended use
 
 FairPrivacySignal is intended to illustrate engineering patterns for evaluating privacy, utility, and fairness tradeoffs in AI ranking and matching systems. It is not a production privacy system and does not provide formal privacy guarantees unless explicitly state.
+
+## First synthetic-data sanity checks
+
+The first version of FairPrivacySignal generates a synthetic public-service outreach dataset and validates that it captures the core problem this project studies: underserved or low-signal populations can be harder for ranking systems to serve accurately when individual-level signals are limited.
+
+### 1. Synthetic communities vary in underserved status
+
+![Underserved score distribution](docs/assets/underserved_score_distribution.png)
+
+### 2. Low-signal households concentrate in underserved communities
+
+![Low signal by underserved bucket](docs/assets/low_signal_by_underserved_bucket.png)
+
+### 3. Service relevance differs by signal availability
+
+![Relevance by service and signal status](docs/assets/relevance_by_service_and_signal_status.png)
+
+These checks are not intended to model any real community. They verify that the synthetic dataset creates a meaningful privacy-utility-fairness scenario for later experiments.
