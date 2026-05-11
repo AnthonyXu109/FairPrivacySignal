@@ -21,11 +21,11 @@ The same technical pattern can apply to public agencies, healthcare outreach, no
 - Privacy exposure scoring
 - Reproducible notebooks and visualizations
 
-## Non-confidentiality statement
+## Data and confidentiality
 
-This project uses only synthetic data and public aggregate references. It does not use, disclose, depend on, or derive from any Meta confidential information, internal datasets, internal architecture, internal metrics, product-specific implementation details, or proprietary code.
+This project uses synthetic data and public aggregate references only. It does not use real personal data, private datasets, proprietary systems, internal business metrics, or confidential implementation details from any organization.
 
-This repository is an educational and research-oriented synthetic benchmark. It is not affiliated with, endorsed by, or derived from Meta Platforms, Inc.
+This repository is an educational and research-oriented synthetic benchmark.
 
 ## Intended use
 
