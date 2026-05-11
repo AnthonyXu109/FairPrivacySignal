@@ -43,6 +43,18 @@ def apply_signal_loss(events: pd.DataFrame, scenario: str) -> pd.DataFrame:
 
     df["scenario"] = scenario
     df["behavioral_available"] = behavioral_available
+    service_signal_col = (
+        "historical_service_engagement_count"
+        if "historical_service_engagement_count" in df.columns
+        else "historical_engagement_count"
+    )
+
+    df["available_historical_service_engagement_count"] = np.where(
+        behavioral_available,
+        df[service_signal_col],
+        0,
+    )
+
     df["available_historical_engagement_count"] = np.where(
         behavioral_available,
         df["historical_engagement_count"],
@@ -73,8 +85,8 @@ def summarize_scenario(df: pd.DataFrame) -> dict:
         "scenario": df["scenario"].iloc[0],
         "num_events": len(df),
         "behavioral_available_share": df["behavioral_available"].mean(),
-        "avg_available_historical_engagement": df[
-            "available_historical_engagement_count"
+        "avg_available_historical_service_engagement": df[
+            "available_historical_service_engagement_count"
         ].mean(),
         "avg_privacy_exposure_score": df["privacy_exposure_score"].mean(),
         "relevance_rate_low_signal": low_relevance,

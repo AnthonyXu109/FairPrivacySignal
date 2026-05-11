@@ -14,7 +14,7 @@ from fairprivacysignal.signal_loss import SCENARIOS, apply_signal_loss
 
 
 NUMERIC_FEATURES = [
-    "available_historical_engagement_count",
+    "available_historical_service_engagement_count",
     "employment_need",
     "median_income",
     "unemployment_rate",

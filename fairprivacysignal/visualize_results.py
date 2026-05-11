@@ -41,7 +41,7 @@ def main() -> None:
     plt.figure(figsize=(9, 4.8))
     plt.bar(df["display_name"], df["ndcg_gap_not_low_minus_low"])
     plt.ylabel("NDCG@3 gap: not-low-signal minus low-signal")
-    plt.title("Privacy-safe recovery can reduce low-signal ranking gaps")
+    plt.title("Low-signal ranking gaps across privacy scenarios")
     plt.xticks(rotation=25, ha="right")
     plt.tight_layout()
     plt.savefig(assets_dir / "privacy_recovery_fairness_gap.png", dpi=180)

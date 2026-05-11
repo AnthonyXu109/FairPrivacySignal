@@ -193,7 +193,12 @@ def _service_need_score(
     service_category: str,
     rng: np.random.Generator,
 ) -> np.ndarray:
-    """Synthetic latent relevance score by service category."""
+    """Synthetic latent relevance score by service category.
+
+    Behavioral engagement is intentionally important in this synthetic benchmark
+    so that signal-loss scenarios meaningfully affect ranking utility. Privacy-safe
+    aggregate features are then expected to recover part of the lost signal.
+    """
     income_low = (merged["income_band"] == "low").astype(float).to_numpy()
     senior = (merged["age_group"] == "senior").astype(float).to_numpy()
     youth = (merged["age_group"] == "youth").astype(float).to_numpy()
@@ -205,22 +210,56 @@ def _service_need_score(
     health_need = merged["health_need_score"].to_numpy()
     housing_pressure = merged["housing_pressure"].to_numpy()
     underserved = merged["underserved_score"].to_numpy()
+
+    # Individual-level behavioral signal. Signal-loss simulations remove or suppress
+    # this feature, creating the privacy-utility tradeoff studied by the project.
     engagement = np.log1p(merged["historical_engagement_count"].to_numpy()) / np.log(51)
 
     noise = rng.normal(0, 0.25, len(merged))
 
     if service_category == "food_assistance":
-        score = 1.4 * income_low + 1.2 * food_risk + 0.7 * underserved + 0.2 * language_need
+        score = (
+            1.0 * income_low
+            + 0.9 * food_risk
+            + 0.5 * underserved
+            + 0.8 * engagement
+            + 0.2 * language_need
+        )
     elif service_category == "preventive_health":
-        score = 1.1 * health_need + 0.6 * senior + 0.4 * disability + 0.2 * engagement
+        score = (
+            0.9 * health_need
+            + 0.5 * senior
+            + 0.3 * disability
+            + 1.2 * engagement
+        )
     elif service_category == "housing_support":
-        score = 1.3 * housing_pressure + 1.0 * income_low + 0.4 * underserved
+        score = (
+            1.0 * housing_pressure
+            + 0.8 * income_low
+            + 0.4 * underserved
+            + 0.7 * engagement
+        )
     elif service_category == "job_training":
-        score = 1.3 * employment_need + 0.8 * income_low + 0.3 * engagement
+        score = (
+            1.0 * employment_need
+            + 0.6 * income_low
+            + 1.4 * engagement
+        )
     elif service_category == "education_support":
-        score = 1.0 * youth + 0.7 * language_need + 0.5 * underserved
+        score = (
+            0.8 * youth
+            + 0.6 * language_need
+            + 0.4 * underserved
+            + 0.8 * engagement
+        )
     elif service_category == "transportation_support":
-        score = 0.8 * senior + 0.8 * disability + 0.7 * underserved + 0.4 * food_risk
+        score = (
+            0.7 * senior
+            + 0.7 * disability
+            + 0.5 * underserved
+            + 0.4 * food_risk
+            + 0.7 * engagement
+        )
     else:
         score = np.zeros(len(merged))
 
@@ -244,11 +283,26 @@ def generate_outreach_events(
 
         latent_score = _service_need_score(merged, service["service_category"], rng)
 
+        # Create a service-specific behavioral signal. Unlike household-level engagement,
+        # this can change the relative ranking of services within the same household.
+        service_affinity = sigmoid(latent_score - 0.6 + rng.normal(0, 0.6, len(merged)))
+        base_rate = np.where(merged["low_signal"].astype(bool).to_numpy(), 0.8, 3.8)
+        historical_service_engagement_count = rng.poisson(
+            lam=base_rate * (0.25 + 2.5 * service_affinity)
+        ).clip(0, 50)
+
+        service_engagement = np.log1p(historical_service_engagement_count) / np.log(51)
+
         # Low-signal households are intentionally harder to rank when raw behavioral
         # signals are removed. This creates the fairness/utility problem the project studies.
         low_signal_penalty = -0.35 * merged["low_signal"].astype(float).to_numpy()
 
-        relevance_probability = sigmoid(-1.2 + latent_score + low_signal_penalty)
+        relevance_probability = sigmoid(
+            -1.7
+            + 0.45 * latent_score
+            + 1.8 * service_engagement
+            + low_signal_penalty
+        )
         relevant = rng.binomial(1, relevance_probability).astype(int)
 
         # Outreach success is a noisier downstream proxy.
@@ -282,6 +336,7 @@ def generate_outreach_events(
             ]
         ].copy()
 
+        event["historical_service_engagement_count"] = historical_service_engagement_count
         event["latent_relevance_score"] = latent_score.round(4)
         event["relevance_probability"] = relevance_probability.round(4)
         event["relevant"] = relevant

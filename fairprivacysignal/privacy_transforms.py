@@ -33,7 +33,7 @@ def add_privacy_safe_features(
         df.groupby(cohort_cols, observed=False)
         .agg(
             cohort_size=("household_id", "nunique"),
-            cohort_avg_engagement=("historical_engagement_count", "mean"),
+            cohort_avg_engagement=("historical_service_engagement_count", "mean"),
             cohort_avg_underserved=("underserved_score", "mean"),
             cohort_avg_food_risk=("food_access_risk", "mean"),
             cohort_avg_health_need=("health_need_score", "mean"),
@@ -74,7 +74,7 @@ def add_privacy_safe_features(
     service_defaults = (
         df.groupby("service_category", observed=False)
         .agg(
-            default_engagement=("historical_engagement_count", "mean"),
+            default_engagement=("historical_service_engagement_count", "mean"),
             default_underserved=("underserved_score", "mean"),
             default_food_risk=("food_access_risk", "mean"),
             default_health_need=("health_need_score", "mean"),

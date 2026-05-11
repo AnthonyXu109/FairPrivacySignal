@@ -14,7 +14,7 @@ from fairprivacysignal.signal_loss import apply_signal_loss
 
 
 BASE_NUMERIC_FEATURES = [
-    "available_historical_engagement_count",
+    "available_historical_service_engagement_count",
     "employment_need",
     "median_income",
     "unemployment_rate",
@@ -26,11 +26,18 @@ BASE_NUMERIC_FEATURES = [
 ]
 
 PRIVACY_SAFE_NUMERIC_FEATURES = [
+    # Keep any individual-level behavioral signal that remains available under
+    # the applicable consent or policy scenario.
+    "available_historical_service_engagement_count",
+
+    # Add privacy-safe aggregate substitutes for suppressed or unavailable signals.
     "privacy_safe_engagement_signal",
     "privacy_safe_cohort_avg_underserved",
     "privacy_safe_cohort_avg_food_risk",
     "privacy_safe_cohort_avg_health_need",
     "privacy_safe_cohort_avg_housing_pressure",
+
+    # Contextual features that do not depend on raw behavioral history.
     "employment_need",
     "median_income",
     "unemployment_rate",
