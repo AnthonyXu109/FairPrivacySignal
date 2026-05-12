@@ -33,6 +33,21 @@ This repository is an educational and research-oriented synthetic benchmark.
 
 FairPrivacySignal is intended to illustrate engineering patterns for evaluating privacy, utility, and fairness tradeoffs in AI ranking and matching systems. It is not a production privacy system and does not provide formal privacy guarantees unless explicitly state.
 
+## Reproduce the benchmark
+
+FairPrivacySignal includes a one-command benchmark pipeline. From a clean checkout:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip setuptools wheel
+python -m pip install -r requirements.txt
+bash scripts/run_benchmark.sh
+```
+
+The full reproducibility guide is available in [`docs/reproducibility.md`](docs/reproducibility.md).
+
+
 ## System architecture
 
 FairPrivacySignal is organized as a reproducible benchmark pipeline: synthetic public-service data generation, privacy-driven signal-loss simulation, policy and consent-based feature suppression, privacy-safe aggregate recovery, ranking evaluation, and fairness diagnostics.
