@@ -56,3 +56,5 @@ FairPrivacySignal also tracks low-signal ranking gaps to ensure that utility rec
 ## Notes on synthetic data
 
 All results are based on synthetic data. The benchmark is designed to illustrate engineering patterns for evaluating privacy, utility, and fairness tradeoffs; it is not intended to model any real community or provide production-grade privacy guarantees.
+
+<!-- Zenodo archival trigger release. -->
