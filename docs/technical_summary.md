@@ -1,0 +1,89 @@
+# FairPrivacySignal Technical Summary
+
+**Project:** FairPrivacySignal  
+**Public repository:** https://github.com/AnthonyXu109/FairPrivacySignal  
+**Archived DOI:** https://doi.org/10.5281/zenodo.20130952  
+**Version:** v0.1.1  
+
+## 1. Project Purpose
+
+FairPrivacySignal is a public, non-confidential synthetic-data benchmark for evaluating privacy, utility, and fairness tradeoffs in AI ranking and matching systems under signal loss.
+
+The project studies a common challenge in modern AI systems: ranking and matching models often rely on individual-level behavioral signals, but privacy requirements, consent restrictions, data minimization rules, and policy constraints may reduce access to those signals. When signal loss occurs, model utility can decline, and low-signal or underserved participants may be disproportionately affected.
+
+FairPrivacySignal uses a synthetic public-service outreach scenario to demonstrate how privacy-safe aggregate and contextual features can partially recover ranking utility while reducing exposure to individual-level behavioral data.
+
+## 2. Synthetic Public-Service Scenario
+
+The benchmark models a public-service outreach system that ranks relevant services for synthetic households and communities. Example services include:
+
+- food assistance
+- preventive health outreach
+- housing support
+- job training
+- education support
+- transportation support
+
+The benchmark does not model or identify any real person, household, community, or organization. All event-level data is synthetic.
+
+## 3. Core Technical Components
+
+FairPrivacySignal currently includes:
+
+1. **Synthetic data generation**  
+   Generates synthetic households, communities, services, and household-service relevance labels.
+
+2. **Signal-loss simulation**  
+   Simulates full-signal, severe signal-loss, consent-restricted, and policy-restricted scenarios.
+
+3. **Privacy-safe feature transformation**  
+   Implements cohort aggregation, minimum cohort thresholds, contextual features, and DP-style noise for aggregate signals.
+
+4. **Ranking evaluation**  
+   Trains baseline ranking models and evaluates utility using AUC and NDCG@3.
+
+5. **Privacy and fairness diagnostics**  
+   Tracks average privacy exposure score and low-signal ranking gaps.
+
+## 4. Key Results from v0.1.1
+
+The initial benchmark results show:
+
+- Full-signal ranking achieved the highest utility.
+- Severe signal loss reduced ranking utility.
+- Privacy-safe aggregate features partially recovered utility under severe signal loss.
+- A hybrid policy-restricted setting using available policy-permitted signals plus privacy-safe aggregate features improved ranking utility over the policy-restricted baseline.
+- Low-signal fairness gaps are explicitly tracked as a diagnostic to prevent utility recovery from hiding unequal effects on low-signal or underserved populations.
+
+These results support the project’s core hypothesis: privacy-preserving AI systems should be evaluated not only for privacy exposure reduction, but also for downstream utility and fairness impact.
+
+## 5. Privacy and Confidentiality
+
+FairPrivacySignal does not use real personal data, private datasets, proprietary systems, internal business metrics, confidential architecture, or confidential implementation details from any organization.
+
+The project is designed as an educational and research-oriented synthetic benchmark. It does not provide production-grade privacy guarantees, and its DP-style noise mechanism is included only as a simplified demonstration of aggregate privacy-preserving feature design.
+
+## 6. Broader Relevance
+
+Although the benchmark uses public-service outreach as its demonstration setting, the same technical pattern is relevant to many ranking and matching systems, including:
+
+- public benefits outreach
+- healthcare resource matching
+- education program recommendation
+- nonprofit service delivery
+- local marketplace discovery
+- small-business access systems
+- other privacy-sensitive AI decision pipelines
+
+The broader goal is to make privacy-preserving and fairness-aware ranking evaluation more transparent, reproducible, and accessible.
+
+## 7. Future Work
+
+Planned improvements include:
+
+- adding fairness-aware optimization objectives
+- expanding synthetic scenarios beyond public-service outreach
+- integrating public aggregate datasets for calibration
+- adding reproducible notebooks
+- improving documentation for independent technical review
+- collecting external expert feedback
