@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "FairPrivacySignal: A Synthetic Benchmark for Privacy-Preserving and Fairness-Aware Ranking Under Signal Loss"
+version: "0.1.0"
+authors:
+  - family-names: Xu
+    given-names: Chang
+date-released: 2026-05-11
+url: "https://github.com/AnthonyXu109/FairPrivacySignal"
+repository-code: "https://github.com/AnthonyXu109/FairPrivacySignal"
+abstract: "FairPrivacySignal is a synthetic-data benchmark for evaluating privacy, utility, and fairness tradeoffs in AI ranking and matching systems under signal loss."
+keywords:
+  - privacy-preserving machine learning
+  - fairness-aware ranking
+  - synthetic data
+  - signal loss
+  - public-service matching
+license: MIT
