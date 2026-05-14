@@ -4,18 +4,14 @@ This guide explains how to reproduce the FairPrivacySignal benchmark results fro
 
 ## 1. Create a Python environment
 
-```bash
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip setuptools wheel
-python -m pip install -r requirements.txt
-```
+    python -m venv .venv
+    source .venv/bin/activate
+    python -m pip install --upgrade pip setuptools wheel
+    python -m pip install -r requirements.txt
 
 ## 2. Run the full benchmark pipeline
 
-```bash
-bash scripts/run_benchmark.sh
-```
+    bash scripts/run_benchmark.sh
 
 This command regenerates:
 
@@ -29,14 +25,12 @@ This command regenerates:
 
 ## 3. Key result files
 
-```text
-docs/assets/multiseed_privacy_recovery_ndcg.png
-docs/assets/privacy_utility_tradeoff.png
-docs/assets/privacy_recovery_fairness_gap.png
-docs/multiseed_results.md
-outputs/tables/multiseed_privacy_recovery_summary.csv
-outputs/tables/privacy_recovery_metrics.csv
-```
+    docs/assets/multiseed_privacy_recovery_ndcg.png
+    docs/assets/privacy_utility_tradeoff.png
+    docs/assets/privacy_recovery_fairness_gap.png
+    docs/multiseed_results.md
+    outputs/tables/multiseed_privacy_recovery_summary.csv
+    outputs/tables/privacy_recovery_metrics.csv
 
 ## 4. Notes
 
