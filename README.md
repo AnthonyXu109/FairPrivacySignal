@@ -37,16 +37,13 @@ FairPrivacySignal is intended to illustrate engineering patterns for evaluating 
 
 FairPrivacySignal includes a one-command benchmark pipeline. From a clean checkout:
 
-```bash
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip setuptools wheel
-python -m pip install -r requirements.txt
-bash scripts/run_benchmark.sh
-```
+    python -m venv .venv
+    source .venv/bin/activate
+    python -m pip install --upgrade pip setuptools wheel
+    python -m pip install -r requirements.txt
+    bash scripts/run_benchmark.sh
 
 The full reproducibility guide is available in [`docs/reproducibility.md`](docs/reproducibility.md).
-
 
 ## System architecture
 
