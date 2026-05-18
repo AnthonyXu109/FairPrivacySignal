@@ -6,14 +6,14 @@ FairPrivacySignal is a public, non-confidential synthetic-data benchmark for stu
 
 Many AI systems rely on user-level behavioral signals to decide which services, resources, or recommendations should be shown to people or communities. Privacy requirements, consent restrictions, data minimization rules, and reduced access to tracking signals can remove or weaken those signals. While these protections are important, signal loss can also reduce model utility and may disproportionately affect small, low-signal, or underserved participants.
 
-This project demonstrates a simple, reproducible public-service outreach scenario: matching communities or households to relevant public services such as preventive health outreach, food assistance, housing support, job training, and education resources. The project uses synthetic data, optionally calibrated with public aggregate datasets, to show how privacy-preserving transformations and fairness-aware evaluation can reduce reliance on raw personal data while preserving useful ranking performance.
+This project demonstrates a reproducible public-service outreach scenario: matching communities or households to relevant public services such as preventive health outreach, food assistance, housing support, job training, and education resources.
 
 The same technical pattern can apply to public agencies, healthcare outreach, nonprofit service delivery, education programs, local marketplaces, and small-business discovery systems.
 
 ## What this project demonstrates
 
 - Synthetic public-service ranking and matching data generation
-- Privacy-driven signal loss simulation
+- Privacy-driven signal-loss simulation
 - Consent-aware and policy-aware feature suppression
 - Cohort aggregation and k-thresholding
 - Differential-privacy-style noise for aggregate features
@@ -21,7 +21,7 @@ The same technical pattern can apply to public agencies, healthcare outreach, no
 - Utility metrics such as AUC and NDCG@K
 - Fairness metrics for low-signal or underserved participants
 - Privacy exposure scoring
-- Reproducible notebooks and visualizations
+- Multi-seed reproducibility checks
 
 ## Data and confidentiality
 
@@ -31,7 +31,7 @@ This repository is an educational and research-oriented synthetic benchmark.
 
 ## Intended use
 
-FairPrivacySignal is intended to illustrate engineering patterns for evaluating privacy, utility, and fairness tradeoffs in AI ranking and matching systems. It is not a production privacy system and does not provide formal privacy guarantees unless explicitly state.
+FairPrivacySignal is intended to illustrate engineering patterns for evaluating privacy, utility, and fairness tradeoffs in AI ranking and matching systems. It is not a production privacy system and does not provide formal privacy guarantees unless explicitly stated.
 
 ## Reproduce the benchmark
 
@@ -50,7 +50,6 @@ The full reproducibility guide is available in [`docs/reproducibility.md`](docs/
 FairPrivacySignal is organized as a reproducible benchmark pipeline: synthetic public-service data generation, privacy-driven signal-loss simulation, policy and consent-based feature suppression, privacy-safe aggregate recovery, ranking evaluation, and fairness diagnostics.
 
 ![FairPrivacySignal architecture](docs/assets/architecture_diagram.png)
-
 
 ## Results
 
@@ -86,7 +85,6 @@ The multi-seed results show that severe signal loss consistently reduces ranking
 
 These results support the project’s utility-recovery claim. The fairness gap remains explicitly reported as a diagnostic rather than presented as solved.
 
-
 ## Fairness diagnostics
 
 FairPrivacySignal also tracks low-signal ranking gaps to ensure that utility recovery does not hide unequal effects on low-signal or underserved populations. This diagnostic is intentionally reported separately from the utility-recovery claim.
@@ -96,8 +94,6 @@ FairPrivacySignal also tracks low-signal ranking gaps to ensure that utility rec
 ## Notes on synthetic data
 
 All results are based on synthetic data. The benchmark is designed to illustrate engineering patterns for evaluating privacy, utility, and fairness tradeoffs; it is not intended to model any real community or provide production-grade privacy guarantees.
-
-<!-- Zenodo archival trigger release. -->
 
 ## Archived release
 
