@@ -199,3 +199,11 @@ Near-term planned extensions include:
 Privacy regulations and data minimization practices can reduce access to individual-level behavioral signals. This is often necessary for protecting users, but it can also degrade ranking quality and disproportionately affect low-signal groups.
 
 A benchmark like FairPrivacySignal helps make these tradeoffs visible. It gives researchers, engineers, public-sector technologists, and reviewers a non-confidential way to reason about privacy-preserving ranking systems before deploying them in sensitive settings.
+
+## 14. Capacity-Constrained Allocation Extension
+
+FairPrivacySignal also includes a capacity-constrained allocation experiment. This extension models a practical public-service outreach constraint: even if a ranking system can score every household-service pair, real service providers often have limited outreach slots, appointment capacity, staff time, or funding.
+
+The allocation experiment compares utility-only allocation with fairness-constrained allocation. Utility-only allocation selects the highest-scoring candidates, while fairness-constrained allocation reserves a minimum share of outreach capacity for low-signal households. This exposes a realistic utility-fairness tradeoff: improving low-signal representation can reduce selection-rate gaps, but may also reduce allocated relevance rate.
+
+See [`docs/capacity_allocation.md`](capacity_allocation.md) for details.
