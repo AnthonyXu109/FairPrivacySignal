@@ -45,7 +45,7 @@ FairPrivacySignal includes a one-command benchmark pipeline. From a clean checko
 
 The full reproducibility guide is available in [`docs/reproducibility.md`](docs/reproducibility.md).
 
-## System architecture
+\n## Benchmark methodology\n\nFor a detailed explanation of the benchmark design, assumptions, signal-loss scenarios, privacy-safe recovery layer, metrics, and limitations, see [`docs/benchmark_design.md`](docs/benchmark_design.md).\n\nThe current and planned experiment matrix is summarized in [`docs/experiment_matrix.md`](docs/experiment_matrix.md).\n\n## System architecture
 
 FairPrivacySignal is organized as a reproducible benchmark pipeline: synthetic public-service data generation, privacy-driven signal-loss simulation, policy and consent-based feature suppression, privacy-safe aggregate recovery, ranking evaluation, and fairness diagnostics.
 

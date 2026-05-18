@@ -1,0 +1,201 @@
+# FairPrivacySignal Benchmark Design
+
+FairPrivacySignal is designed as a synthetic benchmark for studying privacy, utility, and fairness tradeoffs in AI ranking and matching systems under signal loss.
+
+The goal is not to reproduce any real production system. The goal is to provide a transparent, reproducible, non-confidential benchmark that lets reviewers inspect how privacy constraints affect downstream ranking quality and low-signal groups.
+
+## 1. Problem Formulation
+
+Many ranking and matching systems rely on individual-level behavioral signals. These signals can improve model utility, but they may also create privacy exposure, especially when they are linkable, persistent, or sensitive.
+
+FairPrivacySignal studies the following question:
+
+> When individual-level behavioral signals are reduced or suppressed by privacy, consent, or policy constraints, can privacy-safe aggregate and contextual features recover part of the lost ranking utility while keeping raw behavioral exposure low?
+
+The benchmark evaluates three linked dimensions:
+
+- **Utility:** whether the system can rank relevant services accurately.
+- **Privacy exposure:** how much individual-level behavioral signal remains available.
+- **Fairness diagnostics:** whether low-signal groups experience worse ranking outcomes.
+
+## 2. Synthetic Public-Service Outreach Scenario
+
+The benchmark uses a synthetic public-service outreach task. A ranking system recommends relevant public services to synthetic households and communities.
+
+Example service categories include:
+
+- food assistance
+- preventive health outreach
+- housing support
+- job training
+- education support
+- transportation support
+
+This scenario is intentionally broader than advertising. The same technical pattern appears in public benefits outreach, healthcare resource matching, education program recommendation, nonprofit service delivery, local marketplace discovery, and other privacy-sensitive ranking systems.
+
+## 3. Why Synthetic Data
+
+The benchmark uses synthetic data for three reasons:
+
+1. **Privacy:** no real person, household, community, user, advertiser, or organization is modeled or identified.
+2. **Transparency:** every assumption is visible in code and can be inspected or modified.
+3. **Controlled experiments:** signal loss, policy restrictions, and privacy-safe recovery can be tested under repeatable conditions.
+
+The benchmark is not intended to claim that the synthetic population represents any real community. It is a controlled engineering testbed.
+
+## 4. Data Generating Process
+
+The synthetic generator creates four conceptual layers:
+
+### 4.1 Communities
+
+Synthetic communities include contextual attributes such as:
+
+- urbanicity
+- population
+- median income
+- unemployment rate
+- broadband access
+- food access risk
+- health need score
+- housing pressure
+- underserved score
+
+### 4.2 Households
+
+Synthetic households are assigned to communities and include attributes such as:
+
+- age group
+- income band
+- consent state
+- internet access
+- language access need
+- disability proxy
+- sensitive-cohort proxy
+- low-signal status
+- historical engagement count
+
+### 4.3 Services
+
+Synthetic services represent public-service categories with different targeting and capacity characteristics.
+
+### 4.4 Household-Service Events
+
+Each household-service pair receives a synthetic relevance label. Relevance is generated from a combination of:
+
+- service-specific need
+- contextual community characteristics
+- household-level attributes
+- service-specific historical engagement
+- low-signal penalties
+- random noise
+
+Service-specific engagement is intentionally important because it allows signal loss to affect within-household ranking order, not merely global classification quality.
+
+## 5. Signal-Loss Scenarios
+
+FairPrivacySignal evaluates multiple signal availability scenarios.
+
+| Scenario | Description | Behavioral signal availability |
+|---|---|---:|
+| Full signal raw baseline | All synthetic individual-level behavioral features are available | high |
+| Severe signal loss | Individual behavioral history is removed for all households | none |
+| Consent restricted | Behavioral history is removed when consent is false | partial |
+| Policy restricted | Behavioral history is removed for non-consented or sensitive-cohort households | partial |
+| Privacy-safe recovery | Aggregate/contextual substitutes are added without restoring raw individual behavioral history | low to medium |
+
+## 6. Privacy-Safe Recovery Design
+
+The privacy-safe recovery layer adds non-raw aggregate and contextual signals:
+
+- cohort aggregation
+- minimum cohort-size thresholds
+- service-level fallback aggregates
+- contextual community features
+- DP-style noise on aggregate statistics
+
+This layer is intentionally simple and inspectable. It is not a claim of production-grade differential privacy. It is a benchmark mechanism for studying how aggregate substitutes can recover useful signal after raw behavioral features are suppressed.
+
+## 7. Ranking Model
+
+The current benchmark uses an interpretable baseline model rather than a complex neural model.
+
+This is intentional:
+
+- it makes results easier to audit
+- it avoids hiding the benchmark mechanism behind model complexity
+- it allows reviewers to inspect whether the signal-loss and recovery effects are plausible
+- it keeps the project runnable on ordinary laptops
+
+Future versions can add gradient-boosted trees, learning-to-rank objectives, or neural ranking models, but the v0.x baseline prioritizes transparency.
+
+## 8. Evaluation Metrics
+
+FairPrivacySignal reports three categories of metrics.
+
+### 8.1 Utility
+
+- AUC
+- NDCG@3
+
+NDCG@3 is emphasized because the benchmark is a ranking task: the system must recommend the most relevant services near the top of the list.
+
+### 8.2 Privacy Exposure
+
+The benchmark uses an interpretable privacy exposure score. Higher scores indicate more individual-level behavioral signal remains available to the model.
+
+This is not a formal privacy guarantee. It is a diagnostic proxy used to compare scenarios.
+
+### 8.3 Low-Signal Fairness Diagnostics
+
+The benchmark tracks low-signal NDCG@3 and the NDCG gap between not-low-signal and low-signal households.
+
+The project does not claim that the current privacy-safe recovery layer solves fairness. Instead, it reports fairness gaps explicitly so that utility recovery does not hide unequal downstream effects.
+
+## 9. Multi-Seed Evaluation
+
+The benchmark runs the privacy-recovery experiment across multiple synthetic seeds.
+
+This reduces the risk that results are driven by one favorable random seed and makes the benchmark more credible as an experimental artifact.
+
+The current multi-seed result shows:
+
+- severe signal loss consistently reduces ranking utility
+- privacy-safe aggregate/contextual features partially recover ranking utility
+- policy-restricted + privacy-safe recovery improves utility over the policy-restricted baseline
+- fairness gaps remain diagnostic and require further fairness-aware optimization
+
+## 10. What the Current Benchmark Shows
+
+The current version supports a modest, evidence-aligned claim:
+
+> Privacy-driven signal loss can reduce ranking utility in synthetic public-service matching. Privacy-safe aggregate and contextual features can partially recover utility while keeping individual behavioral exposure reduced. Low-signal fairness gaps should be separately measured rather than assumed to improve automatically.
+
+## 11. What the Current Benchmark Does Not Claim
+
+FairPrivacySignal does not claim that:
+
+- it models any real community
+- it provides production-grade privacy guarantees
+- it proves fairness gaps are solved
+- it reproduces any proprietary system
+- it should be used directly for public-service eligibility decisions
+- synthetic results alone prove real-world national impact
+
+## 12. Planned Extensions
+
+Near-term planned extensions include:
+
+1. adding a fairness-aware recovery objective
+2. adding service-level capacity constraints
+3. adding subgroup calibration metrics
+4. adding a policy-rule configuration file
+5. adding a richer experiment matrix
+6. adding public aggregate calibration examples
+7. improving the technical whitepaper for independent expert review
+
+## 13. Why This Matters
+
+Privacy regulations and data minimization practices can reduce access to individual-level behavioral signals. This is often necessary for protecting users, but it can also degrade ranking quality and disproportionately affect low-signal groups.
+
+A benchmark like FairPrivacySignal helps make these tradeoffs visible. It gives researchers, engineers, public-sector technologists, and reviewers a non-confidential way to reason about privacy-preserving ranking systems before deploying them in sensitive settings.
