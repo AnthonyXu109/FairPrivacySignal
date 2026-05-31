@@ -24,6 +24,7 @@ This command regenerates:
 - multi-seed benchmark results
 - capacity-constrained allocation metrics
 - capacity-sensitivity frontier metrics
+- multi-seed capacity-sensitivity metrics
 - score-matched subgroup calibration metrics
 - benchmark overview figure
 - architecture diagram
@@ -39,12 +40,15 @@ This command regenerates:
     docs/assets/capacity_allocation_selection_gap.png
     docs/assets/capacity_allocation_low_signal_share.png
     docs/assets/capacity_sensitivity_frontier.png
+    docs/assets/multiseed_capacity_sensitivity.png
     docs/assets/score_matched_calibration.png
     docs/multiseed_results.md
     outputs/tables/multiseed_privacy_recovery_summary.csv
     outputs/tables/privacy_recovery_metrics.csv
     outputs/tables/capacity_allocation_metrics.csv
     outputs/tables/capacity_sensitivity_metrics.csv
+    outputs/tables/multiseed_capacity_sensitivity_raw.csv
+    outputs/tables/multiseed_capacity_sensitivity_summary.csv
     outputs/tables/score_matched_calibration_bins.csv
     outputs/tables/score_matched_calibration_summary.csv
 

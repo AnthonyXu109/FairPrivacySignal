@@ -57,6 +57,9 @@ FairPrivacySignal currently includes:
 9. **Score-matched subgroup calibration**
    Compares observed relevance rates for low-signal and not-low-signal events within shared predicted-score bins.
 
+10. **Multi-seed allocation sensitivity**
+    Repeats the allocation-floor sweep across synthetic draws and reports mean tradeoffs with standard deviations.
+
 ## 4. Current Benchmark Results
 
 The current benchmark results show:
@@ -95,7 +98,6 @@ The broader goal is to make privacy-preserving and fairness-aware ranking evalua
 
 Planned improvements include:
 
-- adding multi-seed capacity-allocation sensitivity analysis
 - moving policy rules into a readable configuration file
 - expanding synthetic scenarios beyond public-service outreach
 - integrating public aggregate datasets for calibration
