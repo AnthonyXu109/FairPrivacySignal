@@ -317,6 +317,7 @@ def main() -> None:
     print(f"\nWrote: {out_path}")
     print("- docs/assets/capacity_allocation_precision.png")
     print("- docs/assets/capacity_allocation_selection_gap.png")
+    print("- docs/assets/capacity_allocation_low_signal_share.png")
 
 
 if __name__ == "__main__":

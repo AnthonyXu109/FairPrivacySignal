@@ -52,6 +52,17 @@ CATEGORICAL_FEATURES = [
 ]
 
 
+def correct_positive_reweighting(
+    predictions: np.ndarray,
+    positive_weight_multiplier: float,
+) -> np.ndarray:
+    """Undo the probability-scale shift introduced by extra positive weighting."""
+    clipped = np.clip(predictions, 1e-6, 1.0 - 1e-6)
+    odds = clipped / (1.0 - clipped)
+    corrected_odds = odds / positive_weight_multiplier
+    return corrected_odds / (1.0 + corrected_odds)
+
+
 def build_model(numeric_features: List[str]) -> Pipeline:
     preprocessor = ColumnTransformer(
         transformers=[
@@ -117,6 +128,10 @@ def evaluate_model(
             low_specific_pred = low_signal_model.predict_proba(
                 test.loc[low_test_mask, features]
             )[:, 1]
+            low_specific_pred = correct_positive_reweighting(
+                low_specific_pred,
+                positive_weight_multiplier=1.0 + relevant_low_signal_weight,
+            )
 
             global_pred = test.loc[low_test_mask, "predicted_relevance"].to_numpy()
 
@@ -152,7 +167,10 @@ def evaluate_model(
     }
 
 
-def run_experiments(events: pd.DataFrame) -> pd.DataFrame:
+def run_experiments(
+    events: pd.DataFrame,
+    privacy_noise_seed: int = 42,
+) -> pd.DataFrame:
     experiments = []
 
     full_signal = apply_signal_loss(events, "full_signal")
@@ -173,7 +191,10 @@ def run_experiments(events: pd.DataFrame) -> pd.DataFrame:
         )
     )
 
-    severe_loss_privacy_safe = add_privacy_safe_features(severe_loss)
+    severe_loss_privacy_safe = add_privacy_safe_features(
+        severe_loss,
+        seed=privacy_noise_seed,
+    )
     experiments.append(
         evaluate_model(
             severe_loss_privacy_safe,
@@ -200,7 +221,10 @@ def run_experiments(events: pd.DataFrame) -> pd.DataFrame:
         )
     )
 
-    policy_restricted_privacy_safe = add_privacy_safe_features(policy_restricted)
+    policy_restricted_privacy_safe = add_privacy_safe_features(
+        policy_restricted,
+        seed=privacy_noise_seed,
+    )
     experiments.append(
         evaluate_model(
             policy_restricted_privacy_safe,

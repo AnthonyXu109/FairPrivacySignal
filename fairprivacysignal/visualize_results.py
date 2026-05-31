@@ -6,6 +6,40 @@ import pandas as pd
 from fairprivacysignal.privacy_recovery import main as run_privacy_recovery
 
 
+NAME_MAP = {
+    "full_signal_raw_baseline": "Full signal\nraw baseline",
+    "severe_signal_loss_baseline": "Severe signal\nloss",
+    "severe_signal_loss_with_privacy_safe_aggregates": "Severe loss\n+ privacy-safe",
+    "severe_signal_loss_with_privacy_safe_fairness_aware": "Severe loss\n+ fairness-aware",
+    "policy_restricted_baseline": "Policy\nrestricted",
+    "policy_restricted_with_privacy_safe_aggregates": "Policy restricted\n+ privacy-safe",
+    "policy_restricted_with_privacy_safe_fairness_aware": "Policy restricted\n+ fairness-aware",
+}
+
+
+ANNOTATION_STYLE = {
+    "full_signal_raw_baseline": {"xytext": (-5, 5), "ha": "right"},
+    "severe_signal_loss_baseline": {"xytext": (5, 5), "ha": "left"},
+    "severe_signal_loss_with_privacy_safe_aggregates": {
+        "xytext": (5, 5),
+        "ha": "left",
+    },
+    "severe_signal_loss_with_privacy_safe_fairness_aware": {
+        "xytext": (5, 14),
+        "ha": "left",
+    },
+    "policy_restricted_baseline": {"xytext": (5, 5), "ha": "left"},
+    "policy_restricted_with_privacy_safe_aggregates": {
+        "xytext": (5, 8),
+        "ha": "left",
+    },
+    "policy_restricted_with_privacy_safe_fairness_aware": {
+        "xytext": (5, -15),
+        "ha": "left",
+    },
+}
+
+
 def main() -> None:
     metrics_path = Path("outputs/tables/privacy_recovery_metrics.csv")
     assets_dir = Path("docs/assets")
@@ -16,16 +50,7 @@ def main() -> None:
 
     df = pd.read_csv(metrics_path)
 
-    # Short display names for charts.
-    name_map = {
-        "full_signal_raw_baseline": "Full signal\nraw baseline",
-        "severe_signal_loss_baseline": "Severe signal\nloss",
-        "severe_signal_loss_with_privacy_safe_aggregates": "Severe loss\n+ privacy-safe",
-        "policy_restricted_baseline": "Policy\nrestricted",
-        "policy_restricted_with_privacy_safe_aggregates": "Policy restricted\n+ privacy-safe",
-    }
-
-    df["display_name"] = df["experiment"].map(name_map)
+    df["display_name"] = df["experiment"].map(NAME_MAP)
 
     # 1. Utility comparison.
     plt.figure(figsize=(9, 4.8))
@@ -52,11 +77,13 @@ def main() -> None:
     plt.scatter(df["avg_privacy_exposure_score"], df["overall_ndcg_at_3"], s=80)
 
     for _, row in df.iterrows():
+        annotation_style = ANNOTATION_STYLE[row["experiment"]]
         plt.annotate(
             row["display_name"].replace("\n", " "),
             (row["avg_privacy_exposure_score"], row["overall_ndcg_at_3"]),
             textcoords="offset points",
-            xytext=(5, 5),
+            xytext=annotation_style["xytext"],
+            ha=annotation_style["ha"],
             fontsize=8,
         )
 

@@ -31,7 +31,7 @@ def evaluate_seed(seed: int) -> pd.DataFrame:
         seed=seed,
     )
 
-    results = run_experiments(events)
+    results = run_experiments(events, privacy_noise_seed=seed)
     results["seed"] = seed
     return results
 

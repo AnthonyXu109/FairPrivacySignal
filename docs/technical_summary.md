@@ -45,14 +45,25 @@ FairPrivacySignal currently includes:
 5. **Privacy and fairness diagnostics**  
    Tracks average privacy exposure score and low-signal ranking gaps.
 
-## 4. Key Results from v0.1.1
+6. **Fairness-aware recovery evaluation**
+   Blends global and low-signal-specific predictions to measure whether explicit recovery strategies reduce low-signal ranking gaps.
 
-The initial benchmark results show:
+7. **Capacity-constrained allocation**
+   Compares utility-only and fairness-constrained allocation when outreach opportunities are limited.
+
+8. **Multi-seed reproducibility checks**
+   Repeats privacy-recovery evaluation across synthetic-data and DP-style aggregate-noise seeds.
+
+## 4. Current Benchmark Results
+
+The current benchmark results show:
 
 - Full-signal ranking achieved the highest utility.
 - Severe signal loss reduced ranking utility.
 - Privacy-safe aggregate features partially recovered utility under severe signal loss.
 - A hybrid policy-restricted setting using available policy-permitted signals plus privacy-safe aggregate features improved ranking utility over the policy-restricted baseline.
+- Fairness-aware recovery variants produced modest low-signal gap improvements under the current synthetic configuration, without eliminating the gap.
+- Capacity-constrained allocation exposed a measurable tradeoff between allocated relevance and low-signal representation.
 - Low-signal fairness gaps are explicitly tracked as a diagnostic to prevent utility recovery from hiding unequal effects on low-signal or underserved populations.
 
 These results support the project’s core hypothesis: privacy-preserving AI systems should be evaluated not only for privacy exposure reduction, but also for downstream utility and fairness impact.
@@ -81,9 +92,10 @@ The broader goal is to make privacy-preserving and fairness-aware ranking evalua
 
 Planned improvements include:
 
-- adding fairness-aware optimization objectives
+- adding subgroup calibration metrics
+- adding multi-seed capacity-allocation sensitivity analysis
+- moving policy rules into a readable configuration file
 - expanding synthetic scenarios beyond public-service outreach
 - integrating public aggregate datasets for calibration
-- adding reproducible notebooks
 - improving documentation for independent technical review
 - collecting external expert feedback

@@ -9,6 +9,7 @@ python -m fairprivacysignal.signal_loss
 python -m fairprivacysignal.ranking
 python -m fairprivacysignal.privacy_recovery
 python -m fairprivacysignal.visualize_results
+python -m fairprivacysignal.capacity_allocation
 python -m fairprivacysignal.multiseed_evaluation
 python -m fairprivacysignal.architecture_diagram
 
