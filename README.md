@@ -21,6 +21,7 @@ The same technical pattern can apply to public agencies, healthcare outreach, no
 - Utility metrics such as AUC and NDCG@K
 - Fairness metrics for low-signal or underserved participants
 - Fairness-aware recovery variants for low-signal ranking diagnostics
+- Score-matched subgroup calibration diagnostics
 - Capacity-constrained allocation under limited outreach slots
 - Privacy exposure scoring
 - Multi-seed reproducibility checks
@@ -108,6 +109,12 @@ These results support the project’s utility-recovery claim. The fairness gap r
 FairPrivacySignal also tracks low-signal ranking gaps to ensure that utility recovery does not hide unequal effects on low-signal or underserved populations. This diagnostic is intentionally reported separately from the utility-recovery claim.
 
 ![Multi-seed privacy recovery fairness gap](docs/assets/multiseed_fairness_gap.png)
+
+### Score-matched subgroup calibration
+
+![Score-matched subgroup calibration](docs/assets/score_matched_calibration.png)
+
+Aggregate metrics can conceal differences among similarly scored candidates. This diagnostic places test-set events into shared predicted-score bins and compares observed relevance for low-signal and not-low-signal groups within those bins. It is a lightweight, seed-42 diagnostic rather than a formal fairness guarantee. See [`docs/fairness_metrics.md`](docs/fairness_metrics.md) for definitions and limitations.
 
 ## Capacity-constrained allocation
 

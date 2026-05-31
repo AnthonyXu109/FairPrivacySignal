@@ -24,8 +24,10 @@ allocation floor becomes stronger.
 
 [Matched Pair Calibration for Ranking Fairness](https://arxiv.org/abs/2306.03775)
 proposes comparing subgroup outcomes among similarly scored items to diagnose ranking
-fairness. FairPrivacySignal does not yet implement matched-pair calibration, but the
-paper motivates a planned extension beyond aggregate group gaps.
+fairness. Inspired by that direction, FairPrivacySignal reports a lightweight
+score-matched subgroup calibration diagnostic beyond aggregate group gaps. It bins
+similarly scored test-set events and compares observed relevance between low-signal
+and not-low-signal groups. This is not an implementation of the paper's full method.
 
 ## Standardized Benchmark Practice
 
