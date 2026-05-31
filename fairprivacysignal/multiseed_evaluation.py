@@ -4,86 +4,36 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 from fairprivacysignal.data_generator import generate_all
-from fairprivacysignal.privacy_recovery import (
-    BASE_NUMERIC_FEATURES,
-    PRIVACY_SAFE_NUMERIC_FEATURES,
-    evaluate_model,
-)
-from fairprivacysignal.privacy_transforms import add_privacy_safe_features
-from fairprivacysignal.signal_loss import apply_signal_loss
+from fairprivacysignal.privacy_recovery import run_experiments
 
 
 SEEDS = [7, 11, 23, 42, 101]
 
 
-def evaluate_seed(seed: int) -> list[dict]:
+DISPLAY_NAME = {
+    "full_signal_raw_baseline": "Full signal raw baseline",
+    "severe_signal_loss_baseline": "Severe signal loss",
+    "severe_signal_loss_with_privacy_safe_aggregates": "Severe loss + privacy-safe aggregates",
+    "severe_signal_loss_with_privacy_safe_fairness_aware": "Severe loss + fairness-aware recovery",
+    "policy_restricted_baseline": "Policy restricted",
+    "policy_restricted_with_privacy_safe_aggregates": "Policy restricted + privacy-safe aggregates",
+    "policy_restricted_with_privacy_safe_fairness_aware": "Policy restricted + fairness-aware recovery",
+}
+
+
+ORDER = list(DISPLAY_NAME.keys())
+
+
+def evaluate_seed(seed: int) -> pd.DataFrame:
     _, _, _, events = generate_all(
         n_communities=120,
         n_households=10000,
         seed=seed,
     )
 
-    rows = []
-
-    full_signal = apply_signal_loss(events, "full_signal")
-    rows.append(
-        evaluate_model(
-            full_signal,
-            "full_signal_raw_baseline",
-            BASE_NUMERIC_FEATURES,
-        )
-    )
-
-    severe_loss = apply_signal_loss(events, "severe_signal_loss")
-    rows.append(
-        evaluate_model(
-            severe_loss,
-            "severe_signal_loss_baseline",
-            BASE_NUMERIC_FEATURES,
-        )
-    )
-
-    severe_loss_privacy_safe = add_privacy_safe_features(
-        severe_loss,
-        min_cohort_size=50,
-        dp_noise_scale=1.0,
-        seed=seed,
-    )
-    rows.append(
-        evaluate_model(
-            severe_loss_privacy_safe,
-            "severe_signal_loss_with_privacy_safe_aggregates",
-            PRIVACY_SAFE_NUMERIC_FEATURES,
-        )
-    )
-
-    policy_restricted = apply_signal_loss(events, "policy_restricted")
-    rows.append(
-        evaluate_model(
-            policy_restricted,
-            "policy_restricted_baseline",
-            BASE_NUMERIC_FEATURES,
-        )
-    )
-
-    policy_restricted_privacy_safe = add_privacy_safe_features(
-        policy_restricted,
-        min_cohort_size=50,
-        dp_noise_scale=1.0,
-        seed=seed,
-    )
-    rows.append(
-        evaluate_model(
-            policy_restricted_privacy_safe,
-            "policy_restricted_with_privacy_safe_aggregates",
-            PRIVACY_SAFE_NUMERIC_FEATURES,
-        )
-    )
-
-    for row in rows:
-        row["seed"] = seed
-
-    return rows
+    results = run_experiments(events, privacy_noise_seed=seed)
+    results["seed"] = seed
+    return results
 
 
 def build_summary(results: pd.DataFrame) -> pd.DataFrame:
@@ -111,18 +61,8 @@ def build_summary(results: pd.DataFrame) -> pd.DataFrame:
         "overall_ndcg_at_3_mean",
     ].iloc[0]
 
-    severe_recovery_ndcg = summary.loc[
-        summary["experiment"] == "severe_signal_loss_with_privacy_safe_aggregates",
-        "overall_ndcg_at_3_mean",
-    ].iloc[0]
-
     policy_ndcg = summary.loc[
         summary["experiment"] == "policy_restricted_baseline",
-        "overall_ndcg_at_3_mean",
-    ].iloc[0]
-
-    policy_recovery_ndcg = summary.loc[
-        summary["experiment"] == "policy_restricted_with_privacy_safe_aggregates",
         "overall_ndcg_at_3_mean",
     ].iloc[0]
 
@@ -142,19 +82,13 @@ def build_summary(results: pd.DataFrame) -> pd.DataFrame:
 
 
 def write_markdown_summary(summary: pd.DataFrame, out_path: Path) -> None:
-    display_name = {
-        "full_signal_raw_baseline": "Full signal raw baseline",
-        "severe_signal_loss_baseline": "Severe signal loss",
-        "severe_signal_loss_with_privacy_safe_aggregates": "Severe loss + privacy-safe aggregates",
-        "policy_restricted_baseline": "Policy restricted",
-        "policy_restricted_with_privacy_safe_aggregates": "Policy restricted + privacy-safe aggregates",
-    }
-
     rows = []
-    for _, row in summary.iterrows():
+    ordered = summary.set_index("experiment").loc[ORDER].reset_index()
+
+    for _, row in ordered.iterrows():
         rows.append(
             {
-                "Scenario": display_name.get(row["experiment"], row["experiment"]),
+                "Scenario": DISPLAY_NAME[row["experiment"]],
                 "Privacy exposure": f'{row["avg_privacy_exposure_score_mean"]:.3f} ± {row["avg_privacy_exposure_score_std"]:.3f}',
                 "NDCG@3": f'{row["overall_ndcg_at_3_mean"]:.3f} ± {row["overall_ndcg_at_3_std"]:.3f}',
                 "Low-signal NDCG@3": f'{row["low_signal_ndcg_at_3_mean"]:.3f} ± {row["low_signal_ndcg_at_3_std"]:.3f}',
@@ -173,34 +107,25 @@ def write_markdown_summary(summary: pd.DataFrame, out_path: Path) -> None:
 
 
 def plot_multiseed_ndcg(summary: pd.DataFrame, out_path: Path) -> None:
-    order = [
-        "full_signal_raw_baseline",
-        "severe_signal_loss_baseline",
-        "severe_signal_loss_with_privacy_safe_aggregates",
-        "policy_restricted_baseline",
-        "policy_restricted_with_privacy_safe_aggregates",
+    ordered = summary.set_index("experiment").loc[ORDER].reset_index()
+    labels = [
+        DISPLAY_NAME[x]
+        .replace(" raw baseline", "")
+        .replace(" + ", "\n+ ")
+        .replace(" signal loss", "\nsignal loss")
+        .replace(" restricted", "\nrestricted")
+        for x in ordered["experiment"]
     ]
 
-    label_map = {
-        "full_signal_raw_baseline": "Full signal\nraw baseline",
-        "severe_signal_loss_baseline": "Severe signal\nloss",
-        "severe_signal_loss_with_privacy_safe_aggregates": "Severe loss\n+ privacy-safe",
-        "policy_restricted_baseline": "Policy\nrestricted",
-        "policy_restricted_with_privacy_safe_aggregates": "Policy restricted\n+ privacy-safe",
-    }
-
-    df = summary.set_index("experiment").loc[order].reset_index()
-    labels = [label_map[x] for x in df["experiment"]]
-
-    plt.figure(figsize=(9, 4.8))
+    plt.figure(figsize=(11, 5.2))
     bars = plt.bar(
         labels,
-        df["overall_ndcg_at_3_mean"],
-        yerr=df["overall_ndcg_at_3_std"],
+        ordered["overall_ndcg_at_3_mean"],
+        yerr=ordered["overall_ndcg_at_3_std"],
         capsize=4,
     )
 
-    for bar, value in zip(bars, df["overall_ndcg_at_3_mean"]):
+    for bar, value in zip(bars, ordered["overall_ndcg_at_3_mean"]):
         plt.text(
             bar.get_x() + bar.get_width() / 2,
             bar.get_height(),
@@ -211,7 +136,44 @@ def plot_multiseed_ndcg(summary: pd.DataFrame, out_path: Path) -> None:
         )
 
     plt.ylabel("Overall NDCG@3, mean ± std")
-    plt.title("Multi-seed ranking utility under signal-loss scenarios")
+    plt.title("Multi-seed ranking utility under privacy and fairness recovery scenarios")
+    plt.xticks(rotation=25, ha="right")
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=180)
+    plt.close()
+
+
+def plot_multiseed_fairness_gap(summary: pd.DataFrame, out_path: Path) -> None:
+    ordered = summary.set_index("experiment").loc[ORDER].reset_index()
+    labels = [
+        DISPLAY_NAME[x]
+        .replace(" raw baseline", "")
+        .replace(" + ", "\n+ ")
+        .replace(" signal loss", "\nsignal loss")
+        .replace(" restricted", "\nrestricted")
+        for x in ordered["experiment"]
+    ]
+
+    plt.figure(figsize=(11, 5.2))
+    bars = plt.bar(
+        labels,
+        ordered["ndcg_gap_not_low_minus_low_mean"],
+        yerr=ordered["ndcg_gap_not_low_minus_low_std"],
+        capsize=4,
+    )
+
+    for bar, value in zip(bars, ordered["ndcg_gap_not_low_minus_low_mean"]):
+        plt.text(
+            bar.get_x() + bar.get_width() / 2,
+            bar.get_height(),
+            f"{value:.3f}",
+            ha="center",
+            va="bottom",
+            fontsize=8,
+        )
+
+    plt.ylabel("NDCG@3 gap: not-low-signal minus low-signal")
+    plt.title("Multi-seed low-signal ranking gap diagnostics")
     plt.xticks(rotation=25, ha="right")
     plt.tight_layout()
     plt.savefig(out_path, dpi=180)
@@ -227,31 +189,35 @@ def main() -> None:
     asset_dir.mkdir(parents=True, exist_ok=True)
     docs_dir.mkdir(parents=True, exist_ok=True)
 
-    rows = []
+    frames = []
+
     for seed in SEEDS:
         print(f"Running seed={seed}")
-        rows.extend(evaluate_seed(seed))
+        frames.append(evaluate_seed(seed))
 
-    results = pd.DataFrame(rows)
+    results = pd.concat(frames, ignore_index=True)
     summary = build_summary(results)
 
     raw_path = out_dir / "multiseed_privacy_recovery_raw.csv"
     summary_path = out_dir / "multiseed_privacy_recovery_summary.csv"
     markdown_path = docs_dir / "multiseed_results.md"
-    figure_path = asset_dir / "multiseed_privacy_recovery_ndcg.png"
+    utility_figure_path = asset_dir / "multiseed_privacy_recovery_ndcg.png"
+    fairness_figure_path = asset_dir / "multiseed_fairness_gap.png"
 
     results.to_csv(raw_path, index=False)
     summary.to_csv(summary_path, index=False)
     write_markdown_summary(summary, markdown_path)
-    plot_multiseed_ndcg(summary, figure_path)
+    plot_multiseed_ndcg(summary, utility_figure_path)
+    plot_multiseed_fairness_gap(summary, fairness_figure_path)
 
     print("\nMulti-seed summary:")
     print(summary.round(4).to_string(index=False))
-    print(f"\nWrote:")
+    print("\nWrote:")
     print(f"- {raw_path}")
     print(f"- {summary_path}")
     print(f"- {markdown_path}")
-    print(f"- {figure_path}")
+    print(f"- {utility_figure_path}")
+    print(f"- {fairness_figure_path}")
 
 
 if __name__ == "__main__":

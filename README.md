@@ -20,6 +20,8 @@ The same technical pattern can apply to public agencies, healthcare outreach, no
 - Contextual and geography-level signals
 - Utility metrics such as AUC and NDCG@K
 - Fairness metrics for low-signal or underserved participants
+- Fairness-aware recovery variants for low-signal ranking diagnostics
+- Capacity-constrained allocation under limited outreach slots
 - Privacy exposure scoring
 - Multi-seed reproducibility checks
 
@@ -45,7 +47,15 @@ FairPrivacySignal includes a one-command benchmark pipeline. From a clean checko
 
 The full reproducibility guide is available in [`docs/reproducibility.md`](docs/reproducibility.md).
 
-\n## Benchmark methodology\n\nFor a detailed explanation of the benchmark design, assumptions, signal-loss scenarios, privacy-safe recovery layer, metrics, and limitations, see [`docs/benchmark_design.md`](docs/benchmark_design.md).\n\nThe current and planned experiment matrix is summarized in [`docs/experiment_matrix.md`](docs/experiment_matrix.md).\n\n## System architecture
+## Benchmark methodology
+
+For a detailed explanation of the benchmark design, assumptions, signal-loss scenarios, privacy-safe recovery layer, metrics, and limitations, see [`docs/benchmark_design.md`](docs/benchmark_design.md).
+
+The current and planned experiment matrix is summarized in [`docs/experiment_matrix.md`](docs/experiment_matrix.md).
+
+The public research directions that inform the benchmark are summarized in [`docs/related_work.md`](docs/related_work.md).
+
+## System architecture
 
 FairPrivacySignal is organized as a reproducible benchmark pipeline: synthetic public-service data generation, privacy-driven signal-loss simulation, policy and consent-based feature suppression, privacy-safe aggregate recovery, ranking evaluation, and fairness diagnostics.
 
@@ -54,6 +64,12 @@ FairPrivacySignal is organized as a reproducible benchmark pipeline: synthetic p
 ## Results
 
 FairPrivacySignal demonstrates a privacy-utility-fairness tradeoff in a synthetic public-service outreach setting. The benchmark shows that low-signal households are more concentrated in underserved communities, signal loss can reduce ranking utility, and privacy-safe aggregate/contextual features can partially recover utility while keeping individual behavioral exposure reduced.
+
+### Benchmark at a glance
+
+![FairPrivacySignal benchmark overview](docs/assets/benchmark_overview.png)
+
+This overview combines multi-seed recovery results with the capacity-constrained allocation experiment. It shows utility recovery after signal loss, the remaining low-signal ranking gaps, and the explicit tradeoff between allocated relevance and low-signal representation when outreach opportunities are limited.
 
 ### 1. Low-signal households concentrate in underserved communities
 
@@ -69,19 +85,21 @@ FairPrivacySignal demonstrates a privacy-utility-fairness tradeoff in a syntheti
 
 ## Multi-seed benchmark results
 
-To make the benchmark more robust, FairPrivacySignal evaluates the privacy-recovery experiment across five synthetic data seeds.
+To make the benchmark more robust, FairPrivacySignal evaluates the privacy-recovery experiment across five synthetic data seeds. Each run also uses the corresponding seed for DP-style aggregate noise, so both the synthetic population and privacy-safe recovery layer vary reproducibly.
 
 ![Multi-seed privacy recovery NDCG](docs/assets/multiseed_privacy_recovery_ndcg.png)
 
-The multi-seed results show that severe signal loss consistently reduces ranking utility, while privacy-safe aggregate and contextual features partially recover NDCG@3 under both severe signal-loss and policy-restricted scenarios.
+The multi-seed results show that severe signal loss consistently reduces ranking utility, while privacy-safe aggregate and contextual features partially recover NDCG@3 under both severe signal-loss and policy-restricted scenarios. The fairness-aware variants produce modest improvements in the low-signal gap under the current synthetic configuration, but do not eliminate the gap.
 
 | Scenario | Privacy exposure | NDCG@3 | Low-signal NDCG@3 | Low-signal gap |
 |---|---:|---:|---:|---:|
 | Full signal raw baseline | 0.925 ± 0.002 | 0.555 ± 0.011 | 0.490 ± 0.014 | 0.095 ± 0.009 |
 | Severe signal loss | 0.475 ± 0.002 | 0.504 ± 0.007 | 0.430 ± 0.014 | 0.108 ± 0.018 |
 | Severe loss + privacy-safe aggregates | 0.475 ± 0.002 | 0.520 ± 0.007 | 0.448 ± 0.015 | 0.106 ± 0.018 |
+| Severe loss + fairness-aware recovery | 0.475 ± 0.002 | 0.521 ± 0.008 | 0.449 ± 0.017 | 0.104 ± 0.018 |
 | Policy restricted | 0.728 ± 0.007 | 0.526 ± 0.007 | 0.451 ± 0.008 | 0.109 ± 0.010 |
 | Policy restricted + privacy-safe aggregates | 0.728 ± 0.007 | 0.539 ± 0.006 | 0.460 ± 0.007 | 0.115 ± 0.005 |
+| Policy restricted + fairness-aware recovery | 0.728 ± 0.007 | 0.540 ± 0.005 | 0.462 ± 0.004 | 0.113 ± 0.004 |
 
 These results support the project’s utility-recovery claim. The fairness gap remains explicitly reported as a diagnostic rather than presented as solved.
 
@@ -89,7 +107,21 @@ These results support the project’s utility-recovery claim. The fairness gap r
 
 FairPrivacySignal also tracks low-signal ranking gaps to ensure that utility recovery does not hide unequal effects on low-signal or underserved populations. This diagnostic is intentionally reported separately from the utility-recovery claim.
 
-![Privacy recovery fairness gap](docs/assets/privacy_recovery_fairness_gap.png)
+![Multi-seed privacy recovery fairness gap](docs/assets/multiseed_fairness_gap.png)
+
+## Capacity-constrained allocation
+
+Ranking quality is only part of the problem when outreach slots, appointment capacity, staff time, or funding are limited. FairPrivacySignal includes a capacity-constrained allocation experiment that compares utility-only allocation with a fairness-constrained policy that reserves a minimum share of outreach capacity for low-signal households.
+
+![Capacity-constrained allocation relevance rate](docs/assets/capacity_allocation_precision.png)
+
+The allocation experiment makes the utility-fairness tradeoff visible rather than assuming one objective automatically improves the other. See [`docs/capacity_allocation.md`](docs/capacity_allocation.md) for the full setup, metrics, and figures.
+
+### Capacity sensitivity frontier
+
+![Capacity sensitivity frontier](docs/assets/capacity_sensitivity_frontier.png)
+
+The sensitivity analysis sweeps multiple outreach-capacity levels and low-signal allocation-floor strengths. The frontier and heatmaps show that a fairness constraint should be evaluated as a policy choice with measurable tradeoffs, not as a single fixed switch. This figure is a seed-42 diagnostic; a multi-seed allocation sensitivity extension remains planned.
 
 ## Notes on synthetic data
 

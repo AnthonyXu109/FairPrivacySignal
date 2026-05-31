@@ -20,18 +20,34 @@ This command regenerates:
 - signal-loss summaries
 - baseline ranking metrics
 - privacy-safe recovery metrics
+- fairness-aware recovery diagnostics
 - multi-seed benchmark results
+- capacity-constrained allocation metrics
+- capacity-sensitivity frontier metrics
+- benchmark overview figure
 - architecture diagram
 
 ## 3. Key result files
 
     docs/assets/multiseed_privacy_recovery_ndcg.png
+    docs/assets/multiseed_fairness_gap.png
+    docs/assets/benchmark_overview.png
     docs/assets/privacy_utility_tradeoff.png
     docs/assets/privacy_recovery_fairness_gap.png
+    docs/assets/capacity_allocation_precision.png
+    docs/assets/capacity_allocation_selection_gap.png
+    docs/assets/capacity_allocation_low_signal_share.png
+    docs/assets/capacity_sensitivity_frontier.png
     docs/multiseed_results.md
     outputs/tables/multiseed_privacy_recovery_summary.csv
     outputs/tables/privacy_recovery_metrics.csv
+    outputs/tables/capacity_allocation_metrics.csv
+    outputs/tables/capacity_sensitivity_metrics.csv
 
-## 4. Notes
+## 4. Run the regression tests
+
+    python -m pytest -q
+
+## 5. Notes
 
 Generated CSV files under `data/synthetic/` and `outputs/` are intentionally not tracked by Git. The repository tracks source code, documentation, and selected figures used in the README.

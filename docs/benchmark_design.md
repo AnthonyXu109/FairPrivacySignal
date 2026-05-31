@@ -116,6 +116,14 @@ The privacy-safe recovery layer adds non-raw aggregate and contextual signals:
 
 This layer is intentionally simple and inspectable. It is not a claim of production-grade differential privacy. It is a benchmark mechanism for studying how aggregate substitutes can recover useful signal after raw behavioral features are suppressed.
 
+### 6.1 Fairness-Aware Recovery Variant
+
+The fairness-aware variant trains a low-signal-specific model after privacy-safe aggregate recovery. Relevant low-signal examples receive additional training weight, and the low-signal-specific predictions are blended with predictions from the global model.
+
+Extra positive weighting shifts the probability scale of a logistic model. Before blending, the implementation explicitly reverses that odds shift. This keeps the score scale auditable and avoids presenting a ranking-only improvement while silently degrading overall classification diagnostics.
+
+This variant is an experimental baseline, not a claim that fairness gaps are solved. The benchmark reports its utility and low-signal metrics alongside the simpler privacy-safe aggregate baseline.
+
 ## 7. Ranking Model
 
 The current benchmark uses an interpretable baseline model rather than a complex neural model.
@@ -156,14 +164,17 @@ The project does not claim that the current privacy-safe recovery layer solves f
 
 The benchmark runs the privacy-recovery experiment across multiple synthetic seeds.
 
-This reduces the risk that results are driven by one favorable random seed and makes the benchmark more credible as an experimental artifact.
+Each synthetic-data seed is also forwarded to the aggregate noise generator. This varies both the generated population and the DP-style aggregate noise while keeping each run reproducible.
+
+This reduces the risk that results are driven by one favorable random draw and makes the benchmark more credible as an experimental artifact.
 
 The current multi-seed result shows:
 
 - severe signal loss consistently reduces ranking utility
 - privacy-safe aggregate/contextual features partially recover ranking utility
 - policy-restricted + privacy-safe recovery improves utility over the policy-restricted baseline
-- fairness gaps remain diagnostic and require further fairness-aware optimization
+- fairness-aware variants produce modest low-signal gap improvements under the current synthetic configuration
+- fairness gaps remain diagnostic and require further evaluation
 
 ## 10. What the Current Benchmark Shows
 
@@ -180,19 +191,18 @@ FairPrivacySignal does not claim that:
 - it proves fairness gaps are solved
 - it reproduces any proprietary system
 - it should be used directly for public-service eligibility decisions
-- synthetic results alone prove real-world national impact
+- synthetic results alone prove real-world effectiveness or adoption
 
 ## 12. Planned Extensions
 
 Near-term planned extensions include:
 
-1. adding a fairness-aware recovery objective
-2. adding service-level capacity constraints
-3. adding subgroup calibration metrics
-4. adding a policy-rule configuration file
-5. adding a richer experiment matrix
-6. adding public aggregate calibration examples
-7. improving the technical whitepaper for independent expert review
+1. adding subgroup calibration metrics
+2. adding multi-seed capacity-allocation sensitivity analysis
+3. adding a policy-rule configuration file
+4. adding public aggregate calibration examples
+5. comparing the interpretable baseline with a ranking-specific model
+6. improving the technical whitepaper for independent expert review
 
 ## 13. Why This Matters
 
