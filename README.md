@@ -53,6 +53,8 @@ For a detailed explanation of the benchmark design, assumptions, signal-loss sce
 
 The current and planned experiment matrix is summarized in [`docs/experiment_matrix.md`](docs/experiment_matrix.md).
 
+The public research directions that inform the benchmark are summarized in [`docs/related_work.md`](docs/related_work.md).
+
 ## System architecture
 
 FairPrivacySignal is organized as a reproducible benchmark pipeline: synthetic public-service data generation, privacy-driven signal-loss simulation, policy and consent-based feature suppression, privacy-safe aggregate recovery, ranking evaluation, and fairness diagnostics.
@@ -114,6 +116,12 @@ Ranking quality is only part of the problem when outreach slots, appointment cap
 ![Capacity-constrained allocation relevance rate](docs/assets/capacity_allocation_precision.png)
 
 The allocation experiment makes the utility-fairness tradeoff visible rather than assuming one objective automatically improves the other. See [`docs/capacity_allocation.md`](docs/capacity_allocation.md) for the full setup, metrics, and figures.
+
+### Capacity sensitivity frontier
+
+![Capacity sensitivity frontier](docs/assets/capacity_sensitivity_frontier.png)
+
+The sensitivity analysis sweeps multiple outreach-capacity levels and low-signal allocation-floor strengths. The frontier and heatmaps show that a fairness constraint should be evaluated as a policy choice with measurable tradeoffs, not as a single fixed switch. This figure is a seed-42 diagnostic; a multi-seed allocation sensitivity extension remains planned.
 
 ## Notes on synthetic data
 

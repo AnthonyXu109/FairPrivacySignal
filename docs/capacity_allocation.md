@@ -37,6 +37,20 @@ Utility-only allocation can achieve high allocated relevance, but may under-sele
 
 This is not presented as a solved fairness objective. Instead, it makes the tradeoff explicit and measurable.
 
+## Sensitivity Analysis
+
+The benchmark also sweeps:
+
+- outreach capacity rates of 5, 10, 15, 20, and 30 percent
+- low-signal allocation-floor strengths of 0, 25, 50, 75, and 100 percent
+
+This produces a policy frontier rather than a single fairness-constrained point. The
+frontier shows how allocated relevance, low-signal representation, and selection-rate
+gaps move as the allocation floor becomes stronger.
+
+The current sensitivity figure uses synthetic seed 42. It is a diagnostic for inspecting
+tradeoffs, not a claim that one allocation policy is universally optimal.
+
 ## Current Single-Seed Result
 
 In the current seed-42 experiment:
@@ -59,3 +73,7 @@ In the current seed-42 experiment:
 ### Low-signal representation among allocated slots
 
 ![Capacity allocation low-signal share](assets/capacity_allocation_low_signal_share.png)
+
+### Allocation frontier and sensitivity heatmaps
+
+![Capacity sensitivity frontier](assets/capacity_sensitivity_frontier.png)

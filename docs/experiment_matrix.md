@@ -20,6 +20,7 @@ This document summarizes the current and planned FairPrivacySignal experiments.
 |---|---|---|
 | Utility-only capacity allocation | Select the highest-scoring candidates within limited service capacity | Allocated relevance rate, low-signal selection rate |
 | Fairness-constrained capacity allocation | Reserve a minimum share of outreach capacity for low-signal households | Allocated relevance rate, selection-rate gap, allocated low-signal share |
+| Capacity sensitivity sweep | Vary outreach capacity and low-signal allocation-floor strength | Allocation frontier, selection-rate gap, allocated relevance cost |
 
 ## Current Diagnostics
 
