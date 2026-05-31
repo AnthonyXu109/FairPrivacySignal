@@ -63,6 +63,9 @@ FairPrivacySignal currently includes:
 11. **Readable policy-rule configuration**
     Loads validated signal-suppression flags and privacy-exposure weights from a small JSON file.
 
+12. **Benchmark validation gate**
+    Enforces stable methodological invariants and writes a reviewer-readable validation report.
+
 ## 4. Current Benchmark Results
 
 The current benchmark results show:

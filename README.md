@@ -60,6 +60,8 @@ The public research directions that inform the benchmark are summarized in [`doc
 
 The auditable signal-suppression configuration is documented in [`docs/policy_rules.md`](docs/policy_rules.md).
 
+The pipeline also writes a machine-checked [`benchmark validation report`](docs/validation_report.md).
+
 ## System architecture
 
 FairPrivacySignal is organized as a reproducible benchmark pipeline: synthetic public-service data generation, privacy-driven signal-loss simulation, policy and consent-based feature suppression, privacy-safe aggregate recovery, ranking evaluation, and fairness diagnostics.

@@ -28,6 +28,7 @@ This command regenerates:
 - score-matched subgroup calibration metrics
 - benchmark overview figure
 - architecture diagram
+- benchmark validation report
 
 Signal-suppression scenarios and privacy-exposure weights are loaded from:
 
@@ -47,6 +48,7 @@ Signal-suppression scenarios and privacy-exposure weights are loaded from:
     docs/assets/multiseed_capacity_sensitivity.png
     docs/assets/score_matched_calibration.png
     docs/multiseed_results.md
+    docs/validation_report.md
     outputs/tables/multiseed_privacy_recovery_summary.csv
     outputs/tables/privacy_recovery_metrics.csv
     outputs/tables/capacity_allocation_metrics.csv
@@ -55,6 +57,7 @@ Signal-suppression scenarios and privacy-exposure weights are loaded from:
     outputs/tables/multiseed_capacity_sensitivity_summary.csv
     outputs/tables/score_matched_calibration_bins.csv
     outputs/tables/score_matched_calibration_summary.csv
+    outputs/tables/benchmark_validation_checks.csv
 
 ## 4. Run the regression tests
 

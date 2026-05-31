@@ -233,3 +233,14 @@ It reports mean tradeoffs and standard deviation whiskers so that the frontier i
 supported by one favorable seed.
 
 See [`docs/capacity_allocation.md`](capacity_allocation.md) for details.
+
+## 15. Benchmark Validation Gate
+
+The one-command pipeline ends with machine-checked methodological invariants. These
+checks cover signal-loss scenario completeness, privacy-exposure monotonicity,
+bounded metrics, valid allocation counts, score-matched calibration coverage, and
+multi-seed completeness.
+
+Required checks fail the pipeline when an invariant drifts. Informational checks
+record current result behavior without blocking future experimentation. The current
+report is available in [`docs/validation_report.md`](validation_report.md).
