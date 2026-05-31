@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "behavioral_signal_scenarios": {
+    "full_signal": {
+      "description": "All synthetic individual-level features are available.",
+      "require_consent": false,
+      "exclude_sensitive_cohort": false,
+      "remove_all_behavioral_history": false
+    },
+    "consent_restricted": {
+      "description": "Behavioral history is removed when household consent is false.",
+      "require_consent": true,
+      "exclude_sensitive_cohort": false,
+      "remove_all_behavioral_history": false
+    },
+    "policy_restricted": {
+      "description": "Behavioral history is removed for non-consented or sensitive-cohort households.",
+      "require_consent": true,
+      "exclude_sensitive_cohort": true,
+      "remove_all_behavioral_history": false
+    },
+    "severe_signal_loss": {
+      "description": "Individual behavioral history is removed for all households.",
+      "require_consent": false,
+      "exclude_sensitive_cohort": false,
+      "remove_all_behavioral_history": true
+    }
+  },
+  "privacy_exposure_weights": {
+    "behavioral_available": 0.45,
+    "consent_behavioral": 0.15,
+    "not_sensitive_cohort": 0.15,
+    "age_group_present": 0.15,
+    "income_band_present": 0.1
+  }
+}

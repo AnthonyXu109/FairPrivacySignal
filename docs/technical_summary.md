@@ -60,6 +60,9 @@ FairPrivacySignal currently includes:
 10. **Multi-seed allocation sensitivity**
     Repeats the allocation-floor sweep across synthetic draws and reports mean tradeoffs with standard deviations.
 
+11. **Readable policy-rule configuration**
+    Loads validated signal-suppression flags and privacy-exposure weights from a small JSON file.
+
 ## 4. Current Benchmark Results
 
 The current benchmark results show:
@@ -98,7 +101,6 @@ The broader goal is to make privacy-preserving and fairness-aware ranking evalua
 
 Planned improvements include:
 
-- moving policy rules into a readable configuration file
 - expanding synthetic scenarios beyond public-service outreach
 - integrating public aggregate datasets for calibration
 - improving documentation for independent technical review

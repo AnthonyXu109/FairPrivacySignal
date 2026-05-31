@@ -15,6 +15,7 @@ The same technical pattern can apply to public agencies, healthcare outreach, no
 - Synthetic public-service ranking and matching data generation
 - Privacy-driven signal-loss simulation
 - Consent-aware and policy-aware feature suppression
+- Readable policy-rule configuration with validation
 - Cohort aggregation and k-thresholding
 - Differential-privacy-style noise for aggregate features
 - Contextual and geography-level signals
@@ -56,6 +57,8 @@ For a detailed explanation of the benchmark design, assumptions, signal-loss sce
 The current and planned experiment matrix is summarized in [`docs/experiment_matrix.md`](docs/experiment_matrix.md).
 
 The public research directions that inform the benchmark are summarized in [`docs/related_work.md`](docs/related_work.md).
+
+The auditable signal-suppression configuration is documented in [`docs/policy_rules.md`](docs/policy_rules.md).
 
 ## System architecture
 

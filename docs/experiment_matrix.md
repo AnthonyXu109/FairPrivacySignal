@@ -23,6 +23,13 @@ This document summarizes the current and planned FairPrivacySignal experiments.
 | Capacity sensitivity sweep | Vary outreach capacity and low-signal allocation-floor strength | Allocation frontier, selection-rate gap, allocated relevance cost |
 | Multi-seed capacity sensitivity | Repeat the allocation sweep across synthetic draws | Mean allocation frontier, standard deviation, mean selection-rate gap |
 
+## Current Policy Configuration
+
+| Configuration | Purpose |
+|---|---|
+| Behavioral-signal scenario rules | Declare consent, sensitive-cohort, and severe-loss suppression flags in readable JSON |
+| Privacy-exposure proxy weights | Keep the comparison diagnostic explicit and validate that weights sum to 1.0 |
+
 ## Current Diagnostics
 
 | Diagnostic | Purpose |
@@ -39,6 +46,5 @@ This document summarizes the current and planned FairPrivacySignal experiments.
 
 | Planned experiment | Purpose |
 |---|---|
-| Policy-rule configuration | Move consent/sensitive-cohort suppression rules into a readable configuration file |
 | Public aggregate calibration | Calibrate synthetic community distributions with public aggregate datasets |
 | Stronger learning-to-rank model | Compare interpretable logistic baseline with ranking-specific models |

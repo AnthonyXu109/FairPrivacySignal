@@ -104,6 +104,11 @@ FairPrivacySignal evaluates multiple signal availability scenarios.
 | Policy restricted | Behavioral history is removed for non-consented or sensitive-cohort households | partial |
 | Privacy-safe recovery | Aggregate/contextual substitutes are added without restoring raw individual behavioral history | low to medium |
 
+The executable scenario flags and privacy-exposure weights are stored in
+[`config/policy_rules.json`](../config/policy_rules.json). See
+[`docs/policy_rules.md`](policy_rules.md) for the readable rule table and validation
+behavior.
+
 ## 6. Privacy-Safe Recovery Design
 
 The privacy-safe recovery layer adds non-raw aggregate and contextual signals:
@@ -207,10 +212,9 @@ FairPrivacySignal does not claim that:
 
 Near-term planned extensions include:
 
-1. adding a policy-rule configuration file
-2. adding public aggregate calibration examples
-3. comparing the interpretable baseline with a ranking-specific model
-4. improving the technical whitepaper for independent expert review
+1. adding public aggregate calibration examples
+2. comparing the interpretable baseline with a ranking-specific model
+3. improving the technical whitepaper for independent expert review
 
 ## 13. Why This Matters
 

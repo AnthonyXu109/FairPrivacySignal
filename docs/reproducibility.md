@@ -29,6 +29,10 @@ This command regenerates:
 - benchmark overview figure
 - architecture diagram
 
+Signal-suppression scenarios and privacy-exposure weights are loaded from:
+
+    config/policy_rules.json
+
 ## 3. Key result files
 
     docs/assets/multiseed_privacy_recovery_ndcg.png

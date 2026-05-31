@@ -3,43 +3,20 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from fairprivacysignal.policy_rules import (
+    DEFAULT_POLICY_RULES,
+    behavioral_availability_mask,
+    privacy_exposure_score,
+)
 
-SCENARIOS = {
-    "full_signal": {
-        "description": "All synthetic individual-level features are available.",
-    },
-    "consent_restricted": {
-        "description": "Behavioral history is removed when household consent is false.",
-    },
-    "policy_restricted": {
-        "description": "Behavioral history is removed for non-consented or sensitive-cohort households.",
-    },
-    "severe_signal_loss": {
-        "description": "Individual behavioral history is removed for all households.",
-    },
-}
+
+SCENARIOS = DEFAULT_POLICY_RULES["behavioral_signal_scenarios"]
 
 
 def apply_signal_loss(events: pd.DataFrame, scenario: str) -> pd.DataFrame:
     df = events.copy()
 
-    if scenario == "full_signal":
-        behavioral_available = np.ones(len(df), dtype=bool)
-
-    elif scenario == "consent_restricted":
-        behavioral_available = df["consent_behavioral"].astype(bool).to_numpy()
-
-    elif scenario == "policy_restricted":
-        behavioral_available = (
-            df["consent_behavioral"].astype(bool)
-            & ~df["sensitive_cohort"].astype(bool)
-        ).to_numpy()
-
-    elif scenario == "severe_signal_loss":
-        behavioral_available = np.zeros(len(df), dtype=bool)
-
-    else:
-        raise ValueError(f"Unknown scenario: {scenario}")
+    behavioral_available = behavioral_availability_mask(df, scenario)
 
     df["scenario"] = scenario
     df["behavioral_available"] = behavioral_available
@@ -63,12 +40,9 @@ def apply_signal_loss(events: pd.DataFrame, scenario: str) -> pd.DataFrame:
 
     # A simple interpretable privacy exposure proxy.
     # Higher means more individual-level signal is available to the model.
-    df["privacy_exposure_score"] = (
-        0.45 * df["behavioral_available"].astype(float)
-        + 0.15 * df["consent_behavioral"].astype(float)
-        + 0.15 * (~df["sensitive_cohort"].astype(bool)).astype(float)
-        + 0.15 * (df["age_group"].notna()).astype(float)
-        + 0.10 * (df["income_band"].notna()).astype(float)
+    df["privacy_exposure_score"] = privacy_exposure_score(
+        df,
+        behavioral_available,
     )
 
     return df
