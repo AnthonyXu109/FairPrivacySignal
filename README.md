@@ -63,6 +63,12 @@ FairPrivacySignal is organized as a reproducible benchmark pipeline: synthetic p
 
 FairPrivacySignal demonstrates a privacy-utility-fairness tradeoff in a synthetic public-service outreach setting. The benchmark shows that low-signal households are more concentrated in underserved communities, signal loss can reduce ranking utility, and privacy-safe aggregate/contextual features can partially recover utility while keeping individual behavioral exposure reduced.
 
+### Benchmark at a glance
+
+![FairPrivacySignal benchmark overview](docs/assets/benchmark_overview.png)
+
+This overview combines multi-seed recovery results with the capacity-constrained allocation experiment. It shows utility recovery after signal loss, the remaining low-signal ranking gaps, and the explicit tradeoff between allocated relevance and low-signal representation when outreach opportunities are limited.
+
 ### 1. Low-signal households concentrate in underserved communities
 
 ![Low signal by underserved bucket](docs/assets/low_signal_by_underserved_bucket.png)

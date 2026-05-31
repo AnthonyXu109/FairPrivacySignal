@@ -23,12 +23,14 @@ This command regenerates:
 - fairness-aware recovery diagnostics
 - multi-seed benchmark results
 - capacity-constrained allocation metrics
+- benchmark overview figure
 - architecture diagram
 
 ## 3. Key result files
 
     docs/assets/multiseed_privacy_recovery_ndcg.png
     docs/assets/multiseed_fairness_gap.png
+    docs/assets/benchmark_overview.png
     docs/assets/privacy_utility_tradeoff.png
     docs/assets/privacy_recovery_fairness_gap.png
     docs/assets/capacity_allocation_precision.png
