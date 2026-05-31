@@ -207,11 +207,10 @@ FairPrivacySignal does not claim that:
 
 Near-term planned extensions include:
 
-1. adding multi-seed capacity-allocation sensitivity analysis
-2. adding a policy-rule configuration file
-3. adding public aggregate calibration examples
-4. comparing the interpretable baseline with a ranking-specific model
-5. improving the technical whitepaper for independent expert review
+1. adding a policy-rule configuration file
+2. adding public aggregate calibration examples
+3. comparing the interpretable baseline with a ranking-specific model
+4. improving the technical whitepaper for independent expert review
 
 ## 13. Why This Matters
 
@@ -224,5 +223,9 @@ A benchmark like FairPrivacySignal helps make these tradeoffs visible. It gives 
 FairPrivacySignal also includes a capacity-constrained allocation experiment. This extension models a practical public-service outreach constraint: even if a ranking system can score every household-service pair, real service providers often have limited outreach slots, appointment capacity, staff time, or funding.
 
 The allocation experiment compares utility-only allocation with fairness-constrained allocation. Utility-only allocation selects the highest-scoring candidates, while fairness-constrained allocation reserves a minimum share of outreach capacity for low-signal households. This exposes a realistic utility-fairness tradeoff: improving low-signal representation can reduce selection-rate gaps, but may also reduce allocated relevance rate.
+
+The benchmark repeats the allocation sensitivity sweep across five synthetic draws.
+It reports mean tradeoffs and standard deviation whiskers so that the frontier is not
+supported by one favorable seed.
 
 See [`docs/capacity_allocation.md`](capacity_allocation.md) for details.

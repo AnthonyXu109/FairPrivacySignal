@@ -23,6 +23,7 @@ The same technical pattern can apply to public agencies, healthcare outreach, no
 - Fairness-aware recovery variants for low-signal ranking diagnostics
 - Score-matched subgroup calibration diagnostics
 - Capacity-constrained allocation under limited outreach slots
+- Multi-seed allocation sensitivity analysis
 - Privacy exposure scoring
 - Multi-seed reproducibility checks
 
@@ -126,9 +127,9 @@ The allocation experiment makes the utility-fairness tradeoff visible rather tha
 
 ### Capacity sensitivity frontier
 
-![Capacity sensitivity frontier](docs/assets/capacity_sensitivity_frontier.png)
+![Multi-seed capacity sensitivity frontier](docs/assets/multiseed_capacity_sensitivity.png)
 
-The sensitivity analysis sweeps multiple outreach-capacity levels and low-signal allocation-floor strengths. The frontier and heatmaps show that a fairness constraint should be evaluated as a policy choice with measurable tradeoffs, not as a single fixed switch. This figure is a seed-42 diagnostic; a multi-seed allocation sensitivity extension remains planned.
+The sensitivity analysis sweeps multiple outreach-capacity levels and low-signal allocation-floor strengths across five synthetic seeds. The frontier and heatmaps show that a fairness constraint should be evaluated as a policy choice with measurable tradeoffs, not as a single fixed switch. The single-seed supporting figure remains available in [`docs/capacity_allocation.md`](docs/capacity_allocation.md).
 
 ## Notes on synthetic data
 

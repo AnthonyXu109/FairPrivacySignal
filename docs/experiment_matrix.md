@@ -21,6 +21,7 @@ This document summarizes the current and planned FairPrivacySignal experiments.
 | Utility-only capacity allocation | Select the highest-scoring candidates within limited service capacity | Allocated relevance rate, low-signal selection rate |
 | Fairness-constrained capacity allocation | Reserve a minimum share of outreach capacity for low-signal households | Allocated relevance rate, selection-rate gap, allocated low-signal share |
 | Capacity sensitivity sweep | Vary outreach capacity and low-signal allocation-floor strength | Allocation frontier, selection-rate gap, allocated relevance cost |
+| Multi-seed capacity sensitivity | Repeat the allocation sweep across synthetic draws | Mean allocation frontier, standard deviation, mean selection-rate gap |
 
 ## Current Diagnostics
 
@@ -38,7 +39,6 @@ This document summarizes the current and planned FairPrivacySignal experiments.
 
 | Planned experiment | Purpose |
 |---|---|
-| Multi-seed capacity sensitivity | Test whether allocation tradeoffs persist across random draws and capacity levels |
 | Policy-rule configuration | Move consent/sensitive-cohort suppression rules into a readable configuration file |
 | Public aggregate calibration | Calibrate synthetic community distributions with public aggregate datasets |
 | Stronger learning-to-rank model | Compare interpretable logistic baseline with ranking-specific models |

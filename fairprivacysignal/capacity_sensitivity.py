@@ -36,10 +36,14 @@ COLORS = {
 }
 
 
-def run_capacity_sensitivity(events: pd.DataFrame) -> pd.DataFrame:
+def run_capacity_sensitivity(
+    events: pd.DataFrame,
+    experiments=None,
+) -> pd.DataFrame:
     summaries = []
+    selected_experiments = EXPERIMENTS if experiments is None else experiments
 
-    for experiment_name, signal_scenario, use_privacy_safe_features, numeric_features in EXPERIMENTS:
+    for experiment_name, signal_scenario, use_privacy_safe_features, numeric_features in selected_experiments:
         scored = score_experiment(
             events,
             experiment_name,

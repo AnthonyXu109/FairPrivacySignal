@@ -48,8 +48,10 @@ This produces a policy frontier rather than a single fairness-constrained point.
 frontier shows how allocated relevance, low-signal representation, and selection-rate
 gaps move as the allocation floor becomes stronger.
 
-The current sensitivity figure uses synthetic seed 42. It is a diagnostic for inspecting
-tradeoffs, not a claim that one allocation policy is universally optimal.
+The benchmark reports both a seed-42 diagnostic and a multi-seed extension. The
+multi-seed result averages the sweep across five synthetic draws and adds standard
+deviation whiskers to the 15-percent-capacity frontier. Neither figure claims that
+one allocation policy is universally optimal.
 
 ## Current Single-Seed Result
 
@@ -77,3 +79,7 @@ In the current seed-42 experiment:
 ### Allocation frontier and sensitivity heatmaps
 
 ![Capacity sensitivity frontier](assets/capacity_sensitivity_frontier.png)
+
+### Multi-seed allocation frontier
+
+![Multi-seed capacity sensitivity frontier](assets/multiseed_capacity_sensitivity.png)
