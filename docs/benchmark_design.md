@@ -160,6 +160,16 @@ The benchmark tracks low-signal NDCG@3 and the NDCG gap between not-low-signal a
 
 The project does not claim that the current privacy-safe recovery layer solves fairness. Instead, it reports fairness gaps explicitly so that utility recovery does not hide unequal downstream effects.
 
+### 8.4 Score-Matched Subgroup Calibration
+
+The benchmark also places test-set events into shared predicted-score bins and
+compares observed relevance rates for low-signal and not-low-signal groups within
+those bins. It reports subgroup expected calibration error (ECE) and a weighted mean
+absolute matched relevance gap.
+
+This is a lightweight diagnostic inspired by ranking-calibration research. It does
+not implement a formal matched-pair estimator or prove that a ranking policy is fair.
+
 ## 9. Multi-Seed Evaluation
 
 The benchmark runs the privacy-recovery experiment across multiple synthetic seeds.
@@ -197,12 +207,11 @@ FairPrivacySignal does not claim that:
 
 Near-term planned extensions include:
 
-1. adding subgroup calibration metrics
-2. adding multi-seed capacity-allocation sensitivity analysis
-3. adding a policy-rule configuration file
-4. adding public aggregate calibration examples
-5. comparing the interpretable baseline with a ranking-specific model
-6. improving the technical whitepaper for independent expert review
+1. adding multi-seed capacity-allocation sensitivity analysis
+2. adding a policy-rule configuration file
+3. adding public aggregate calibration examples
+4. comparing the interpretable baseline with a ranking-specific model
+5. improving the technical whitepaper for independent expert review
 
 ## 13. Why This Matters
 

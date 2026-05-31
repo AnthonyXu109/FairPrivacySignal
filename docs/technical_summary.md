@@ -54,6 +54,9 @@ FairPrivacySignal currently includes:
 8. **Multi-seed reproducibility checks**
    Repeats privacy-recovery evaluation across synthetic-data and DP-style aggregate-noise seeds.
 
+9. **Score-matched subgroup calibration**
+   Compares observed relevance rates for low-signal and not-low-signal events within shared predicted-score bins.
+
 ## 4. Current Benchmark Results
 
 The current benchmark results show:
@@ -92,7 +95,6 @@ The broader goal is to make privacy-preserving and fairness-aware ranking evalua
 
 Planned improvements include:
 
-- adding subgroup calibration metrics
 - adding multi-seed capacity-allocation sensitivity analysis
 - moving policy rules into a readable configuration file
 - expanding synthetic scenarios beyond public-service outreach

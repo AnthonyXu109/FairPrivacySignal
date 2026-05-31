@@ -32,13 +32,13 @@ This document summarizes the current and planned FairPrivacySignal experiments.
 | Multi-seed standard deviation | Check robustness across synthetic data draws |
 | Allocated relevance rate | Measure utility after service-capacity constraints are applied |
 | Selection-rate gap | Compare low-signal and not-low-signal allocation rates |
+| Score-matched subgroup calibration | Compare observed relevance for low-signal and not-low-signal events within shared predicted-score bins |
 
 ## Planned Experiments
 
 | Planned experiment | Purpose |
 |---|---|
 | Multi-seed capacity sensitivity | Test whether allocation tradeoffs persist across random draws and capacity levels |
-| Subgroup calibration | Compare predicted and observed relevance across low-signal and not-low-signal groups |
 | Policy-rule configuration | Move consent/sensitive-cohort suppression rules into a readable configuration file |
 | Public aggregate calibration | Calibrate synthetic community distributions with public aggregate datasets |
 | Stronger learning-to-rank model | Compare interpretable logistic baseline with ranking-specific models |
