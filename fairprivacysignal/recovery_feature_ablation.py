@@ -13,7 +13,6 @@ from fairprivacysignal.privacy_recovery import (
     PRIVACY_SAFE_NUMERIC_FEATURES,
     evaluate_model,
 )
-from fairprivacysignal.privacy_transforms import add_privacy_safe_features
 from fairprivacysignal.signal_loss import apply_signal_loss
 
 
@@ -73,18 +72,15 @@ def run_feature_ablation(
 
     for scenario, scenario_metadata in SCENARIOS.items():
         signal_limited = apply_signal_loss(events, scenario)
-        privacy_safe = add_privacy_safe_features(signal_limited, seed=seed)
 
         for variant, variant_metadata in ABLATIONS.items():
-            frame = (
-                signal_limited
-                if variant == BASELINE_VARIANT
-                else privacy_safe
-            )
             metrics = evaluate_model(
-                frame,
+                signal_limited,
                 f"{scenario}_{variant}",
                 variant_metadata["numeric_features"],
+                privacy_safe_feature_options=(
+                    None if variant == BASELINE_VARIANT else {"seed": seed}
+                ),
             )
             rows.append(
                 {

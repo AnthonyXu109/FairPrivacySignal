@@ -22,6 +22,12 @@ EXPECTED_RECOVERY_EXPERIMENTS = [
     "policy_restricted_with_privacy_safe_aggregates",
     "policy_restricted_with_privacy_safe_fairness_aware",
 ]
+EXPECTED_TRAIN_FITTED_RECOVERY_EXPERIMENTS = {
+    "severe_signal_loss_with_privacy_safe_aggregates",
+    "severe_signal_loss_with_privacy_safe_fairness_aware",
+    "policy_restricted_with_privacy_safe_aggregates",
+    "policy_restricted_with_privacy_safe_fairness_aware",
+}
 
 
 EXPECTED_SEEDS = {7, 11, 23, 42, 101}
@@ -199,6 +205,25 @@ def build_validation_checks(
                 ],
             ),
             "AUC and NDCG metrics are finite values in [0, 1]",
+        )
+    )
+    recovery_reference_scope = recovery.set_index("experiment")[
+        "aggregate_reference_scope"
+    ]
+    expected_reference_scope = {
+        experiment: (
+            "train_households_only"
+            if experiment in EXPECTED_TRAIN_FITTED_RECOVERY_EXPERIMENTS
+            else "not_applicable"
+        )
+        for experiment in EXPECTED_RECOVERY_EXPERIMENTS
+    }
+    checks.append(
+        _check(
+            "aggregate preprocessing is train-fitted",
+            "reproducibility",
+            recovery_reference_scope.to_dict() == expected_reference_scope,
+            "aggregate features use training-household reference statistics before holdout scoring",
         )
     )
     checks.append(

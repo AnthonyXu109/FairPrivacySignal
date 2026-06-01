@@ -180,6 +180,10 @@ def build_benchmark_card(
             ),
         },
         {
+            "Diagnostic": "Aggregate preprocessing scope",
+            "Coverage": "training households only before holdout scoring",
+        },
+        {
             "Diagnostic": "Validation gate",
             "Coverage": (
                 f"{len(required_checks)} required checks; "

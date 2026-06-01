@@ -6,7 +6,6 @@ import numpy as np
 import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
@@ -14,8 +13,9 @@ from fairprivacysignal.privacy_recovery import (
     BASE_NUMERIC_FEATURES,
     PRIVACY_SAFE_NUMERIC_FEATURES,
     CATEGORICAL_FEATURES,
+    apply_train_fitted_privacy_safe_features,
+    split_household_events,
 )
-from fairprivacysignal.privacy_transforms import add_privacy_safe_features
 from fairprivacysignal.signal_loss import apply_signal_loss
 
 
@@ -72,20 +72,16 @@ def score_experiment(
     privacy_noise_seed: int = 42,
 ) -> pd.DataFrame:
     df = apply_signal_loss(events, signal_scenario)
+    train, test = split_household_events(df)
 
     if use_privacy_safe_features:
-        df = add_privacy_safe_features(df, seed=privacy_noise_seed)
-
-    household_ids = df["household_id"].drop_duplicates()
-
-    train_households, test_households = train_test_split(
-        household_ids,
-        test_size=0.30,
-        random_state=42,
-    )
-
-    train = df[df["household_id"].isin(train_households)].copy()
-    test = df[df["household_id"].isin(test_households)].copy()
+        train, test = apply_train_fitted_privacy_safe_features(
+            train,
+            test,
+            privacy_safe_feature_options={"seed": privacy_noise_seed},
+        )
+    else:
+        test["aggregate_reference_scope"] = "not_applicable"
 
     features = numeric_features + CATEGORICAL_FEATURES
 
@@ -187,6 +183,11 @@ def summarize_allocation(allocated: pd.DataFrame) -> dict:
         "not_low_signal_allocated_precision": not_low_precision,
         "allocated_low_signal_share": selected["low_signal"].mean(),
         "overall_low_signal_share": allocated["low_signal"].mean(),
+        "aggregate_reference_scope": (
+            allocated["aggregate_reference_scope"].iloc[0]
+            if "aggregate_reference_scope" in allocated
+            else "not_applicable"
+        ),
         "num_allocated": int(selected.shape[0]),
         "num_candidate_events": int(allocated.shape[0]),
     }

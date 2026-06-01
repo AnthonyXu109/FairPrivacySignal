@@ -6,30 +6,30 @@ from fairprivacysignal.visualize_results import ANNOTATION_STYLE, NAME_MAP
 
 
 def test_run_experiments_forwards_privacy_noise_seed(monkeypatch) -> None:
-    observed_seeds = []
-
     monkeypatch.setattr(
         privacy_recovery,
         "apply_signal_loss",
         lambda events, scenario: events,
     )
+    observed_options = []
 
-    def fake_add_privacy_safe_features(events, seed):
-        observed_seeds.append(seed)
-        return events
+    def fake_evaluate_model(
+        df,
+        experiment,
+        numeric_features,
+        fairness_aware=False,
+        privacy_safe_feature_options=None,
+    ):
+        observed_options.append(privacy_safe_feature_options)
+        return {
+            "experiment": experiment,
+            "fairness_aware": fairness_aware,
+        }
 
-    monkeypatch.setattr(
-        privacy_recovery,
-        "add_privacy_safe_features",
-        fake_add_privacy_safe_features,
-    )
     monkeypatch.setattr(
         privacy_recovery,
         "evaluate_model",
-        lambda df, experiment, numeric_features, fairness_aware=False: {
-            "experiment": experiment,
-            "fairness_aware": fairness_aware,
-        },
+        fake_evaluate_model,
     )
 
     results = privacy_recovery.run_experiments(
@@ -37,7 +37,15 @@ def test_run_experiments_forwards_privacy_noise_seed(monkeypatch) -> None:
         privacy_noise_seed=23,
     )
 
-    assert observed_seeds == [23, 23]
+    assert observed_options == [
+        None,
+        None,
+        {"seed": 23},
+        {"seed": 23},
+        None,
+        {"seed": 23},
+        {"seed": 23},
+    ]
     assert results["experiment"].tolist() == [
         "full_signal_raw_baseline",
         "severe_signal_loss_baseline",
@@ -104,13 +112,8 @@ def test_single_seed_visualization_covers_all_experiments(monkeypatch) -> None:
     )
     monkeypatch.setattr(
         privacy_recovery,
-        "add_privacy_safe_features",
-        lambda events, seed: events,
-    )
-    monkeypatch.setattr(
-        privacy_recovery,
         "evaluate_model",
-        lambda df, experiment, numeric_features, fairness_aware=False: {
+        lambda df, experiment, numeric_features, fairness_aware=False, privacy_safe_feature_options=None: {
             "experiment": experiment,
         },
     )

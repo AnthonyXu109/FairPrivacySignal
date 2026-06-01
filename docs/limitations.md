@@ -23,6 +23,11 @@ interpreted as epsilon or as formal privacy accounting.
 The cohort-threshold sensitivity sweep makes fallback coverage visible, but it does
 not establish that any threshold is appropriate for a real deployment.
 
+Aggregate statistics are fitted on training households and mapped onto the holdout
+split. This reduces preprocessing leakage, but the benchmark still uses a simplified
+single household-level split rather than a full temporal or geographic validation
+design.
+
 ## Fairness
 
 Low-signal ranking gaps, allocation gaps, and score-matched calibration metrics are

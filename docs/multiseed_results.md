@@ -6,8 +6,8 @@ This table reports mean ± standard deviation across five synthetic data seeds.
 |:--------------------------------------------|:-------------------|:--------------|:--------------------|:-----------------|
 | Full signal raw baseline                    | 0.925 ± 0.002      | 0.555 ± 0.011 | 0.490 ± 0.014       | 0.095 ± 0.009    |
 | Severe signal loss                          | 0.475 ± 0.002      | 0.504 ± 0.007 | 0.430 ± 0.014       | 0.108 ± 0.018    |
-| Severe loss + privacy-safe aggregates       | 0.475 ± 0.002      | 0.520 ± 0.007 | 0.448 ± 0.015       | 0.106 ± 0.018    |
-| Severe loss + fairness-aware recovery       | 0.475 ± 0.002      | 0.521 ± 0.008 | 0.449 ± 0.017       | 0.104 ± 0.018    |
+| Severe loss + privacy-safe aggregates       | 0.475 ± 0.002      | 0.519 ± 0.006 | 0.445 ± 0.012       | 0.108 ± 0.015    |
+| Severe loss + fairness-aware recovery       | 0.475 ± 0.002      | 0.520 ± 0.007 | 0.449 ± 0.013       | 0.104 ± 0.013    |
 | Policy restricted                           | 0.728 ± 0.007      | 0.526 ± 0.007 | 0.451 ± 0.008       | 0.109 ± 0.010    |
-| Policy restricted + privacy-safe aggregates | 0.728 ± 0.007      | 0.539 ± 0.006 | 0.460 ± 0.007       | 0.115 ± 0.005    |
-| Policy restricted + fairness-aware recovery | 0.728 ± 0.007      | 0.540 ± 0.005 | 0.462 ± 0.004       | 0.113 ± 0.004    |
+| Policy restricted + privacy-safe aggregates | 0.728 ± 0.007      | 0.539 ± 0.006 | 0.460 ± 0.008       | 0.115 ± 0.007    |
+| Policy restricted + fairness-aware recovery | 0.728 ± 0.007      | 0.539 ± 0.004 | 0.459 ± 0.003       | 0.116 ± 0.005    |

@@ -29,6 +29,7 @@ This document summarizes the current and planned FairPrivacySignal experiments.
 |---|---|
 | Behavioral-signal scenario rules | Declare consent, sensitive-cohort, and severe-loss suppression flags in readable JSON |
 | Privacy-exposure proxy weights | Keep the comparison diagnostic explicit and validate that weights sum to 1.0 |
+| Train-fitted aggregate preprocessing | Learn cohort statistics and service-level fallbacks from training households before holdout scoring |
 
 ## Current Diagnostics
 

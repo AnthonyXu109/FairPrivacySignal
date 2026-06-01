@@ -18,6 +18,15 @@ def _signal_loss() -> pd.DataFrame:
 
 
 def _recovery() -> pd.DataFrame:
+    reference_scopes = [
+        (
+            "train_households_only"
+            if experiment
+            in benchmark_validation.EXPECTED_TRAIN_FITTED_RECOVERY_EXPERIMENTS
+            else "not_applicable"
+        )
+        for experiment in benchmark_validation.EXPECTED_RECOVERY_EXPERIMENTS
+    ]
     return pd.DataFrame(
         {
             "experiment": benchmark_validation.EXPECTED_RECOVERY_EXPERIMENTS,
@@ -25,6 +34,7 @@ def _recovery() -> pd.DataFrame:
             "overall_ndcg_at_3": [0.60, 0.50, 0.55, 0.56, 0.52, 0.54, 0.55],
             "low_signal_ndcg_at_3": [0.50] * 7,
             "not_low_signal_ndcg_at_3": [0.60] * 7,
+            "aggregate_reference_scope": reference_scopes,
         }
     )
 
@@ -233,6 +243,17 @@ def test_benchmark_validation_rejects_signal_loss_drift() -> None:
     ] = "FAIL"
 
     with pytest.raises(RuntimeError, match="availability endpoints"):
+        benchmark_validation.raise_for_failed_required_checks(checks)
+
+
+def test_benchmark_validation_rejects_aggregate_reference_scope_drift() -> None:
+    checks = _checks()
+    checks.loc[
+        checks["check"] == "aggregate preprocessing is train-fitted",
+        "status",
+    ] = "FAIL"
+
+    with pytest.raises(RuntimeError, match="aggregate preprocessing"):
         benchmark_validation.raise_for_failed_required_checks(checks)
 
 

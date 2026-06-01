@@ -22,7 +22,6 @@ from fairprivacysignal.privacy_recovery import (
     build_model as build_logistic_model,
     evaluate_model,
 )
-from fairprivacysignal.privacy_transforms import add_privacy_safe_features
 from fairprivacysignal.signal_loss import apply_signal_loss
 
 
@@ -134,11 +133,6 @@ def run_model_sensitivity(
         scenario: apply_signal_loss(events, scenario)
         for scenario in ["full_signal", "severe_signal_loss", "policy_restricted"]
     }
-    privacy_safe_frames = {
-        scenario: add_privacy_safe_features(frame, seed=seed)
-        for scenario, frame in scenario_frames.items()
-        if scenario != "full_signal"
-    }
     rows = []
 
     for model_name, model_metadata in MODELS.items():
@@ -146,16 +140,16 @@ def run_model_sensitivity(
 
         for experiment, experiment_metadata in EXPERIMENTS.items():
             scenario = experiment_metadata["scenario"]
-            frame = (
-                privacy_safe_frames[scenario]
-                if experiment_metadata["use_privacy_safe_features"]
-                else scenario_frames[scenario]
-            )
             metrics = evaluate_model(
-                frame,
+                scenario_frames[scenario],
                 experiment,
                 experiment_metadata["numeric_features"],
                 model_builder=builder,
+                privacy_safe_feature_options=(
+                    {"seed": seed}
+                    if experiment_metadata["use_privacy_safe_features"]
+                    else None
+                ),
             )
             rows.append(
                 {
@@ -169,6 +163,9 @@ def run_model_sensitivity(
                     "low_signal_ndcg_at_3": metrics["low_signal_ndcg_at_3"],
                     "ndcg_gap_not_low_minus_low": metrics[
                         "ndcg_gap_not_low_minus_low"
+                    ],
+                    "aggregate_reference_scope": metrics[
+                        "aggregate_reference_scope"
                     ],
                 }
             )

@@ -50,6 +50,14 @@ FairPrivacySignal therefore prioritizes:
 - focused regression tests for experiment orchestration
 - explicit limitations and non-confidential synthetic-data framing
 
+## Holdout Evaluation Hygiene
+
+The [scikit-learn common pitfalls guide](https://scikit-learn.org/stable/common_pitfalls.html#data-leakage)
+recommends splitting train and test data before learning preprocessing statistics,
+then applying the learned transformation to both subsets. FairPrivacySignal follows
+that pattern for privacy-safe aggregates: cohort statistics and service-level
+fallbacks are fitted from training households before holdout scoring.
+
 ## Public-Reference Anchors
 
 The benchmark also uses a small tracked snapshot from the

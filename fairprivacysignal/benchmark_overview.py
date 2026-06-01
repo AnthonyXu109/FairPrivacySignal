@@ -263,7 +263,16 @@ def _plot_low_signal_gap(ax: plt.Axes, multiseed: pd.DataFrame) -> None:
         ]
         ax.plot(values, [y] * len(values), color=COLORS["grid"], linewidth=3, zorder=1)
 
-        for value, (label, color) in zip(values, series):
+        label_offsets = (
+            [(-16, -15), (0, -28), (16, -15)]
+            if y == 0
+            else [(-16, -15), (0, 12), (16, -15)]
+        )
+        for value, (label, color), label_offset in zip(
+            values,
+            series,
+            label_offsets,
+        ):
             ax.scatter(
                 value,
                 y,
@@ -274,10 +283,11 @@ def _plot_low_signal_gap(ax: plt.Axes, multiseed: pd.DataFrame) -> None:
                 zorder=3,
                 label=label if y == 0 else None,
             )
-            ax.text(
-                value,
-                y - 0.16,
+            ax.annotate(
                 f"{value:.3f}",
+                (value, y),
+                xytext=label_offset,
+                textcoords="offset points",
                 ha="center",
                 color=COLORS["ink"],
                 fontsize=8.5,

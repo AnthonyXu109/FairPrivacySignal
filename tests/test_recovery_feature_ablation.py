@@ -32,7 +32,7 @@ def _raw_results() -> pd.DataFrame:
 
 def test_run_feature_ablation_uses_all_feature_groups(monkeypatch) -> None:
     observed_features = []
-    observed_seeds = []
+    observed_options = []
 
     monkeypatch.setattr(
         recovery_feature_ablation,
@@ -40,18 +40,14 @@ def test_run_feature_ablation_uses_all_feature_groups(monkeypatch) -> None:
         lambda events, scenario: events.assign(scenario=scenario),
     )
 
-    def fake_add_privacy_safe_features(events, seed):
-        observed_seeds.append(seed)
-        return events.assign(privacy_safe=True)
-
-    monkeypatch.setattr(
-        recovery_feature_ablation,
-        "add_privacy_safe_features",
-        fake_add_privacy_safe_features,
-    )
-
-    def fake_evaluate_model(frame, experiment, numeric_features):
+    def fake_evaluate_model(
+        frame,
+        experiment,
+        numeric_features,
+        privacy_safe_feature_options=None,
+    ):
         observed_features.append(numeric_features)
+        observed_options.append(privacy_safe_feature_options)
         return {
             "overall_ndcg_at_3": 0.55,
             "low_signal_ndcg_at_3": 0.45,
@@ -70,11 +66,15 @@ def test_run_feature_ablation_uses_all_feature_groups(monkeypatch) -> None:
     )
 
     assert len(results) == 8
-    assert observed_seeds == [42, 42]
     assert observed_features == [
         metadata["numeric_features"]
         for _ in recovery_feature_ablation.SCENARIOS
         for metadata in recovery_feature_ablation.ABLATIONS.values()
+    ]
+    assert observed_options == [
+        option
+        for _ in recovery_feature_ablation.SCENARIOS
+        for option in [None, {"seed": 42}, {"seed": 42}, {"seed": 42}]
     ]
 
 
