@@ -16,6 +16,10 @@ The privacy exposure score is an interpretable comparison proxy. DP-style noise 
 k-thresholded cohort aggregates illustrate a design pattern; they do not provide a
 production privacy guarantee or a complete privacy accounting framework.
 
+The aggregate-noise sensitivity sweep makes the simplified noise mechanism more
+inspectable, but it remains a stress diagnostic. Its noise scale should not be
+interpreted as epsilon or as formal privacy accounting.
+
 ## Fairness
 
 Low-signal ranking gaps, allocation gaps, and score-matched calibration metrics are
