@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Reproducibility guide
+    url: https://github.com/AnthonyXu109/FairPrivacySignal/blob/main/docs/reproducibility.md
+    about: Review the setup and verification instructions before reporting a problem.
+  - name: Benchmark design
+    url: https://github.com/AnthonyXu109/FairPrivacySignal/blob/main/docs/benchmark_design.md
+    about: Review the benchmark scope, assumptions, and evaluation design.
