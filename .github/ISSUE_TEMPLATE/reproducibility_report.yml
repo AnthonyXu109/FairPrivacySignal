@@ -1,0 +1,48 @@
+name: Reproducibility report
+description: Report a problem reproducing a benchmark result or validation check.
+title: "[Reproducibility] "
+labels:
+  - reproducibility
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve the benchmark. Please remove personal paths, credentials, and unrelated system details before submitting.
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include the operating system, Python version, and any relevant package or shell details.
+      placeholder: |
+        Operating system:
+        Python version:
+        Installation notes:
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command
+      description: Provide the exact command that was run.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: Describe the result or validation outcome you expected.
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed behavior
+      description: Describe what happened instead and include a small, relevant excerpt of any error output.
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional context
+      description: Add the smallest amount of extra context needed to reproduce the issue.

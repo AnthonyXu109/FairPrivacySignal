@@ -81,6 +81,13 @@ sensitivity checkpoints, and evidence links, see the generated
 The selected synthetic context priors are compared with a tracked public-reference
 snapshot in [`docs/public_reference_calibration.md`](docs/public_reference_calibration.md).
 
+## Contributing
+
+Focused contributions that improve reproducibility, validation, sensitivity
+analysis, documentation, or figure clarity are welcome. See
+[`CONTRIBUTING.md`](CONTRIBUTING.md) for the verification workflow, data
+boundaries, and guidance for proposing benchmark extensions.
+
 ## System architecture
 
 FairPrivacySignal is organized as a reproducible benchmark pipeline: synthetic public-service data generation, privacy-driven signal-loss simulation, policy and consent-based feature suppression, privacy-safe aggregate recovery, ranking evaluation, and fairness diagnostics.

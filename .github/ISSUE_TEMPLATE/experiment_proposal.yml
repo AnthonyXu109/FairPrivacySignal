@@ -1,0 +1,45 @@
+name: Experiment proposal
+description: Propose a focused synthetic benchmark extension or sensitivity analysis.
+title: "[Experiment] "
+labels:
+  - experiment
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Proposals should remain synthetic, public, and non-confidential. Please do not include personal data or organization-specific implementation details.
+  - type: textarea
+    id: question
+    attributes:
+      label: Methodological question
+      description: What question would this experiment make easier to answer?
+    validations:
+      required: true
+  - type: textarea
+    id: scenario
+    attributes:
+      label: Synthetic scenario or parameter sweep
+      description: Describe the scenario, parameters, comparison groups, and expected scale.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Expected evidence
+      description: Which metrics, tables, figures, or validation checks should the experiment produce?
+    validations:
+      required: true
+  - type: textarea
+    id: reproducibility
+    attributes:
+      label: Reproducibility plan
+      description: Explain how another contributor could rerun the experiment on an ordinary laptop.
+    validations:
+      required: true
+  - type: textarea
+    id: limitations
+    attributes:
+      label: Limitations
+      description: Which claims would remain unsupported even if the proposed experiment succeeds?
+    validations:
+      required: true
