@@ -102,6 +102,10 @@ FairPrivacySignal currently includes:
     Learns cohort statistics and service-level fallbacks from training households
     before applying the same mapping to holdout events.
 
+22. **Community-held-out robustness diagnostic**
+    Compares the primary household-level holdout with a stricter paired synthetic
+    split that keeps training and evaluation communities disjoint.
+
 ## 4. Current Benchmark Results
 
 The current benchmark results show:
@@ -121,6 +125,9 @@ The current benchmark results show:
 - A paired underserved-quartile profile showed that positive pooled recovery can
   coexist with uneven low-signal effects across synthetic community contexts,
   including negative quartile-specific deltas.
+- A paired community-held-out diagnostic showed that aggregate recovery remained
+  visible when training and evaluation communities were disjoint in a stricter
+  synthetic stress test.
 - Capacity-constrained allocation exposed a measurable tradeoff between allocated relevance and low-signal representation.
 - Low-signal fairness gaps are explicitly tracked as a diagnostic to prevent utility recovery from hiding unequal effects on low-signal or underserved populations.
 

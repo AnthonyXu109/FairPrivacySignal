@@ -70,6 +70,14 @@ EXPECTED_UNDERSERVED_QUARTILES = {
     "q3",
     "q4_higher",
 }
+EXPECTED_COMMUNITY_HOLDOUT_SPLITS = {
+    "household_holdout",
+    "community_holdout",
+}
+EXPECTED_COMMUNITY_HOLDOUT_VARIANTS = {
+    "signal_loss_baseline",
+    "privacy_safe_aggregates",
+}
 
 
 def _check(
@@ -107,6 +115,7 @@ def build_validation_checks(
     recovery_feature_ablation_raw: pd.DataFrame,
     model_sensitivity_raw: pd.DataFrame,
     underserved_recovery_profile_raw: pd.DataFrame,
+    community_holdout_robustness_raw: pd.DataFrame,
     multiseed_recovery_raw: pd.DataFrame,
     multiseed_capacity_raw: pd.DataFrame,
 ) -> pd.DataFrame:
@@ -441,6 +450,58 @@ def build_validation_checks(
         )
     )
 
+    community_holdout_seed_counts = community_holdout_robustness_raw.groupby(
+        ["scenario", "split_strategy", "variant"]
+    )["seed"].nunique()
+    community_holdout_metrics = community_holdout_robustness_raw[
+        [
+            "overall_auc",
+            "overall_ndcg_at_3",
+            "low_signal_ndcg_at_3",
+            "not_low_signal_ndcg_at_3",
+            "fallback_event_share",
+            "unseen_cohort_share",
+            "heldout_community_share",
+        ]
+    ]
+    community_holdout_rows = community_holdout_robustness_raw[
+        community_holdout_robustness_raw["split_strategy"] == "community_holdout"
+    ]
+    aggregate_community_holdout_rows = community_holdout_robustness_raw[
+        community_holdout_robustness_raw["variant"]
+        == "privacy_safe_aggregates"
+    ]
+    checks.append(
+        _check(
+            "community-held-out robustness coverage is complete",
+            "reproducibility",
+            set(community_holdout_robustness_raw["scenario"])
+            == EXPECTED_AGGREGATE_NOISE_SCENARIOS
+            and set(community_holdout_robustness_raw["split_strategy"])
+            == EXPECTED_COMMUNITY_HOLDOUT_SPLITS
+            and set(community_holdout_robustness_raw["variant"])
+            == EXPECTED_COMMUNITY_HOLDOUT_VARIANTS
+            and set(community_holdout_robustness_raw["seed"]) == EXPECTED_SEEDS
+            and (community_holdout_seed_counts == len(EXPECTED_SEEDS)).all()
+            and _columns_are_bounded(
+                community_holdout_metrics,
+                list(community_holdout_metrics.columns),
+            )
+            and np.isclose(
+                community_holdout_rows["heldout_community_share"],
+                1.0,
+            ).all()
+            and (
+                aggregate_community_holdout_rows["aggregate_reference_scope"]
+                == "train_households_only"
+            ).all()
+            and (community_holdout_robustness_raw["num_test_events"] > 0).all()
+            and (community_holdout_robustness_raw["num_test_households"] > 0).all()
+            and (community_holdout_robustness_raw["num_test_communities"] > 0).all(),
+            "two scenarios cover two split strategies, two paired variants, and five seeds; community holdout keeps evaluation communities disjoint",
+        )
+    )
+
     recovery_seed_counts = multiseed_recovery_raw.groupby("experiment")["seed"].nunique()
     checks.append(
         _check(
@@ -548,6 +609,9 @@ def main() -> None:
         ),
         underserved_recovery_profile_raw=pd.read_csv(
             tables_dir / "underserved_recovery_profile_raw.csv"
+        ),
+        community_holdout_robustness_raw=pd.read_csv(
+            tables_dir / "community_holdout_robustness_raw.csv"
         ),
         multiseed_recovery_raw=pd.read_csv(
             tables_dir / "multiseed_privacy_recovery_raw.csv"

@@ -103,6 +103,7 @@ def build_benchmark_card(
     recovery_feature_ablation_raw: pd.DataFrame,
     model_sensitivity_raw: pd.DataFrame,
     underserved_recovery_profile_raw: pd.DataFrame,
+    community_holdout_robustness_raw: pd.DataFrame,
     validation_checks: pd.DataFrame,
 ) -> str:
     required_checks = validation_checks[validation_checks["required"].astype(bool)]
@@ -180,6 +181,15 @@ def build_benchmark_card(
             ),
         },
         {
+            "Diagnostic": "Community-held-out robustness",
+            "Coverage": (
+                f"{community_holdout_robustness_raw['scenario'].nunique()} scenarios; "
+                f"{community_holdout_robustness_raw['split_strategy'].nunique()} "
+                "split strategies; "
+                f"{community_holdout_robustness_raw['seed'].nunique()} paired seeds"
+            ),
+        },
+        {
             "Diagnostic": "Aggregate preprocessing scope",
             "Coverage": "training households only before holdout scoring",
         },
@@ -229,6 +239,7 @@ def build_benchmark_card(
         "- [Recovery feature ablation](recovery_feature_ablation.md)\n"
         "- [Model sensitivity diagnostic](model_sensitivity.md)\n"
         "- [Underserved quartile recovery profile](underserved_recovery_profile.md)\n"
+        "- [Community-held-out robustness diagnostic](community_holdout_robustness.md)\n"
         "- [Capacity-constrained allocation](capacity_allocation.md)\n"
         "- [Fairness metrics](fairness_metrics.md)\n"
         "- [Limitations](limitations.md)\n"
@@ -279,6 +290,9 @@ def main() -> None:
         ),
         underserved_recovery_profile_raw=pd.read_csv(
             tables_dir / "underserved_recovery_profile_raw.csv"
+        ),
+        community_holdout_robustness_raw=pd.read_csv(
+            tables_dir / "community_holdout_robustness_raw.csv"
         ),
         validation_checks=pd.read_csv(
             tables_dir / "benchmark_validation_checks.csv"

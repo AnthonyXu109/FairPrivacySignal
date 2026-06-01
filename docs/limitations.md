@@ -25,8 +25,10 @@ not establish that any threshold is appropriate for a real deployment.
 
 Aggregate statistics are fitted on training households and mapped onto the holdout
 split. This reduces preprocessing leakage, but the benchmark still uses a simplified
-single household-level split rather than a full temporal or geographic validation
-design.
+evaluation design rather than a full temporal or geographic validation study.
+The community-held-out robustness diagnostic adds a stricter synthetic split with
+disjoint training and evaluation communities, but it does not establish transfer
+to a real place, time period, or service-delivery setting.
 
 ## Fairness
 
@@ -49,3 +51,5 @@ ranking-specific learning objective.
 The underserved-quartile recovery profile exposes heterogeneity across synthetic
 community contexts. Its quartiles are benchmark constructs, not real-world
 demographic groups, and positive pooled recovery does not establish uniform benefit.
+The community-held-out robustness diagnostic tests generated context separation,
+not real-world geographic generalization.

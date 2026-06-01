@@ -186,6 +186,40 @@ def _underserved_recovery_profile_raw() -> pd.DataFrame:
     )
 
 
+def _community_holdout_robustness_raw() -> pd.DataFrame:
+    return pd.DataFrame(
+        [
+            {
+                "scenario": scenario,
+                "split_strategy": split_strategy,
+                "variant": variant,
+                "seed": seed,
+                "overall_auc": 0.60,
+                "overall_ndcg_at_3": 0.53,
+                "low_signal_ndcg_at_3": 0.44,
+                "not_low_signal_ndcg_at_3": 0.55,
+                "fallback_event_share": 0.05,
+                "unseen_cohort_share": 0.0,
+                "heldout_community_share": (
+                    1.0 if split_strategy == "community_holdout" else 0.0
+                ),
+                "num_test_events": 100,
+                "num_test_households": 20,
+                "num_test_communities": 4,
+                "aggregate_reference_scope": (
+                    "train_households_only"
+                    if variant == "privacy_safe_aggregates"
+                    else "not_applicable"
+                ),
+            }
+            for scenario in benchmark_validation.EXPECTED_AGGREGATE_NOISE_SCENARIOS
+            for split_strategy in benchmark_validation.EXPECTED_COMMUNITY_HOLDOUT_SPLITS
+            for variant in benchmark_validation.EXPECTED_COMMUNITY_HOLDOUT_VARIANTS
+            for seed in benchmark_validation.EXPECTED_SEEDS
+        ]
+    )
+
+
 def _multiseed_recovery_raw() -> pd.DataFrame:
     return pd.DataFrame(
         [
@@ -222,6 +256,7 @@ def _checks() -> pd.DataFrame:
         recovery_feature_ablation_raw=_recovery_feature_ablation_raw(),
         model_sensitivity_raw=_model_sensitivity_raw(),
         underserved_recovery_profile_raw=_underserved_recovery_profile_raw(),
+        community_holdout_robustness_raw=_community_holdout_robustness_raw(),
         multiseed_recovery_raw=_multiseed_recovery_raw(),
         multiseed_capacity_raw=_multiseed_capacity_raw(),
     )
@@ -254,6 +289,17 @@ def test_benchmark_validation_rejects_aggregate_reference_scope_drift() -> None:
     ] = "FAIL"
 
     with pytest.raises(RuntimeError, match="aggregate preprocessing"):
+        benchmark_validation.raise_for_failed_required_checks(checks)
+
+
+def test_benchmark_validation_rejects_community_holdout_drift() -> None:
+    checks = _checks()
+    checks.loc[
+        checks["check"] == "community-held-out robustness coverage is complete",
+        "status",
+    ] = "FAIL"
+
+    with pytest.raises(RuntimeError, match="community-held-out"):
         benchmark_validation.raise_for_failed_required_checks(checks)
 
 

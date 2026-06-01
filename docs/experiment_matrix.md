@@ -48,6 +48,7 @@ This document summarizes the current and planned FairPrivacySignal experiments.
 | Recovery feature ablation | Compare no substitutes, engagement aggregates, cohort-context aggregates, and their combination with paired multi-seed deltas |
 | Model sensitivity diagnostic | Compare the interpretable logistic primary baseline with lightweight histogram gradient boosting across paired scenarios and seeds |
 | Underserved quartile recovery profile | Check whether pooled recovery hides quartile-specific regressions across synthetic community contexts |
+| Community-held-out robustness diagnostic | Compare household-level holdout with a stricter paired split that keeps training and evaluation communities disjoint |
 
 ## Planned Experiments
 

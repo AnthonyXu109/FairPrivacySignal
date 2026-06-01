@@ -33,6 +33,7 @@ This command regenerates:
 - paired multi-seed recovery feature-ablation metrics
 - paired model-sensitivity metrics for logistic and histogram gradient boosting
 - paired underserved-quartile recovery metrics across synthetic community contexts
+- paired community-held-out robustness metrics across disjoint synthetic contexts
 - benchmark overview figure
 - architecture diagram
 - benchmark validation report
@@ -62,6 +63,7 @@ Signal-suppression scenarios and privacy-exposure weights are loaded from:
     docs/assets/recovery_feature_ablation.png
     docs/assets/model_sensitivity.png
     docs/assets/underserved_recovery_profile.png
+    docs/assets/community_holdout_robustness.png
     docs/multiseed_results.md
     docs/model_sensitivity.md
     docs/validation_report.md
@@ -86,6 +88,9 @@ Signal-suppression scenarios and privacy-exposure weights are loaded from:
     outputs/tables/underserved_recovery_profile_raw.csv
     outputs/tables/underserved_recovery_profile_paired.csv
     outputs/tables/underserved_recovery_profile_summary.csv
+    outputs/tables/community_holdout_robustness_raw.csv
+    outputs/tables/community_holdout_robustness_paired.csv
+    outputs/tables/community_holdout_robustness_summary.csv
     outputs/tables/benchmark_validation_checks.csv
 
 ## 4. Run the regression tests
