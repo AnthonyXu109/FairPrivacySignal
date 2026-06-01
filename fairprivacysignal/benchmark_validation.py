@@ -54,6 +54,16 @@ EXPECTED_MODEL_SENSITIVITY_EXPERIMENTS = {
     "policy_restricted_with_privacy_safe_aggregates",
 }
 EXPECTED_MODEL_SENSITIVITY_SEEDS = {7, 42, 101}
+EXPECTED_UNDERSERVED_PROFILE_VARIANTS = {
+    "signal_loss_baseline",
+    "privacy_safe_aggregates",
+}
+EXPECTED_UNDERSERVED_QUARTILES = {
+    "q1_lower",
+    "q2",
+    "q3",
+    "q4_higher",
+}
 
 
 def _check(
@@ -90,6 +100,7 @@ def build_validation_checks(
     cohort_threshold_sensitivity: pd.DataFrame,
     recovery_feature_ablation_raw: pd.DataFrame,
     model_sensitivity_raw: pd.DataFrame,
+    underserved_recovery_profile_raw: pd.DataFrame,
     multiseed_recovery_raw: pd.DataFrame,
     multiseed_capacity_raw: pd.DataFrame,
 ) -> pd.DataFrame:
@@ -372,6 +383,39 @@ def build_validation_checks(
         )
     )
 
+    profile_seed_counts = underserved_recovery_profile_raw.groupby(
+        ["scenario", "variant", "underserved_quartile"]
+    )["seed"].nunique()
+    profile_metrics = underserved_recovery_profile_raw[
+        [
+            "overall_ndcg_at_3",
+            "low_signal_ndcg_at_3",
+            "low_signal_share",
+        ]
+    ]
+    checks.append(
+        _check(
+            "underserved-quartile recovery coverage is complete",
+            "fairness",
+            set(underserved_recovery_profile_raw["scenario"])
+            == EXPECTED_AGGREGATE_NOISE_SCENARIOS
+            and set(underserved_recovery_profile_raw["variant"])
+            == EXPECTED_UNDERSERVED_PROFILE_VARIANTS
+            and set(underserved_recovery_profile_raw["underserved_quartile"])
+            == EXPECTED_UNDERSERVED_QUARTILES
+            and set(underserved_recovery_profile_raw["seed"]) == EXPECTED_SEEDS
+            and (profile_seed_counts == len(EXPECTED_SEEDS)).all()
+            and _columns_are_bounded(
+                profile_metrics,
+                list(profile_metrics.columns),
+            )
+            and (underserved_recovery_profile_raw["num_test_events"] > 0).all()
+            and (underserved_recovery_profile_raw["num_low_signal_events"] > 0).all()
+            and (underserved_recovery_profile_raw["num_communities"] > 0).all(),
+            "two scenarios cover two paired variants, four quartiles, and five synthetic-data seeds",
+        )
+    )
+
     recovery_seed_counts = multiseed_recovery_raw.groupby("experiment")["seed"].nunique()
     checks.append(
         _check(
@@ -476,6 +520,9 @@ def main() -> None:
         ),
         model_sensitivity_raw=pd.read_csv(
             tables_dir / "model_sensitivity_raw.csv"
+        ),
+        underserved_recovery_profile_raw=pd.read_csv(
+            tables_dir / "underserved_recovery_profile_raw.csv"
         ),
         multiseed_recovery_raw=pd.read_csv(
             tables_dir / "multiseed_privacy_recovery_raw.csv"

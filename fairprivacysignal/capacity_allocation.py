@@ -69,11 +69,12 @@ def score_experiment(
     signal_scenario: str,
     use_privacy_safe_features: bool,
     numeric_features: List[str],
+    privacy_noise_seed: int = 42,
 ) -> pd.DataFrame:
     df = apply_signal_loss(events, signal_scenario)
 
     if use_privacy_safe_features:
-        df = add_privacy_safe_features(df)
+        df = add_privacy_safe_features(df, seed=privacy_noise_seed)
 
     household_ids = df["household_id"].drop_duplicates()
 

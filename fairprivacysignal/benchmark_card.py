@@ -102,6 +102,7 @@ def build_benchmark_card(
     threshold_sensitivity: pd.DataFrame,
     recovery_feature_ablation_raw: pd.DataFrame,
     model_sensitivity_raw: pd.DataFrame,
+    underserved_recovery_profile_raw: pd.DataFrame,
     validation_checks: pd.DataFrame,
 ) -> str:
     required_checks = validation_checks[validation_checks["required"].astype(bool)]
@@ -170,6 +171,15 @@ def build_benchmark_card(
             ),
         },
         {
+            "Diagnostic": "Underserved quartile recovery",
+            "Coverage": (
+                f"{underserved_recovery_profile_raw['scenario'].nunique()} scenarios; "
+                f"{underserved_recovery_profile_raw['underserved_quartile'].nunique()} "
+                "community-context quartiles; "
+                f"{underserved_recovery_profile_raw['seed'].nunique()} paired seeds"
+            ),
+        },
+        {
             "Diagnostic": "Validation gate",
             "Coverage": (
                 f"{len(required_checks)} required checks; "
@@ -214,6 +224,7 @@ def build_benchmark_card(
         "- [Cohort-threshold sensitivity](cohort_threshold_sensitivity.md)\n"
         "- [Recovery feature ablation](recovery_feature_ablation.md)\n"
         "- [Model sensitivity diagnostic](model_sensitivity.md)\n"
+        "- [Underserved quartile recovery profile](underserved_recovery_profile.md)\n"
         "- [Capacity-constrained allocation](capacity_allocation.md)\n"
         "- [Fairness metrics](fairness_metrics.md)\n"
         "- [Limitations](limitations.md)\n"
@@ -261,6 +272,9 @@ def main() -> None:
         ),
         model_sensitivity_raw=pd.read_csv(
             tables_dir / "model_sensitivity_raw.csv"
+        ),
+        underserved_recovery_profile_raw=pd.read_csv(
+            tables_dir / "underserved_recovery_profile_raw.csv"
         ),
         validation_checks=pd.read_csv(
             tables_dir / "benchmark_validation_checks.csv"

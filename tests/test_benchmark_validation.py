@@ -153,6 +153,29 @@ def _model_sensitivity_raw() -> pd.DataFrame:
     )
 
 
+def _underserved_recovery_profile_raw() -> pd.DataFrame:
+    return pd.DataFrame(
+        [
+            {
+                "scenario": scenario,
+                "variant": variant,
+                "underserved_quartile": quartile,
+                "seed": seed,
+                "overall_ndcg_at_3": 0.53,
+                "low_signal_ndcg_at_3": 0.44,
+                "low_signal_share": 0.35,
+                "num_test_events": 100,
+                "num_low_signal_events": 35,
+                "num_communities": 30,
+            }
+            for scenario in benchmark_validation.EXPECTED_AGGREGATE_NOISE_SCENARIOS
+            for variant in benchmark_validation.EXPECTED_UNDERSERVED_PROFILE_VARIANTS
+            for quartile in benchmark_validation.EXPECTED_UNDERSERVED_QUARTILES
+            for seed in benchmark_validation.EXPECTED_SEEDS
+        ]
+    )
+
+
 def _multiseed_recovery_raw() -> pd.DataFrame:
     return pd.DataFrame(
         [
@@ -188,6 +211,7 @@ def _checks() -> pd.DataFrame:
         cohort_threshold_sensitivity=_cohort_threshold_sensitivity(),
         recovery_feature_ablation_raw=_recovery_feature_ablation_raw(),
         model_sensitivity_raw=_model_sensitivity_raw(),
+        underserved_recovery_profile_raw=_underserved_recovery_profile_raw(),
         multiseed_recovery_raw=_multiseed_recovery_raw(),
         multiseed_capacity_raw=_multiseed_capacity_raw(),
     )

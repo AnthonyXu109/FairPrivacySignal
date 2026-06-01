@@ -94,6 +94,10 @@ FairPrivacySignal currently includes:
     Compares the interpretable logistic primary baseline with lightweight histogram
     gradient boosting across paired signal-loss and recovery scenarios.
 
+20. **Underserved quartile recovery profile**
+    Groups distinct synthetic communities by underserved score and reports paired
+    aggregate-minus-baseline recovery across five synthetic draws.
+
 ## 4. Current Benchmark Results
 
 The current benchmark results show:
@@ -109,6 +113,9 @@ The current benchmark results show:
 - A lightweight model comparison showed that aggregate recovery is not
   model-invariant: it is clear for the logistic primary baseline but smaller or
   absent for histogram gradient boosting under the current synthetic configuration.
+- A paired underserved-quartile profile showed that positive pooled recovery can
+  coexist with uneven low-signal effects across synthetic community contexts,
+  including negative quartile-specific deltas.
 - Capacity-constrained allocation exposed a measurable tradeoff between allocated relevance and low-signal representation.
 - Low-signal fairness gaps are explicitly tracked as a diagnostic to prevent utility recovery from hiding unequal effects on low-signal or underserved populations.
 
