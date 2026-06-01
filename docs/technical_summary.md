@@ -86,6 +86,10 @@ FairPrivacySignal currently includes:
     Summarizes experimental scale, coverage, key results, sensitivity checkpoints,
     validation status, and evidence links from auditable pipeline outputs.
 
+18. **Recovery feature ablation**
+    Separates engagement aggregates from cohort-context aggregates and reports
+    paired multi-seed recovery deltas against no-aggregate baselines.
+
 ## 4. Current Benchmark Results
 
 The current benchmark results show:
@@ -95,6 +99,9 @@ The current benchmark results show:
 - Privacy-safe aggregate features partially recovered utility under severe signal loss.
 - A hybrid policy-restricted setting using available policy-permitted signals plus privacy-safe aggregate features improved ranking utility over the policy-restricted baseline.
 - Fairness-aware recovery variants produced modest low-signal gap improvements under the current synthetic configuration, without eliminating the gap.
+- A paired feature ablation showed that the engagement aggregate provides most of
+  the observed recovery in the current synthetic configuration, while combined
+  cohort-context features add a modest increment under severe signal loss.
 - Capacity-constrained allocation exposed a measurable tradeoff between allocated relevance and low-signal representation.
 - Low-signal fairness gaps are explicitly tracked as a diagnostic to prevent utility recovery from hiding unequal effects on low-signal or underserved populations.
 
