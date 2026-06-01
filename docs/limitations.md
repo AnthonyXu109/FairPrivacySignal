@@ -20,6 +20,9 @@ The aggregate-noise sensitivity sweep makes the simplified noise mechanism more
 inspectable, but it remains a stress diagnostic. Its noise scale should not be
 interpreted as epsilon or as formal privacy accounting.
 
+The cohort-threshold sensitivity sweep makes fallback coverage visible, but it does
+not establish that any threshold is appropriate for a real deployment.
+
 ## Fairness
 
 Low-signal ranking gaps, allocation gaps, and score-matched calibration metrics are

@@ -35,6 +35,7 @@ EXPECTED_AGGREGATE_NOISE_SCENARIOS = {
 }
 EXPECTED_AGGREGATE_NOISE_SCALES = {0.0, 0.5, 1.0, 2.0, 4.0}
 EXPECTED_AGGREGATE_NOISE_SEEDS = {7, 42, 101}
+EXPECTED_COHORT_THRESHOLDS = {25, 50, 100, 200, 400, 800}
 
 
 def _check(
@@ -68,6 +69,7 @@ def build_validation_checks(
     score_calibration: pd.DataFrame,
     public_reference: pd.DataFrame,
     aggregate_noise_sensitivity_raw: pd.DataFrame,
+    cohort_threshold_sensitivity: pd.DataFrame,
     multiseed_recovery_raw: pd.DataFrame,
     multiseed_capacity_raw: pd.DataFrame,
 ) -> pd.DataFrame:
@@ -257,6 +259,40 @@ def build_validation_checks(
         )
     )
 
+    threshold_metrics = cohort_threshold_sensitivity[
+        [
+            "suppressed_event_share",
+            "suppressed_unique_cohort_share",
+            "baseline_overall_ndcg_at_3",
+            "aggregate_overall_ndcg_at_3",
+            "baseline_low_signal_ndcg_at_3",
+            "aggregate_low_signal_ndcg_at_3",
+        ]
+    ]
+    threshold_coverage = cohort_threshold_sensitivity.groupby("scenario")[
+        "min_cohort_size"
+    ].apply(set)
+    threshold_monotonicity = (
+        cohort_threshold_sensitivity.sort_values("min_cohort_size")
+        .groupby("scenario")["suppressed_event_share"]
+        .apply(lambda values: values.is_monotonic_increasing)
+    )
+    checks.append(
+        _check(
+            "cohort-threshold sensitivity coverage is complete",
+            "calibration",
+            set(cohort_threshold_sensitivity["scenario"])
+            == EXPECTED_AGGREGATE_NOISE_SCENARIOS
+            and (threshold_coverage == EXPECTED_COHORT_THRESHOLDS).all()
+            and threshold_monotonicity.all()
+            and _columns_are_bounded(
+                threshold_metrics,
+                list(threshold_metrics.columns),
+            ),
+            "two scenarios cover six k-thresholds with monotonic fallback coverage",
+        )
+    )
+
     recovery_seed_counts = multiseed_recovery_raw.groupby("experiment")["seed"].nunique()
     checks.append(
         _check(
@@ -352,6 +388,9 @@ def main() -> None:
         ),
         aggregate_noise_sensitivity_raw=pd.read_csv(
             tables_dir / "aggregate_noise_sensitivity_raw.csv"
+        ),
+        cohort_threshold_sensitivity=pd.read_csv(
+            tables_dir / "cohort_threshold_sensitivity.csv"
         ),
         multiseed_recovery_raw=pd.read_csv(
             tables_dir / "multiseed_privacy_recovery_raw.csv"

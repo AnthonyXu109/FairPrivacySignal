@@ -144,7 +144,15 @@ population and makes the default noise setting auditable.
 The sweep is not a formal privacy-budget analysis. See
 [`docs/aggregate_noise_sensitivity.md`](aggregate_noise_sensitivity.md).
 
-### 7.2 Fairness-Aware Recovery Variant
+### 7.2 Cohort-Threshold Sensitivity
+
+The benchmark also sweeps the minimum cohort size required before a cohort
+aggregate can be used. More restrictive thresholds route more events to broad
+service-level fallback signals. The diagnostic reports fallback coverage alongside
+overall and low-signal utility recovery. See
+[`docs/cohort_threshold_sensitivity.md`](cohort_threshold_sensitivity.md).
+
+### 7.3 Fairness-Aware Recovery Variant
 
 The fairness-aware variant trains a low-signal-specific model after privacy-safe aggregate recovery. Relevant low-signal examples receive additional training weight, and the low-signal-specific predictions are blended with predictions from the global model.
 
@@ -262,8 +270,8 @@ See [`docs/capacity_allocation.md`](capacity_allocation.md) for details.
 The one-command pipeline ends with machine-checked methodological invariants. These
 checks cover signal-loss scenario completeness, privacy-exposure monotonicity,
 bounded metrics, valid allocation counts, score-matched calibration coverage,
-documented public-reference targets, aggregate-noise sensitivity coverage, and
-multi-seed completeness.
+documented public-reference targets, aggregate-noise sensitivity coverage,
+cohort-threshold sensitivity coverage, and multi-seed completeness.
 
 Required checks fail the pipeline when an invariant drifts. Informational checks
 record current result behavior without blocking future experimentation. The current

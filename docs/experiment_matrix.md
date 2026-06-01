@@ -43,6 +43,7 @@ This document summarizes the current and planned FairPrivacySignal experiments.
 | Score-matched subgroup calibration | Compare observed relevance for low-signal and not-low-signal events within shared predicted-score bins |
 | Public-reference calibration | Compare selected synthetic community priors with tracked Census QuickFacts anchors without automatic fitting |
 | Aggregate-noise sensitivity | Repeat privacy-safe recovery across stress scales and noise realizations while holding the synthetic dataset fixed |
+| Cohort-threshold sensitivity | Sweep the minimum cohort size and measure fallback coverage plus utility recovery |
 
 ## Planned Experiments
 

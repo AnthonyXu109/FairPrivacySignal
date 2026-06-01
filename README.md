@@ -19,6 +19,7 @@ The same technical pattern can apply to public agencies, healthcare outreach, no
 - Cohort aggregation and k-thresholding
 - Differential-privacy-style noise for aggregate features
 - Aggregate-noise sensitivity analysis across reproducible perturbations
+- Cohort-threshold sensitivity analysis for aggregate fallback coverage
 - Contextual and geography-level signals
 - Utility metrics such as AUC and NDCG@K
 - Fairness metrics for low-signal or underserved participants
@@ -122,6 +123,16 @@ is a stress diagnostic, not a formal privacy-budget analysis. See
 ### 5. Privacy-utility tradeoff across signal-loss scenarios
 
 ![Privacy utility tradeoff](docs/assets/privacy_utility_tradeoff.png)
+
+### 6. Higher cohort thresholds expose the fallback-utility tradeoff
+
+![Cohort-threshold sensitivity](docs/assets/cohort_threshold_sensitivity.png)
+
+The benchmark sweeps the minimum cohort size required before a cohort aggregate can
+be used. As the threshold increases, more events use broad service-level fallback
+signals. The diagnostic reports how overall and low-signal recovery change along
+that path. See
+[`docs/cohort_threshold_sensitivity.md`](docs/cohort_threshold_sensitivity.md).
 
 ## Multi-seed benchmark results
 
