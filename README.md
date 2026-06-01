@@ -74,6 +74,10 @@ The auditable signal-suppression configuration is documented in [`docs/policy_ru
 
 The pipeline also writes a machine-checked [`benchmark validation report`](docs/validation_report.md).
 
+For a compact reviewer-facing index of experimental scale, coverage, key results,
+sensitivity checkpoints, and evidence links, see the generated
+[`benchmark card`](docs/benchmark_card.md).
+
 The selected synthetic context priors are compared with a tracked public-reference
 snapshot in [`docs/public_reference_calibration.md`](docs/public_reference_calibration.md).
 

@@ -82,6 +82,10 @@ FairPrivacySignal currently includes:
     Sweeps the k-threshold for cohort aggregates and reports fallback coverage
     alongside overall and low-signal utility recovery.
 
+17. **Generated benchmark card**
+    Summarizes experimental scale, coverage, key results, sensitivity checkpoints,
+    validation status, and evidence links from auditable pipeline outputs.
+
 ## 4. Current Benchmark Results
 
 The current benchmark results show:

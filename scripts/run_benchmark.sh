@@ -20,9 +20,11 @@ python -m fairprivacysignal.multiseed_evaluation
 python -m fairprivacysignal.benchmark_overview
 python -m fairprivacysignal.architecture_diagram
 python -m fairprivacysignal.benchmark_validation
+python -m fairprivacysignal.benchmark_card
 
 echo "Benchmark pipeline completed."
 echo "Key outputs:"
 echo "- docs/assets/"
 echo "- docs/multiseed_results.md"
+echo "- docs/benchmark_card.md"
 echo "- outputs/tables/"

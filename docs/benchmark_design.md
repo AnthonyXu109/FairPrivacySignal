@@ -277,6 +277,10 @@ Required checks fail the pipeline when an invariant drifts. Informational checks
 record current result behavior without blocking future experimentation. The current
 report is available in [`docs/validation_report.md`](validation_report.md).
 
+After required checks pass, the pipeline writes a compact generated
+[`benchmark card`](benchmark_card.md) with experimental scale, coverage, selected
+results, sensitivity checkpoints, and evidence links.
+
 The repository workflow in
 [`benchmark-checks.yml`](../.github/workflows/benchmark-checks.yml) runs regression
 tests, a Python compilation check, the full benchmark pipeline, and the final

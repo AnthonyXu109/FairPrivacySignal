@@ -32,6 +32,7 @@ This command regenerates:
 - benchmark overview figure
 - architecture diagram
 - benchmark validation report
+- reviewer-facing benchmark card
 
 Signal-suppression scenarios and privacy-exposure weights are loaded from:
 
@@ -56,6 +57,7 @@ Signal-suppression scenarios and privacy-exposure weights are loaded from:
     docs/assets/cohort_threshold_sensitivity.png
     docs/multiseed_results.md
     docs/validation_report.md
+    docs/benchmark_card.md
     outputs/tables/multiseed_privacy_recovery_summary.csv
     outputs/tables/privacy_recovery_metrics.csv
     outputs/tables/capacity_allocation_metrics.csv
