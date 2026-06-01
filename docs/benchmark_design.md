@@ -163,7 +163,18 @@ This ablation makes the source of utility recovery inspectable rather than
 attributing the result to an undifferentiated feature bundle. See
 [`docs/recovery_feature_ablation.md`](recovery_feature_ablation.md).
 
-### 7.4 Fairness-Aware Recovery Variant
+### 7.4 Model-Class Sensitivity Diagnostic
+
+The benchmark compares its interpretable logistic primary baseline with histogram
+gradient boosting across three paired synthetic draws. Both models receive the same
+household-level train/test split, signal-loss scenarios, and privacy-safe aggregate
+features.
+
+This lightweight comparison shows whether recovery is stable across model classes.
+It is not a ranking-specific learning objective and does not replace the logistic
+primary baseline. See [`docs/model_sensitivity.md`](model_sensitivity.md).
+
+### 7.5 Fairness-Aware Recovery Variant
 
 The fairness-aware variant trains a low-signal-specific model after privacy-safe aggregate recovery. Relevant low-signal examples receive additional training weight, and the low-signal-specific predictions are blended with predictions from the global model.
 
@@ -282,8 +293,8 @@ The one-command pipeline ends with machine-checked methodological invariants. Th
 checks cover signal-loss scenario completeness, privacy-exposure monotonicity,
 bounded metrics, valid allocation counts, score-matched calibration coverage,
 documented public-reference targets, aggregate-noise sensitivity coverage,
-cohort-threshold sensitivity coverage, recovery feature-ablation coverage, and
-multi-seed completeness.
+cohort-threshold sensitivity coverage, recovery feature-ablation coverage,
+model-sensitivity coverage, and multi-seed completeness.
 
 Required checks fail the pipeline when an invariant drifts. Informational checks
 record current result behavior without blocking future experimentation. The current

@@ -38,3 +38,6 @@ constraint, or long-term effect that could arise in deployed ranking systems.
 The recovery feature ablation isolates contributions within this synthetic
 configuration; it does not establish that the same contributions transfer to a
 real deployment.
+The model-sensitivity diagnostic compares two lightweight classifier families. It
+does not establish robustness across all model classes or implement a
+ranking-specific learning objective.

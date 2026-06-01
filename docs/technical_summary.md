@@ -90,6 +90,10 @@ FairPrivacySignal currently includes:
     Separates engagement aggregates from cohort-context aggregates and reports
     paired multi-seed recovery deltas against no-aggregate baselines.
 
+19. **Model sensitivity diagnostic**
+    Compares the interpretable logistic primary baseline with lightweight histogram
+    gradient boosting across paired signal-loss and recovery scenarios.
+
 ## 4. Current Benchmark Results
 
 The current benchmark results show:
@@ -102,6 +106,9 @@ The current benchmark results show:
 - A paired feature ablation showed that the engagement aggregate provides most of
   the observed recovery in the current synthetic configuration, while combined
   cohort-context features add a modest increment under severe signal loss.
+- A lightweight model comparison showed that aggregate recovery is not
+  model-invariant: it is clear for the logistic primary baseline but smaller or
+  absent for histogram gradient boosting under the current synthetic configuration.
 - Capacity-constrained allocation exposed a measurable tradeoff between allocated relevance and low-signal representation.
 - Low-signal fairness gaps are explicitly tracked as a diagnostic to prevent utility recovery from hiding unequal effects on low-signal or underserved populations.
 
