@@ -118,6 +118,23 @@ def _cohort_threshold_sensitivity() -> pd.DataFrame:
     )
 
 
+def _recovery_feature_ablation_raw() -> pd.DataFrame:
+    return pd.DataFrame(
+        [
+            {
+                "scenario": scenario,
+                "variant": variant,
+                "seed": seed,
+                "overall_ndcg_at_3": 0.53,
+                "low_signal_ndcg_at_3": 0.44,
+            }
+            for scenario in benchmark_validation.EXPECTED_AGGREGATE_NOISE_SCENARIOS
+            for variant in benchmark_validation.EXPECTED_ABLATION_VARIANTS
+            for seed in benchmark_validation.EXPECTED_SEEDS
+        ]
+    )
+
+
 def _multiseed_recovery_raw() -> pd.DataFrame:
     return pd.DataFrame(
         [
@@ -151,6 +168,7 @@ def _checks() -> pd.DataFrame:
         public_reference=_public_reference(),
         aggregate_noise_sensitivity_raw=_aggregate_noise_sensitivity_raw(),
         cohort_threshold_sensitivity=_cohort_threshold_sensitivity(),
+        recovery_feature_ablation_raw=_recovery_feature_ablation_raw(),
         multiseed_recovery_raw=_multiseed_recovery_raw(),
         multiseed_capacity_raw=_multiseed_capacity_raw(),
     )

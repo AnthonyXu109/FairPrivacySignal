@@ -20,6 +20,7 @@ The same technical pattern can apply to public agencies, healthcare outreach, no
 - Differential-privacy-style noise for aggregate features
 - Aggregate-noise sensitivity analysis across reproducible perturbations
 - Cohort-threshold sensitivity analysis for aggregate fallback coverage
+- Recovery feature ablation with paired multi-seed comparisons
 - Contextual and geography-level signals
 - Utility metrics such as AUC and NDCG@K
 - Fairness metrics for low-signal or underserved participants
@@ -131,11 +132,21 @@ recovery result depends on one favorable perturbation or parameter point. The sw
 is a stress diagnostic, not a formal privacy-budget analysis. See
 [`docs/aggregate_noise_sensitivity.md`](docs/aggregate_noise_sensitivity.md).
 
-### 5. Privacy-utility tradeoff across signal-loss scenarios
+### 5. Feature ablation separates recovery components
+
+![Recovery feature ablation](docs/assets/recovery_feature_ablation.png)
+
+The paired five-seed ablation shows that the engagement aggregate provides most of
+the observed ranking recovery in this synthetic configuration. Cohort-context
+aggregates contribute less when used alone, while their combined use adds a modest
+increment under severe signal loss. See
+[`docs/recovery_feature_ablation.md`](docs/recovery_feature_ablation.md).
+
+### 6. Privacy-utility tradeoff across signal-loss scenarios
 
 ![Privacy utility tradeoff](docs/assets/privacy_utility_tradeoff.png)
 
-### 6. Higher cohort thresholds expose the fallback-utility tradeoff
+### 7. Higher cohort thresholds expose the fallback-utility tradeoff
 
 ![Cohort-threshold sensitivity](docs/assets/cohort_threshold_sensitivity.png)
 

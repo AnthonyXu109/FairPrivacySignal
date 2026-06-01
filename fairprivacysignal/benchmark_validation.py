@@ -36,6 +36,12 @@ EXPECTED_AGGREGATE_NOISE_SCENARIOS = {
 EXPECTED_AGGREGATE_NOISE_SCALES = {0.0, 0.5, 1.0, 2.0, 4.0}
 EXPECTED_AGGREGATE_NOISE_SEEDS = {7, 42, 101}
 EXPECTED_COHORT_THRESHOLDS = {25, 50, 100, 200, 400, 800}
+EXPECTED_ABLATION_VARIANTS = {
+    "no_aggregate_substitutes",
+    "engagement_aggregate_only",
+    "cohort_context_aggregates_only",
+    "combined_privacy_safe_aggregates",
+}
 
 
 def _check(
@@ -70,6 +76,7 @@ def build_validation_checks(
     public_reference: pd.DataFrame,
     aggregate_noise_sensitivity_raw: pd.DataFrame,
     cohort_threshold_sensitivity: pd.DataFrame,
+    recovery_feature_ablation_raw: pd.DataFrame,
     multiseed_recovery_raw: pd.DataFrame,
     multiseed_capacity_raw: pd.DataFrame,
 ) -> pd.DataFrame:
@@ -293,6 +300,33 @@ def build_validation_checks(
         )
     )
 
+    ablation_seed_counts = recovery_feature_ablation_raw.groupby(
+        ["scenario", "variant"]
+    )["seed"].nunique()
+    ablation_metrics = recovery_feature_ablation_raw[
+        [
+            "overall_ndcg_at_3",
+            "low_signal_ndcg_at_3",
+        ]
+    ]
+    checks.append(
+        _check(
+            "recovery feature-ablation coverage is complete",
+            "ranking",
+            set(recovery_feature_ablation_raw["scenario"])
+            == EXPECTED_AGGREGATE_NOISE_SCENARIOS
+            and set(recovery_feature_ablation_raw["variant"])
+            == EXPECTED_ABLATION_VARIANTS
+            and set(recovery_feature_ablation_raw["seed"]) == EXPECTED_SEEDS
+            and (ablation_seed_counts == len(EXPECTED_SEEDS)).all()
+            and _columns_are_bounded(
+                ablation_metrics,
+                list(ablation_metrics.columns),
+            ),
+            "two scenarios cover four feature sets and five paired synthetic-data seeds",
+        )
+    )
+
     recovery_seed_counts = multiseed_recovery_raw.groupby("experiment")["seed"].nunique()
     checks.append(
         _check(
@@ -391,6 +425,9 @@ def main() -> None:
         ),
         cohort_threshold_sensitivity=pd.read_csv(
             tables_dir / "cohort_threshold_sensitivity.csv"
+        ),
+        recovery_feature_ablation_raw=pd.read_csv(
+            tables_dir / "recovery_feature_ablation_raw.csv"
         ),
         multiseed_recovery_raw=pd.read_csv(
             tables_dir / "multiseed_privacy_recovery_raw.csv"

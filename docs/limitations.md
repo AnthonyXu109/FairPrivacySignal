@@ -35,3 +35,6 @@ domain-specific evaluation with affected communities and subject-matter experts.
 The benchmark uses an interpretable logistic baseline and simplified
 capacity-allocation policies. It does not model every feedback loop, operational
 constraint, or long-term effect that could arise in deployed ranking systems.
+The recovery feature ablation isolates contributions within this synthetic
+configuration; it does not establish that the same contributions transfer to a
+real deployment.
