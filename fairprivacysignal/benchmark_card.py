@@ -102,6 +102,7 @@ def build_benchmark_card(
     threshold_sensitivity: pd.DataFrame,
     recovery_feature_ablation_raw: pd.DataFrame,
     model_sensitivity_raw: pd.DataFrame,
+    pairwise_ranking_sensitivity_raw: pd.DataFrame,
     underserved_recovery_profile_raw: pd.DataFrame,
     community_holdout_robustness_raw: pd.DataFrame,
     validation_checks: pd.DataFrame,
@@ -172,6 +173,16 @@ def build_benchmark_card(
             ),
         },
         {
+            "Diagnostic": "Ranking-objective sensitivity",
+            "Coverage": (
+                f"{pairwise_ranking_sensitivity_raw['objective'].nunique()} "
+                "training objectives; "
+                f"{pairwise_ranking_sensitivity_raw['experiment'].nunique()} "
+                "scenarios; "
+                f"{pairwise_ranking_sensitivity_raw['seed'].nunique()} paired seeds"
+            ),
+        },
+        {
             "Diagnostic": "Underserved quartile recovery",
             "Coverage": (
                 f"{underserved_recovery_profile_raw['scenario'].nunique()} scenarios; "
@@ -238,6 +249,7 @@ def build_benchmark_card(
         "- [Cohort-threshold sensitivity](cohort_threshold_sensitivity.md)\n"
         "- [Recovery feature ablation](recovery_feature_ablation.md)\n"
         "- [Model sensitivity diagnostic](model_sensitivity.md)\n"
+        "- [Pairwise ranking-objective sensitivity](pairwise_ranking_sensitivity.md)\n"
         "- [Underserved quartile recovery profile](underserved_recovery_profile.md)\n"
         "- [Community-held-out robustness diagnostic](community_holdout_robustness.md)\n"
         "- [Capacity-constrained allocation](capacity_allocation.md)\n"
@@ -287,6 +299,9 @@ def main() -> None:
         ),
         model_sensitivity_raw=pd.read_csv(
             tables_dir / "model_sensitivity_raw.csv"
+        ),
+        pairwise_ranking_sensitivity_raw=pd.read_csv(
+            tables_dir / "pairwise_ranking_sensitivity_raw.csv"
         ),
         underserved_recovery_profile_raw=pd.read_csv(
             tables_dir / "underserved_recovery_profile_raw.csv"

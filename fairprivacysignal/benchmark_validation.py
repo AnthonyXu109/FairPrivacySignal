@@ -60,6 +60,18 @@ EXPECTED_MODEL_SENSITIVITY_EXPERIMENTS = {
     "policy_restricted_with_privacy_safe_aggregates",
 }
 EXPECTED_MODEL_SENSITIVITY_SEEDS = {7, 42, 101}
+EXPECTED_PAIRWISE_RANKING_OBJECTIVES = {
+    "pointwise_logistic",
+    "linear_pairwise",
+}
+EXPECTED_PAIRWISE_RANKING_EXPERIMENTS = {
+    "full_signal_raw_baseline",
+    "severe_signal_loss_baseline",
+    "severe_signal_loss_with_privacy_safe_aggregates",
+    "policy_restricted_baseline",
+    "policy_restricted_with_privacy_safe_aggregates",
+}
+EXPECTED_PAIRWISE_RANKING_SEEDS = {7, 42, 101}
 EXPECTED_UNDERSERVED_PROFILE_VARIANTS = {
     "signal_loss_baseline",
     "privacy_safe_aggregates",
@@ -114,6 +126,7 @@ def build_validation_checks(
     cohort_threshold_sensitivity: pd.DataFrame,
     recovery_feature_ablation_raw: pd.DataFrame,
     model_sensitivity_raw: pd.DataFrame,
+    pairwise_ranking_sensitivity_raw: pd.DataFrame,
     underserved_recovery_profile_raw: pd.DataFrame,
     community_holdout_robustness_raw: pd.DataFrame,
     multiseed_recovery_raw: pd.DataFrame,
@@ -417,6 +430,56 @@ def build_validation_checks(
         )
     )
 
+    pairwise_ranking_seed_counts = pairwise_ranking_sensitivity_raw.groupby(
+        ["objective", "experiment"]
+    )["seed"].nunique()
+    pairwise_ranking_metrics = pairwise_ranking_sensitivity_raw[
+        [
+            "overall_auc",
+            "overall_ndcg_at_3",
+            "low_signal_ndcg_at_3",
+            "not_low_signal_ndcg_at_3",
+        ]
+    ]
+    pairwise_rows = pairwise_ranking_sensitivity_raw[
+        pairwise_ranking_sensitivity_raw["objective"] == "linear_pairwise"
+    ]
+    pointwise_rows = pairwise_ranking_sensitivity_raw[
+        pairwise_ranking_sensitivity_raw["objective"] == "pointwise_logistic"
+    ]
+    aggregate_pairwise_rows = pairwise_ranking_sensitivity_raw[
+        pairwise_ranking_sensitivity_raw["experiment"].isin(
+            EXPECTED_TRAIN_FITTED_RECOVERY_EXPERIMENTS
+        )
+    ]
+    checks.append(
+        _check(
+            "pairwise ranking-objective coverage is complete",
+            "ranking",
+            set(pairwise_ranking_sensitivity_raw["objective"])
+            == EXPECTED_PAIRWISE_RANKING_OBJECTIVES
+            and set(pairwise_ranking_sensitivity_raw["experiment"])
+            == EXPECTED_PAIRWISE_RANKING_EXPERIMENTS
+            and set(pairwise_ranking_sensitivity_raw["seed"])
+            == EXPECTED_PAIRWISE_RANKING_SEEDS
+            and (
+                pairwise_ranking_seed_counts
+                == len(EXPECTED_PAIRWISE_RANKING_SEEDS)
+            ).all()
+            and _columns_are_bounded(
+                pairwise_ranking_metrics,
+                list(pairwise_ranking_metrics.columns),
+            )
+            and (pairwise_rows["num_training_pairs"] > 0).all()
+            and (pointwise_rows["num_training_pairs"] == 0).all()
+            and (
+                aggregate_pairwise_rows["aggregate_reference_scope"]
+                == "train_households_only"
+            ).all(),
+            "two training objectives cover five scenarios and three paired seeds; pairwise samples are present",
+        )
+    )
+
     profile_seed_counts = underserved_recovery_profile_raw.groupby(
         ["scenario", "variant", "underserved_quartile"]
     )["seed"].nunique()
@@ -606,6 +669,9 @@ def main() -> None:
         ),
         model_sensitivity_raw=pd.read_csv(
             tables_dir / "model_sensitivity_raw.csv"
+        ),
+        pairwise_ranking_sensitivity_raw=pd.read_csv(
+            tables_dir / "pairwise_ranking_sensitivity_raw.csv"
         ),
         underserved_recovery_profile_raw=pd.read_csv(
             tables_dir / "underserved_recovery_profile_raw.csv"

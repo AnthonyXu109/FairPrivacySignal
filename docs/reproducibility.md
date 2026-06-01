@@ -32,6 +32,7 @@ This command regenerates:
 - cohort-threshold sensitivity metrics for aggregate fallback coverage
 - paired multi-seed recovery feature-ablation metrics
 - paired model-sensitivity metrics for logistic and histogram gradient boosting
+- paired ranking-objective metrics for pointwise logistic and linear pairwise training
 - paired underserved-quartile recovery metrics across synthetic community contexts
 - paired community-held-out robustness metrics across disjoint synthetic contexts
 - benchmark overview figure
@@ -62,6 +63,7 @@ Signal-suppression scenarios and privacy-exposure weights are loaded from:
     docs/assets/cohort_threshold_sensitivity.png
     docs/assets/recovery_feature_ablation.png
     docs/assets/model_sensitivity.png
+    docs/assets/pairwise_ranking_sensitivity.png
     docs/assets/underserved_recovery_profile.png
     docs/assets/community_holdout_robustness.png
     docs/multiseed_results.md
@@ -85,6 +87,9 @@ Signal-suppression scenarios and privacy-exposure weights are loaded from:
     outputs/tables/model_sensitivity_raw.csv
     outputs/tables/model_sensitivity_summary.csv
     outputs/tables/model_sensitivity_paired_recovery.csv
+    outputs/tables/pairwise_ranking_sensitivity_raw.csv
+    outputs/tables/pairwise_ranking_sensitivity_summary.csv
+    outputs/tables/pairwise_ranking_sensitivity_paired_recovery.csv
     outputs/tables/underserved_recovery_profile_raw.csv
     outputs/tables/underserved_recovery_profile_paired.csv
     outputs/tables/underserved_recovery_profile_summary.csv

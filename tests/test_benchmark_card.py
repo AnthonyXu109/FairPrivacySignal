@@ -107,6 +107,16 @@ def test_build_benchmark_card_summarizes_auditable_outputs() -> None:
                 "seed": [7, 42],
             }
         ),
+        pairwise_ranking_sensitivity_raw=pd.DataFrame(
+            {
+                "objective": ["pointwise_logistic", "linear_pairwise"],
+                "experiment": [
+                    "full_signal_raw_baseline",
+                    "severe_signal_loss_baseline",
+                ],
+                "seed": [7, 42],
+            }
+        ),
         underserved_recovery_profile_raw=pd.DataFrame(
             {
                 "scenario": ["severe_signal_loss", "policy_restricted"],
@@ -144,6 +154,7 @@ def test_build_benchmark_card_summarizes_auditable_outputs() -> None:
     assert "## Cohort-Threshold Checkpoints" in card
     assert "Recovery feature ablation" in card
     assert "Model sensitivity diagnostic" in card
+    assert "Pairwise ranking-objective sensitivity" in card
     assert "Underserved quartile recovery profile" in card
     assert "Community-held-out robustness diagnostic" in card
     assert "[Limitations](limitations.md)" in card

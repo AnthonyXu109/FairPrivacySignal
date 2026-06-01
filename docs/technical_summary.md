@@ -106,6 +106,10 @@ FairPrivacySignal currently includes:
     Compares the primary household-level holdout with a stricter paired synthetic
     split that keeps training and evaluation communities disjoint.
 
+23. **Pairwise ranking-objective sensitivity diagnostic**
+    Compares the pointwise logistic primary baseline with a lightweight linear
+    pairwise ranker trained on ordered service pairs within synthetic households.
+
 ## 4. Current Benchmark Results
 
 The current benchmark results show:
@@ -128,6 +132,8 @@ The current benchmark results show:
 - A paired community-held-out diagnostic showed that aggregate recovery remained
   visible when training and evaluation communities were disjoint in a stricter
   synthetic stress test.
+- A paired ranking-objective diagnostic showed that aggregate recovery remained
+  directionally similar for pointwise logistic and linear pairwise training.
 - Capacity-constrained allocation exposed a measurable tradeoff between allocated relevance and low-signal representation.
 - Low-signal fairness gaps are explicitly tracked as a diagnostic to prevent utility recovery from hiding unequal effects on low-signal or underserved populations.
 

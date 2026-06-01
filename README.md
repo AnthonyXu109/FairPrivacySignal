@@ -25,6 +25,7 @@ The same technical pattern can apply to public agencies, healthcare outreach, no
 - Cohort-threshold sensitivity analysis for aggregate fallback coverage
 - Recovery feature ablation with paired multi-seed comparisons
 - Lightweight model-class sensitivity diagnostic
+- Pairwise ranking-objective sensitivity diagnostic
 - Underserved quartile recovery profile with paired multi-seed comparisons
 - Community-held-out robustness diagnostic with paired multi-seed comparisons
 - Contextual and geography-level signals
@@ -162,7 +163,20 @@ logistic baseline, but smaller or absent for the non-linear comparison model. Th
 keeps the claim bounded: recovery depends on the model and scenario rather than
 holding automatically. See [`docs/model_sensitivity.md`](docs/model_sensitivity.md).
 
-### 7. Pooled gains can hide quartile-specific regressions
+### 7. Aggregate recovery remains visible with pairwise ranking training
+
+![Pairwise ranking-objective sensitivity](docs/assets/pairwise_ranking_sensitivity.png)
+
+The benchmark compares its pointwise logistic primary baseline with a lightweight
+linear pairwise ranker trained on ordered service pairs within each synthetic
+household. Aggregate recovery remains directionally similar across objectives:
+under severe signal loss, mean overall NDCG@3 recovery is `+0.0115` for pointwise
+training and `+0.0110` for pairwise training across three seeds. This is a
+ranking-objective sensitivity check, not a claim that a linear pairwise comparator
+is universally stronger. See
+[`docs/pairwise_ranking_sensitivity.md`](docs/pairwise_ranking_sensitivity.md).
+
+### 8. Pooled gains can hide quartile-specific regressions
 
 ![Underserved quartile recovery profile](docs/assets/underserved_recovery_profile.png)
 
@@ -172,7 +186,7 @@ imply uniform benefit: low-signal recovery varies across quartiles and can be
 negative in some contexts. See
 [`docs/underserved_recovery_profile.md`](docs/underserved_recovery_profile.md).
 
-### 8. Recovery remains visible under a community-held-out stress test
+### 9. Recovery remains visible under a community-held-out stress test
 
 ![Community-held-out robustness diagnostic](docs/assets/community_holdout_robustness.png)
 
@@ -184,11 +198,11 @@ for community holdout versus `+0.015` for household holdout. This is a synthetic
 robustness stress test, not a geographic validation claim. See
 [`docs/community_holdout_robustness.md`](docs/community_holdout_robustness.md).
 
-### 9. Privacy-utility tradeoff across signal-loss scenarios
+### 10. Privacy-utility tradeoff across signal-loss scenarios
 
 ![Privacy utility tradeoff](docs/assets/privacy_utility_tradeoff.png)
 
-### 10. Higher cohort thresholds expose the fallback-utility tradeoff
+### 11. Higher cohort thresholds expose the fallback-utility tradeoff
 
 ![Cohort-threshold sensitivity](docs/assets/cohort_threshold_sensitivity.png)
 

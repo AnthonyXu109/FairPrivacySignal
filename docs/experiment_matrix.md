@@ -47,6 +47,7 @@ This document summarizes the current and planned FairPrivacySignal experiments.
 | Cohort-threshold sensitivity | Sweep the minimum cohort size and measure fallback coverage plus utility recovery |
 | Recovery feature ablation | Compare no substitutes, engagement aggregates, cohort-context aggregates, and their combination with paired multi-seed deltas |
 | Model sensitivity diagnostic | Compare the interpretable logistic primary baseline with lightweight histogram gradient boosting across paired scenarios and seeds |
+| Pairwise ranking-objective sensitivity | Compare pointwise logistic training with a lightweight linear pairwise ranker across paired scenarios and seeds |
 | Underserved quartile recovery profile | Check whether pooled recovery hides quartile-specific regressions across synthetic community contexts |
 | Community-held-out robustness diagnostic | Compare household-level holdout with a stricter paired split that keeps training and evaluation communities disjoint |
 
@@ -55,4 +56,4 @@ This document summarizes the current and planned FairPrivacySignal experiments.
 | Planned experiment | Purpose |
 |---|---|
 | Expanded public-reference coverage | Add carefully mapped public aggregate anchors while preserving explicit limitations |
-| Stronger learning-to-rank model | Compare interpretable logistic baseline with ranking-specific models |
+| Listwise ranking-objective extension | Extend the lightweight pairwise comparator with a listwise sensitivity check |
