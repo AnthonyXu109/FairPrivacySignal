@@ -135,6 +135,24 @@ def _recovery_feature_ablation_raw() -> pd.DataFrame:
     )
 
 
+def _model_sensitivity_raw() -> pd.DataFrame:
+    return pd.DataFrame(
+        [
+            {
+                "model": model,
+                "experiment": experiment,
+                "seed": seed,
+                "overall_auc": 0.60,
+                "overall_ndcg_at_3": 0.53,
+                "low_signal_ndcg_at_3": 0.44,
+            }
+            for model in benchmark_validation.EXPECTED_MODEL_SENSITIVITY_MODELS
+            for experiment in benchmark_validation.EXPECTED_MODEL_SENSITIVITY_EXPERIMENTS
+            for seed in benchmark_validation.EXPECTED_MODEL_SENSITIVITY_SEEDS
+        ]
+    )
+
+
 def _multiseed_recovery_raw() -> pd.DataFrame:
     return pd.DataFrame(
         [
@@ -169,6 +187,7 @@ def _checks() -> pd.DataFrame:
         aggregate_noise_sensitivity_raw=_aggregate_noise_sensitivity_raw(),
         cohort_threshold_sensitivity=_cohort_threshold_sensitivity(),
         recovery_feature_ablation_raw=_recovery_feature_ablation_raw(),
+        model_sensitivity_raw=_model_sensitivity_raw(),
         multiseed_recovery_raw=_multiseed_recovery_raw(),
         multiseed_capacity_raw=_multiseed_capacity_raw(),
     )

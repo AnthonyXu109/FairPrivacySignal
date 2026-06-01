@@ -30,6 +30,7 @@ This command regenerates:
 - aggregate-noise sensitivity metrics across reproducible perturbations
 - cohort-threshold sensitivity metrics for aggregate fallback coverage
 - paired multi-seed recovery feature-ablation metrics
+- paired model-sensitivity metrics for logistic and histogram gradient boosting
 - benchmark overview figure
 - architecture diagram
 - benchmark validation report
@@ -57,7 +58,9 @@ Signal-suppression scenarios and privacy-exposure weights are loaded from:
     docs/assets/aggregate_noise_sensitivity.png
     docs/assets/cohort_threshold_sensitivity.png
     docs/assets/recovery_feature_ablation.png
+    docs/assets/model_sensitivity.png
     docs/multiseed_results.md
+    docs/model_sensitivity.md
     docs/validation_report.md
     docs/benchmark_card.md
     outputs/tables/multiseed_privacy_recovery_summary.csv
@@ -74,6 +77,9 @@ Signal-suppression scenarios and privacy-exposure weights are loaded from:
     outputs/tables/cohort_threshold_sensitivity.csv
     outputs/tables/recovery_feature_ablation_raw.csv
     outputs/tables/recovery_feature_ablation_summary.csv
+    outputs/tables/model_sensitivity_raw.csv
+    outputs/tables/model_sensitivity_summary.csv
+    outputs/tables/model_sensitivity_paired_recovery.csv
     outputs/tables/benchmark_validation_checks.csv
 
 ## 4. Run the regression tests

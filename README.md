@@ -21,6 +21,7 @@ The same technical pattern can apply to public agencies, healthcare outreach, no
 - Aggregate-noise sensitivity analysis across reproducible perturbations
 - Cohort-threshold sensitivity analysis for aggregate fallback coverage
 - Recovery feature ablation with paired multi-seed comparisons
+- Lightweight model-class sensitivity diagnostic
 - Contextual and geography-level signals
 - Utility metrics such as AUC and NDCG@K
 - Fairness metrics for low-signal or underserved participants
@@ -142,11 +143,21 @@ aggregates contribute less when used alone, while their combined use adds a mode
 increment under severe signal loss. See
 [`docs/recovery_feature_ablation.md`](docs/recovery_feature_ablation.md).
 
-### 6. Privacy-utility tradeoff across signal-loss scenarios
+### 6. Recovery effects remain model-dependent
+
+![Model sensitivity diagnostic](docs/assets/model_sensitivity.png)
+
+The benchmark compares its interpretable logistic primary baseline with a
+lightweight histogram gradient boosting model. Aggregate recovery is clear for the
+logistic baseline, but smaller or absent for the non-linear comparison model. This
+keeps the claim bounded: recovery depends on the model and scenario rather than
+holding automatically. See [`docs/model_sensitivity.md`](docs/model_sensitivity.md).
+
+### 7. Privacy-utility tradeoff across signal-loss scenarios
 
 ![Privacy utility tradeoff](docs/assets/privacy_utility_tradeoff.png)
 
-### 7. Higher cohort thresholds expose the fallback-utility tradeoff
+### 8. Higher cohort thresholds expose the fallback-utility tradeoff
 
 ![Cohort-threshold sensitivity](docs/assets/cohort_threshold_sensitivity.png)
 

@@ -97,6 +97,16 @@ def test_build_benchmark_card_summarizes_auditable_outputs() -> None:
                 "seed": [7, 42],
             }
         ),
+        model_sensitivity_raw=pd.DataFrame(
+            {
+                "model": ["logistic_regression", "hist_gradient_boosting"],
+                "experiment": [
+                    "full_signal_raw_baseline",
+                    "severe_signal_loss_baseline",
+                ],
+                "seed": [7, 42],
+            }
+        ),
         validation_checks=pd.DataFrame(
             [
                 {
@@ -119,4 +129,5 @@ def test_build_benchmark_card_summarizes_auditable_outputs() -> None:
     assert "## Aggregate-Noise Checkpoint" in card
     assert "## Cohort-Threshold Checkpoints" in card
     assert "Recovery feature ablation" in card
+    assert "Model sensitivity diagnostic" in card
     assert "[Limitations](limitations.md)" in card

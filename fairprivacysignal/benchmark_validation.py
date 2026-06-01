@@ -42,6 +42,18 @@ EXPECTED_ABLATION_VARIANTS = {
     "cohort_context_aggregates_only",
     "combined_privacy_safe_aggregates",
 }
+EXPECTED_MODEL_SENSITIVITY_MODELS = {
+    "logistic_regression",
+    "hist_gradient_boosting",
+}
+EXPECTED_MODEL_SENSITIVITY_EXPERIMENTS = {
+    "full_signal_raw_baseline",
+    "severe_signal_loss_baseline",
+    "severe_signal_loss_with_privacy_safe_aggregates",
+    "policy_restricted_baseline",
+    "policy_restricted_with_privacy_safe_aggregates",
+}
+EXPECTED_MODEL_SENSITIVITY_SEEDS = {7, 42, 101}
 
 
 def _check(
@@ -77,6 +89,7 @@ def build_validation_checks(
     aggregate_noise_sensitivity_raw: pd.DataFrame,
     cohort_threshold_sensitivity: pd.DataFrame,
     recovery_feature_ablation_raw: pd.DataFrame,
+    model_sensitivity_raw: pd.DataFrame,
     multiseed_recovery_raw: pd.DataFrame,
     multiseed_capacity_raw: pd.DataFrame,
 ) -> pd.DataFrame:
@@ -327,6 +340,38 @@ def build_validation_checks(
         )
     )
 
+    model_sensitivity_seed_counts = model_sensitivity_raw.groupby(
+        ["model", "experiment"]
+    )["seed"].nunique()
+    model_sensitivity_metrics = model_sensitivity_raw[
+        [
+            "overall_auc",
+            "overall_ndcg_at_3",
+            "low_signal_ndcg_at_3",
+        ]
+    ]
+    checks.append(
+        _check(
+            "model-sensitivity coverage is complete",
+            "ranking",
+            set(model_sensitivity_raw["model"])
+            == EXPECTED_MODEL_SENSITIVITY_MODELS
+            and set(model_sensitivity_raw["experiment"])
+            == EXPECTED_MODEL_SENSITIVITY_EXPERIMENTS
+            and set(model_sensitivity_raw["seed"])
+            == EXPECTED_MODEL_SENSITIVITY_SEEDS
+            and (
+                model_sensitivity_seed_counts
+                == len(EXPECTED_MODEL_SENSITIVITY_SEEDS)
+            ).all()
+            and _columns_are_bounded(
+                model_sensitivity_metrics,
+                list(model_sensitivity_metrics.columns),
+            ),
+            "two models cover five scenarios and three paired synthetic-data seeds",
+        )
+    )
+
     recovery_seed_counts = multiseed_recovery_raw.groupby("experiment")["seed"].nunique()
     checks.append(
         _check(
@@ -428,6 +473,9 @@ def main() -> None:
         ),
         recovery_feature_ablation_raw=pd.read_csv(
             tables_dir / "recovery_feature_ablation_raw.csv"
+        ),
+        model_sensitivity_raw=pd.read_csv(
+            tables_dir / "model_sensitivity_raw.csv"
         ),
         multiseed_recovery_raw=pd.read_csv(
             tables_dir / "multiseed_privacy_recovery_raw.csv"

@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, List
+from typing import Callable, Dict, List, Optional
 
 import numpy as np
 import pandas as pd
@@ -89,6 +89,7 @@ def evaluate_model(
     fairness_aware: bool = False,
     low_signal_blend_weight: float = 0.75,
     relevant_low_signal_weight: float = 4.0,
+    model_builder: Optional[Callable[[List[str]], Pipeline]] = None,
 ) -> Dict[str, float]:
     household_ids = df["household_id"].drop_duplicates()
 
@@ -104,7 +105,8 @@ def evaluate_model(
     features = numeric_features + CATEGORICAL_FEATURES
     target = "relevant"
 
-    global_model = build_model(numeric_features)
+    selected_model_builder = model_builder or build_model
+    global_model = selected_model_builder(numeric_features)
     global_model.fit(train[features], train[target])
 
     test["predicted_relevance"] = global_model.predict_proba(test[features])[:, 1]

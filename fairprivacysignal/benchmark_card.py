@@ -101,6 +101,7 @@ def build_benchmark_card(
     aggregate_noise_summary: pd.DataFrame,
     threshold_sensitivity: pd.DataFrame,
     recovery_feature_ablation_raw: pd.DataFrame,
+    model_sensitivity_raw: pd.DataFrame,
     validation_checks: pd.DataFrame,
 ) -> str:
     required_checks = validation_checks[validation_checks["required"].astype(bool)]
@@ -161,6 +162,14 @@ def build_benchmark_card(
             ),
         },
         {
+            "Diagnostic": "Model sensitivity",
+            "Coverage": (
+                f"{model_sensitivity_raw['model'].nunique()} models; "
+                f"{model_sensitivity_raw['experiment'].nunique()} scenarios; "
+                f"{model_sensitivity_raw['seed'].nunique()} paired seeds"
+            ),
+        },
+        {
             "Diagnostic": "Validation gate",
             "Coverage": (
                 f"{len(required_checks)} required checks; "
@@ -204,6 +213,7 @@ def build_benchmark_card(
         "- [Aggregate-noise sensitivity](aggregate_noise_sensitivity.md)\n"
         "- [Cohort-threshold sensitivity](cohort_threshold_sensitivity.md)\n"
         "- [Recovery feature ablation](recovery_feature_ablation.md)\n"
+        "- [Model sensitivity diagnostic](model_sensitivity.md)\n"
         "- [Capacity-constrained allocation](capacity_allocation.md)\n"
         "- [Fairness metrics](fairness_metrics.md)\n"
         "- [Limitations](limitations.md)\n"
@@ -248,6 +258,9 @@ def main() -> None:
         ),
         recovery_feature_ablation_raw=pd.read_csv(
             tables_dir / "recovery_feature_ablation_raw.csv"
+        ),
+        model_sensitivity_raw=pd.read_csv(
+            tables_dir / "model_sensitivity_raw.csv"
         ),
         validation_checks=pd.read_csv(
             tables_dir / "benchmark_validation_checks.csv"
