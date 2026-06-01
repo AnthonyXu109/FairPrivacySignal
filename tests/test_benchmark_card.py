@@ -114,6 +114,13 @@ def test_build_benchmark_card_summarizes_auditable_outputs() -> None:
                 "seed": [7, 42],
             }
         ),
+        community_holdout_robustness_raw=pd.DataFrame(
+            {
+                "scenario": ["severe_signal_loss", "policy_restricted"],
+                "split_strategy": ["household_holdout", "community_holdout"],
+                "seed": [7, 42],
+            }
+        ),
         validation_checks=pd.DataFrame(
             [
                 {
@@ -138,4 +145,5 @@ def test_build_benchmark_card_summarizes_auditable_outputs() -> None:
     assert "Recovery feature ablation" in card
     assert "Model sensitivity diagnostic" in card
     assert "Underserved quartile recovery profile" in card
+    assert "Community-held-out robustness diagnostic" in card
     assert "[Limitations](limitations.md)" in card

@@ -5,6 +5,14 @@ import numpy as np
 import pandas as pd
 
 
+COHORT_COLUMNS = [
+    "service_category",
+    "urbanicity",
+    "income_band",
+    "age_group",
+]
+
+
 def add_privacy_safe_features(
     events: pd.DataFrame,
     min_cohort_size: int = 50,
@@ -25,15 +33,8 @@ def add_privacy_safe_features(
     df = events.copy()
     reference = events if reference_events is None else reference_events
 
-    cohort_cols = [
-        "service_category",
-        "urbanicity",
-        "income_band",
-        "age_group",
-    ]
-
     cohort_stats = (
-        reference.groupby(cohort_cols, observed=False)
+        reference.groupby(COHORT_COLUMNS, observed=False)
         .agg(
             cohort_size=("household_id", "nunique"),
             cohort_avg_engagement=("historical_service_engagement_count", "mean"),
@@ -67,11 +68,11 @@ def add_privacy_safe_features(
         safe_col = f"privacy_safe_{col}"
         cohort_stats.loc[~safe_mask, safe_col] = np.nan
 
-    keep_cols = cohort_cols + ["cohort_size"] + [
+    keep_cols = COHORT_COLUMNS + ["cohort_size"] + [
         f"privacy_safe_{col}" for col in noisy_cols
     ]
 
-    df = df.merge(cohort_stats[keep_cols], on=cohort_cols, how="left")
+    df = df.merge(cohort_stats[keep_cols], on=COHORT_COLUMNS, how="left")
 
     # Fill suppressed or missing cohort aggregates with broad service-level aggregates.
     service_defaults = (

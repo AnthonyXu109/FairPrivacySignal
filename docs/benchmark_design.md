@@ -191,7 +191,20 @@ community contexts. The quartiles are synthetic benchmark constructs, not
 real-world demographic groups. See
 [`docs/underserved_recovery_profile.md`](underserved_recovery_profile.md).
 
-### 7.6 Fairness-Aware Recovery Variant
+### 7.6 Community-Held-Out Robustness Diagnostic
+
+The primary protocol uses a household-level holdout. The benchmark also runs a
+paired synthetic community-held-out stress test using the same signal-loss
+scenarios, model family, and training-fitted aggregate construction. In this
+stricter path, training and evaluation communities are disjoint.
+
+The diagnostic reports overall and low-signal NDCG@3 recovery plus broad fallback
+coverage. It tests whether the benchmark claim survives a more demanding separation
+of generated community contexts. It is not a real geographic, temporal, or
+deployment validation study. See
+[`docs/community_holdout_robustness.md`](community_holdout_robustness.md).
+
+### 7.7 Fairness-Aware Recovery Variant
 
 The fairness-aware variant trains a low-signal-specific model after privacy-safe aggregate recovery. Relevant low-signal examples receive additional training weight, and the low-signal-specific predictions are blended with predictions from the global model.
 

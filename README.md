@@ -26,6 +26,7 @@ The same technical pattern can apply to public agencies, healthcare outreach, no
 - Recovery feature ablation with paired multi-seed comparisons
 - Lightweight model-class sensitivity diagnostic
 - Underserved quartile recovery profile with paired multi-seed comparisons
+- Community-held-out robustness diagnostic with paired multi-seed comparisons
 - Contextual and geography-level signals
 - Utility metrics such as AUC and NDCG@K
 - Fairness metrics for low-signal or underserved participants
@@ -171,11 +172,23 @@ imply uniform benefit: low-signal recovery varies across quartiles and can be
 negative in some contexts. See
 [`docs/underserved_recovery_profile.md`](docs/underserved_recovery_profile.md).
 
-### 8. Privacy-utility tradeoff across signal-loss scenarios
+### 8. Recovery remains visible under a community-held-out stress test
+
+![Community-held-out robustness diagnostic](docs/assets/community_holdout_robustness.png)
+
+The primary benchmark uses a household-level holdout. This additional paired
+diagnostic makes the split stricter by keeping training and evaluation communities
+disjoint. Aggregate recovery remains positive in the current synthetic
+configuration: under severe signal loss, mean overall NDCG@3 recovery is `+0.020`
+for community holdout versus `+0.015` for household holdout. This is a synthetic
+robustness stress test, not a geographic validation claim. See
+[`docs/community_holdout_robustness.md`](docs/community_holdout_robustness.md).
+
+### 9. Privacy-utility tradeoff across signal-loss scenarios
 
 ![Privacy utility tradeoff](docs/assets/privacy_utility_tradeoff.png)
 
-### 9. Higher cohort thresholds expose the fallback-utility tradeoff
+### 10. Higher cohort thresholds expose the fallback-utility tradeoff
 
 ![Cohort-threshold sensitivity](docs/assets/cohort_threshold_sensitivity.png)
 

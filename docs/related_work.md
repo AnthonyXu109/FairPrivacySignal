@@ -58,6 +58,16 @@ then applying the learned transformation to both subsets. FairPrivacySignal foll
 that pattern for privacy-safe aggregates: cohort statistics and service-level
 fallbacks are fitted from training households before holdout scoring.
 
+## Group-Held-Out Robustness
+
+The scikit-learn
+[`GroupShuffleSplit`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GroupShuffleSplit.html)
+documentation describes randomized train/test indices based on externally supplied
+groups, including time-based group splits as one example. FairPrivacySignal uses
+synthetic community IDs as grouping keys for an additional paired stress test. The
+diagnostic keeps training and evaluation communities disjoint without presenting
+the result as real geographic validation.
+
 ## Public-Reference Anchors
 
 The benchmark also uses a small tracked snapshot from the
