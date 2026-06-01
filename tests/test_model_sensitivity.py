@@ -41,7 +41,7 @@ def _raw_results() -> pd.DataFrame:
 
 def test_run_model_sensitivity_uses_both_model_builders(monkeypatch) -> None:
     observed_builders = []
-    observed_seeds = []
+    observed_options = []
 
     monkeypatch.setattr(
         model_sensitivity,
@@ -49,28 +49,25 @@ def test_run_model_sensitivity_uses_both_model_builders(monkeypatch) -> None:
         lambda events, scenario: events.assign(scenario=scenario),
     )
 
-    def fake_add_privacy_safe_features(events, seed):
-        observed_seeds.append(seed)
-        return events.assign(privacy_safe=True)
-
-    monkeypatch.setattr(
-        model_sensitivity,
-        "add_privacy_safe_features",
-        fake_add_privacy_safe_features,
-    )
-
     def fake_evaluate_model(
         frame,
         experiment,
         numeric_features,
         model_builder,
+        privacy_safe_feature_options,
     ):
         observed_builders.append(model_builder)
+        observed_options.append(privacy_safe_feature_options)
         return {
             "overall_auc": 0.60,
             "overall_ndcg_at_3": 0.55,
             "low_signal_ndcg_at_3": 0.45,
             "ndcg_gap_not_low_minus_low": 0.10,
+            "aggregate_reference_scope": (
+                "train_households_only"
+                if privacy_safe_feature_options is not None
+                else "not_applicable"
+            ),
         }
 
     monkeypatch.setattr(
@@ -85,11 +82,19 @@ def test_run_model_sensitivity_uses_both_model_builders(monkeypatch) -> None:
     )
 
     assert len(results) == 10
-    assert observed_seeds == [42, 42]
     assert observed_builders == [
         metadata["builder"]
         for metadata in model_sensitivity.MODELS.values()
         for _ in model_sensitivity.EXPERIMENTS
+    ]
+    assert observed_options == [
+        (
+            {"seed": 42}
+            if metadata["use_privacy_safe_features"]
+            else None
+        )
+        for _ in model_sensitivity.MODELS
+        for metadata in model_sensitivity.EXPERIMENTS.values()
     ]
 
 

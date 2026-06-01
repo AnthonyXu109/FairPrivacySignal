@@ -134,6 +134,11 @@ The privacy-safe recovery layer adds non-raw aggregate and contextual signals:
 
 This layer is intentionally simple and inspectable. It is not a claim of production-grade differential privacy. It is a benchmark mechanism for studying how aggregate substitutes can recover useful signal after raw behavioral features are suppressed.
 
+For holdout evaluation, cohort statistics and broad service-level fallback values
+are learned from training households only. The same learned mapping is then applied
+to both training and test events. Test households do not contribute to aggregate
+feature construction.
+
 ### 7.1 Aggregate-Noise Sensitivity
 
 The benchmark fixes one synthetic dataset and repeats privacy-safe recovery across
@@ -256,7 +261,7 @@ The current multi-seed result shows:
 - severe signal loss consistently reduces ranking utility
 - privacy-safe aggregate/contextual features partially recover ranking utility
 - policy-restricted + privacy-safe recovery improves utility over the policy-restricted baseline
-- fairness-aware variants produce modest low-signal gap improvements under the current synthetic configuration
+- fairness-aware variants have mixed low-signal gap effects across the current synthetic scenarios
 - fairness gaps remain diagnostic and require further evaluation
 
 ## 11. What the Current Benchmark Shows

@@ -6,14 +6,14 @@ Each recovery value is a paired aggregate-minus-baseline NDCG@3 difference for t
 
 | Scenario           | Underserved quartile   | Low-signal event share   | Overall recovery   | Low-signal recovery   |
 |:-------------------|:-----------------------|:-------------------------|:-------------------|:----------------------|
-| Severe signal loss | Q1 lower               | 31.7%                    | +0.017 +/- 0.024   | +0.023 +/- 0.036      |
-| Severe signal loss | Q2                     | 36.0%                    | +0.033 +/- 0.014   | +0.035 +/- 0.014      |
-| Severe signal loss | Q3                     | 39.4%                    | +0.007 +/- 0.004   | +0.004 +/- 0.023      |
-| Severe signal loss | Q4 higher              | 42.3%                    | +0.007 +/- 0.008   | +0.009 +/- 0.021      |
-| Policy restricted  | Q1 lower               | 31.7%                    | +0.012 +/- 0.016   | +0.009 +/- 0.031      |
-| Policy restricted  | Q2                     | 36.0%                    | +0.027 +/- 0.011   | +0.027 +/- 0.012      |
-| Policy restricted  | Q3                     | 39.4%                    | +0.008 +/- 0.003   | +0.002 +/- 0.020      |
-| Policy restricted  | Q4 higher              | 42.3%                    | +0.004 +/- 0.013   | -0.001 +/- 0.013      |
+| Severe signal loss | Q1 lower               | 31.7%                    | +0.021 +/- 0.025   | +0.030 +/- 0.031      |
+| Severe signal loss | Q2                     | 36.0%                    | +0.028 +/- 0.012   | +0.025 +/- 0.009      |
+| Severe signal loss | Q3                     | 39.4%                    | +0.008 +/- 0.006   | +0.008 +/- 0.024      |
+| Severe signal loss | Q4 higher              | 42.3%                    | +0.003 +/- 0.011   | +0.001 +/- 0.023      |
+| Policy restricted  | Q1 lower               | 31.7%                    | +0.013 +/- 0.017   | +0.010 +/- 0.029      |
+| Policy restricted  | Q2                     | 36.0%                    | +0.023 +/- 0.012   | +0.023 +/- 0.009      |
+| Policy restricted  | Q3                     | 39.4%                    | +0.010 +/- 0.003   | +0.004 +/- 0.019      |
+| Policy restricted  | Q4 higher              | 42.3%                    | +0.003 +/- 0.014   | -0.002 +/- 0.016      |
 
 ## Interpretation limits
 

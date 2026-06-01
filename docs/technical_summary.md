@@ -98,6 +98,10 @@ FairPrivacySignal currently includes:
     Groups distinct synthetic communities by underserved score and reports paired
     aggregate-minus-baseline recovery across five synthetic draws.
 
+21. **Train-fitted aggregate preprocessing**
+    Learns cohort statistics and service-level fallbacks from training households
+    before applying the same mapping to holdout events.
+
 ## 4. Current Benchmark Results
 
 The current benchmark results show:
@@ -106,7 +110,8 @@ The current benchmark results show:
 - Severe signal loss reduced ranking utility.
 - Privacy-safe aggregate features partially recovered utility under severe signal loss.
 - A hybrid policy-restricted setting using available policy-permitted signals plus privacy-safe aggregate features improved ranking utility over the policy-restricted baseline.
-- Fairness-aware recovery variants produced modest low-signal gap improvements under the current synthetic configuration, without eliminating the gap.
+- Fairness-aware recovery variants produced mixed low-signal gap effects across the
+  current synthetic scenarios, without eliminating the gap.
 - A paired feature ablation showed that the engagement aggregate provides most of
   the observed recovery in the current synthetic configuration, while combined
   cohort-context features add a modest increment under severe signal loss.

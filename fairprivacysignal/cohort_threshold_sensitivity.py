@@ -10,9 +10,10 @@ import pandas as pd
 from fairprivacysignal.privacy_recovery import (
     BASE_NUMERIC_FEATURES,
     PRIVACY_SAFE_NUMERIC_FEATURES,
+    apply_train_fitted_privacy_safe_features,
     evaluate_model,
+    split_household_events,
 )
-from fairprivacysignal.privacy_transforms import add_privacy_safe_features
 from fairprivacysignal.signal_loss import apply_signal_loss
 
 
@@ -47,20 +48,26 @@ def run_cohort_threshold_sensitivity(
             f"{scenario}_baseline",
             BASE_NUMERIC_FEATURES,
         )
+        train, test = split_household_events(signal_limited)
 
         for min_cohort_size in cohort_thresholds:
-            privacy_safe = add_privacy_safe_features(
-                signal_limited,
-                min_cohort_size=min_cohort_size,
-                dp_noise_scale=PRIVACY_NOISE_SCALE,
-                seed=PRIVACY_NOISE_SEED,
+            privacy_safe_options = {
+                "min_cohort_size": min_cohort_size,
+                "dp_noise_scale": PRIVACY_NOISE_SCALE,
+                "seed": PRIVACY_NOISE_SEED,
+            }
+            _, privacy_safe_test = apply_train_fitted_privacy_safe_features(
+                train,
+                test,
+                privacy_safe_feature_options=privacy_safe_options,
             )
             metrics = evaluate_model(
-                privacy_safe,
+                signal_limited,
                 f"{scenario}_with_privacy_safe_aggregates",
                 PRIVACY_SAFE_NUMERIC_FEATURES,
+                privacy_safe_feature_options=privacy_safe_options,
             )
-            cohort_suppression = privacy_safe.groupby(
+            cohort_suppression = privacy_safe_test.groupby(
                 [
                     "service_category",
                     "urbanicity",
@@ -77,7 +84,9 @@ def run_cohort_threshold_sensitivity(
                     "min_cohort_size": int(min_cohort_size),
                     "privacy_noise_scale": PRIVACY_NOISE_SCALE,
                     "privacy_noise_seed": PRIVACY_NOISE_SEED,
-                    "suppressed_event_share": privacy_safe["cohort_suppressed"].mean(),
+                    "suppressed_event_share": privacy_safe_test[
+                        "cohort_suppressed"
+                    ].mean(),
                     "suppressed_unique_cohort_share": cohort_suppression.mean(),
                     "baseline_overall_ndcg_at_3": baseline["overall_ndcg_at_3"],
                     "aggregate_overall_ndcg_at_3": metrics["overall_ndcg_at_3"],

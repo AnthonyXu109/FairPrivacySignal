@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Optional
 
 import numpy as np
 import pandas as pd
@@ -9,6 +10,7 @@ def add_privacy_safe_features(
     min_cohort_size: int = 50,
     dp_noise_scale: float = 1.0,
     seed: int = 42,
+    reference_events: Optional[pd.DataFrame] = None,
 ) -> pd.DataFrame:
     """
     Add privacy-safe aggregate/contextual features.
@@ -21,6 +23,7 @@ def add_privacy_safe_features(
     """
     rng = np.random.default_rng(seed)
     df = events.copy()
+    reference = events if reference_events is None else reference_events
 
     cohort_cols = [
         "service_category",
@@ -30,7 +33,7 @@ def add_privacy_safe_features(
     ]
 
     cohort_stats = (
-        df.groupby(cohort_cols, observed=False)
+        reference.groupby(cohort_cols, observed=False)
         .agg(
             cohort_size=("household_id", "nunique"),
             cohort_avg_engagement=("historical_service_engagement_count", "mean"),
@@ -72,7 +75,7 @@ def add_privacy_safe_features(
 
     # Fill suppressed or missing cohort aggregates with broad service-level aggregates.
     service_defaults = (
-        df.groupby("service_category", observed=False)
+        reference.groupby("service_category", observed=False)
         .agg(
             default_engagement=("historical_service_engagement_count", "mean"),
             default_underserved=("underserved_score", "mean"),
@@ -96,6 +99,7 @@ def add_privacy_safe_features(
     for safe_col, default_col in fill_map.items():
         df[safe_col] = df[safe_col].fillna(df[default_col])
 
+    df["cohort_size"] = df["cohort_size"].fillna(0).astype(int)
     df["cohort_suppressed"] = df["cohort_size"] < min_cohort_size
 
     # This feature represents a privacy-safer substitute for raw behavioral history.

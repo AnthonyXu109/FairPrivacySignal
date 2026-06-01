@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Callable, Dict, List, Optional
+from typing import Callable, Dict, List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -82,6 +82,40 @@ def build_model(numeric_features: List[str]) -> Pipeline:
     )
 
 
+def split_household_events(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    household_ids = df["household_id"].drop_duplicates()
+    train_households, test_households = train_test_split(
+        household_ids,
+        test_size=0.30,
+        random_state=42,
+    )
+    train = df[df["household_id"].isin(train_households)].copy()
+    test = df[df["household_id"].isin(test_households)].copy()
+    return train, test
+
+
+def apply_train_fitted_privacy_safe_features(
+    train: pd.DataFrame,
+    test: pd.DataFrame,
+    privacy_safe_feature_options: Optional[Dict[str, object]] = None,
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    options = privacy_safe_feature_options or {}
+    reference = train.copy()
+    transformed_train = add_privacy_safe_features(
+        train,
+        reference_events=reference,
+        **options,
+    )
+    transformed_test = add_privacy_safe_features(
+        test,
+        reference_events=reference,
+        **options,
+    )
+    transformed_train["aggregate_reference_scope"] = "train_households_only"
+    transformed_test["aggregate_reference_scope"] = "train_households_only"
+    return transformed_train, transformed_test
+
+
 def evaluate_model(
     df: pd.DataFrame,
     experiment: str,
@@ -90,17 +124,18 @@ def evaluate_model(
     low_signal_blend_weight: float = 0.75,
     relevant_low_signal_weight: float = 4.0,
     model_builder: Optional[Callable[[List[str]], Pipeline]] = None,
+    privacy_safe_feature_options: Optional[Dict[str, object]] = None,
 ) -> Dict[str, float]:
-    household_ids = df["household_id"].drop_duplicates()
+    train, test = split_household_events(df)
+    aggregate_reference_scope = "not_applicable"
 
-    train_households, test_households = train_test_split(
-        household_ids,
-        test_size=0.30,
-        random_state=42,
-    )
-
-    train = df[df["household_id"].isin(train_households)].copy()
-    test = df[df["household_id"].isin(test_households)].copy()
+    if privacy_safe_feature_options is not None:
+        train, test = apply_train_fitted_privacy_safe_features(
+            train,
+            test,
+            privacy_safe_feature_options=privacy_safe_feature_options,
+        )
+        aggregate_reference_scope = "train_households_only"
 
     features = numeric_features + CATEGORICAL_FEATURES
     target = "relevant"
@@ -166,6 +201,7 @@ def evaluate_model(
         "ndcg_gap_not_low_minus_low": not_low_ndcg - low_ndcg,
         "avg_privacy_exposure_score": test["privacy_exposure_score"].mean(),
         "behavioral_available_share": test["behavioral_available"].mean(),
+        "aggregate_reference_scope": aggregate_reference_scope,
     }
 
 
@@ -193,24 +229,22 @@ def run_experiments(
         )
     )
 
-    severe_loss_privacy_safe = add_privacy_safe_features(
-        severe_loss,
-        seed=privacy_noise_seed,
-    )
     experiments.append(
         evaluate_model(
-            severe_loss_privacy_safe,
+            severe_loss,
             "severe_signal_loss_with_privacy_safe_aggregates",
             PRIVACY_SAFE_NUMERIC_FEATURES,
+            privacy_safe_feature_options={"seed": privacy_noise_seed},
         )
     )
 
     experiments.append(
         evaluate_model(
-            severe_loss_privacy_safe,
+            severe_loss,
             "severe_signal_loss_with_privacy_safe_fairness_aware",
             PRIVACY_SAFE_NUMERIC_FEATURES,
             fairness_aware=True,
+            privacy_safe_feature_options={"seed": privacy_noise_seed},
         )
     )
 
@@ -223,24 +257,22 @@ def run_experiments(
         )
     )
 
-    policy_restricted_privacy_safe = add_privacy_safe_features(
-        policy_restricted,
-        seed=privacy_noise_seed,
-    )
     experiments.append(
         evaluate_model(
-            policy_restricted_privacy_safe,
+            policy_restricted,
             "policy_restricted_with_privacy_safe_aggregates",
             PRIVACY_SAFE_NUMERIC_FEATURES,
+            privacy_safe_feature_options={"seed": privacy_noise_seed},
         )
     )
 
     experiments.append(
         evaluate_model(
-            policy_restricted_privacy_safe,
+            policy_restricted,
             "policy_restricted_with_privacy_safe_fairness_aware",
             PRIVACY_SAFE_NUMERIC_FEATURES,
             fairness_aware=True,
+            privacy_safe_feature_options={"seed": privacy_noise_seed},
         )
     )
 

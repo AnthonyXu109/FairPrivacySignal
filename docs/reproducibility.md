@@ -20,6 +20,7 @@ This command regenerates:
 - signal-loss summaries
 - baseline ranking metrics
 - privacy-safe recovery metrics
+- train-fitted aggregate preprocessing for holdout evaluation
 - fairness-aware recovery diagnostics
 - multi-seed benchmark results
 - capacity-constrained allocation metrics

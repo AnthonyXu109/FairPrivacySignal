@@ -34,15 +34,21 @@ def test_run_cohort_threshold_sensitivity_forwards_threshold(monkeypatch) -> Non
         lambda events, scenario: events.assign(scenario=scenario),
     )
 
-    def fake_add_privacy_safe_features(
-        events,
-        min_cohort_size,
-        dp_noise_scale,
-        seed,
+    monkeypatch.setattr(
+        cohort_threshold_sensitivity,
+        "split_household_events",
+        lambda events: (events, events),
+    )
+
+    def fake_apply_train_fitted_privacy_safe_features(
+        train,
+        test,
+        privacy_safe_feature_options,
     ):
-        observed_thresholds.append(min_cohort_size)
-        return events.assign(
-            cohort_suppressed=min_cohort_size > 25,
+        threshold = privacy_safe_feature_options["min_cohort_size"]
+        observed_thresholds.append(threshold)
+        return train, test.assign(
+            cohort_suppressed=threshold > 25,
             service_category="example",
             urbanicity="urban",
             income_band="middle",
@@ -51,15 +57,15 @@ def test_run_cohort_threshold_sensitivity_forwards_threshold(monkeypatch) -> Non
 
     monkeypatch.setattr(
         cohort_threshold_sensitivity,
-        "add_privacy_safe_features",
-        fake_add_privacy_safe_features,
+        "apply_train_fitted_privacy_safe_features",
+        fake_apply_train_fitted_privacy_safe_features,
     )
     monkeypatch.setattr(
         cohort_threshold_sensitivity,
         "evaluate_model",
-        lambda frame, experiment, numeric_features: {
-            "overall_ndcg_at_3": 0.53 if "cohort_suppressed" in frame else 0.50,
-            "low_signal_ndcg_at_3": 0.44 if "cohort_suppressed" in frame else 0.40,
+        lambda frame, experiment, numeric_features, privacy_safe_feature_options=None: {
+            "overall_ndcg_at_3": 0.53 if privacy_safe_feature_options else 0.50,
+            "low_signal_ndcg_at_3": 0.44 if privacy_safe_feature_options else 0.40,
         },
     )
 

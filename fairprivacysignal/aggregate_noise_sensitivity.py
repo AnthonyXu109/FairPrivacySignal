@@ -12,7 +12,6 @@ from fairprivacysignal.privacy_recovery import (
     PRIVACY_SAFE_NUMERIC_FEATURES,
     evaluate_model,
 )
-from fairprivacysignal.privacy_transforms import add_privacy_safe_features
 from fairprivacysignal.signal_loss import apply_signal_loss
 
 
@@ -49,15 +48,14 @@ def run_noise_sensitivity(
 
         for noise_scale in noise_scales:
             for noise_seed in noise_seeds:
-                privacy_safe = add_privacy_safe_features(
-                    signal_limited,
-                    dp_noise_scale=noise_scale,
-                    seed=noise_seed,
-                )
                 metrics = evaluate_model(
-                    privacy_safe,
+                    signal_limited,
                     f"{scenario}_with_privacy_safe_aggregates",
                     PRIVACY_SAFE_NUMERIC_FEATURES,
+                    privacy_safe_feature_options={
+                        "dp_noise_scale": noise_scale,
+                        "seed": noise_seed,
+                    },
                 )
                 rows.append(
                     {

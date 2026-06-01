@@ -39,22 +39,32 @@ def test_run_noise_sensitivity_forwards_scale_and_seed(monkeypatch) -> None:
         lambda events, scenario: events.assign(scenario=scenario),
     )
 
-    def fake_add_privacy_safe_features(events, dp_noise_scale, seed):
-        observed_parameters.append((dp_noise_scale, seed))
-        return events.assign(dp_noise_scale=dp_noise_scale)
+    def fake_evaluate_model(
+        frame,
+        experiment,
+        numeric_features,
+        privacy_safe_feature_options=None,
+    ):
+        if privacy_safe_feature_options is not None:
+            observed_parameters.append(
+                (
+                    privacy_safe_feature_options["dp_noise_scale"],
+                    privacy_safe_feature_options["seed"],
+                )
+            )
+        return {
+            "overall_ndcg_at_3": (
+                0.55 if privacy_safe_feature_options is not None else 0.50
+            ),
+            "low_signal_ndcg_at_3": (
+                0.45 if privacy_safe_feature_options is not None else 0.40
+            ),
+        }
 
     monkeypatch.setattr(
         aggregate_noise_sensitivity,
-        "add_privacy_safe_features",
-        fake_add_privacy_safe_features,
-    )
-    monkeypatch.setattr(
-        aggregate_noise_sensitivity,
         "evaluate_model",
-        lambda frame, experiment, numeric_features: {
-            "overall_ndcg_at_3": 0.55 if "dp_noise_scale" in frame else 0.50,
-            "low_signal_ndcg_at_3": 0.45 if "dp_noise_scale" in frame else 0.40,
-        },
+        fake_evaluate_model,
     )
 
     results = aggregate_noise_sensitivity.run_noise_sensitivity(
