@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 title: "FairPrivacySignal: A Synthetic Benchmark for Privacy-Preserving and Fairness-Aware Ranking Under Signal Loss"
-version: "0.1.0"
+version: "0.1.1"
 authors:
   - family-names: Xu
     given-names: Chang

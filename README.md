@@ -1,6 +1,8 @@
 # FairPrivacySignal
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20130952.svg)](https://doi.org/10.5281/zenodo.20130952)
+[![Benchmark checks](https://github.com/AnthonyXu109/FairPrivacySignal/actions/workflows/benchmark-checks.yml/badge.svg)](https://github.com/AnthonyXu109/FairPrivacySignal/actions/workflows/benchmark-checks.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 FairPrivacySignal is a public, non-confidential synthetic-data benchmark for studying privacy-preserving and fairness-aware AI ranking and matching systems under signal loss.
 
@@ -220,3 +222,6 @@ All results are based on synthetic data. The benchmark is designed to illustrate
 ## Archived release
 
 FairPrivacySignal v0.1.1 has been archived on Zenodo with DOI: [10.5281/zenodo.20130952](https://doi.org/10.5281/zenodo.20130952).
+
+Citation metadata is available in [`CITATION.cff`](CITATION.cff). The repository is
+released under the [`MIT License`](LICENSE).
