@@ -74,6 +74,10 @@ FairPrivacySignal currently includes:
     Repeats privacy-safe recovery across DP-style noise stress scales and reproducible
     perturbations while holding the synthetic dataset fixed.
 
+15. **Continuous benchmark verification**
+    Runs regression tests, Python compilation checks, the reproducible benchmark
+    pipeline, and the methodological validation gate for repository updates.
+
 ## 4. Current Benchmark Results
 
 The current benchmark results show:

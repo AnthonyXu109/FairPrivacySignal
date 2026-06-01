@@ -52,6 +52,15 @@ FairPrivacySignal includes a one-command benchmark pipeline. From a clean checko
 
 The full reproducibility guide is available in [`docs/reproducibility.md`](docs/reproducibility.md).
 
+To run the regression tests, compilation check, full benchmark pipeline, and final
+validation gate together:
+
+    bash scripts/verify_benchmark.sh
+
+The repository workflow in
+[`benchmark-checks.yml`](.github/workflows/benchmark-checks.yml) runs the same
+verification sequence for pull requests and `main` updates.
+
 ## Benchmark methodology
 
 For a detailed explanation of the benchmark design, assumptions, signal-loss scenarios, privacy-safe recovery layer, metrics, and limitations, see [`docs/benchmark_design.md`](docs/benchmark_design.md).
