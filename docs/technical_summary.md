@@ -78,6 +78,10 @@ FairPrivacySignal currently includes:
     Runs regression tests, Python compilation checks, the reproducible benchmark
     pipeline, and the methodological validation gate for repository updates.
 
+16. **Cohort-threshold sensitivity analysis**
+    Sweeps the k-threshold for cohort aggregates and reports fallback coverage
+    alongside overall and low-signal utility recovery.
+
 ## 4. Current Benchmark Results
 
 The current benchmark results show:

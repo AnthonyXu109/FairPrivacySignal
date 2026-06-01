@@ -92,6 +92,32 @@ def _aggregate_noise_sensitivity_raw() -> pd.DataFrame:
     )
 
 
+def _cohort_threshold_sensitivity() -> pd.DataFrame:
+    return pd.DataFrame(
+        [
+            {
+                "scenario": scenario,
+                "min_cohort_size": threshold,
+                "suppressed_event_share": suppressed_share,
+                "suppressed_unique_cohort_share": suppressed_share,
+                "baseline_overall_ndcg_at_3": 0.50,
+                "aggregate_overall_ndcg_at_3": 0.53,
+                "baseline_low_signal_ndcg_at_3": 0.40,
+                "aggregate_low_signal_ndcg_at_3": 0.44,
+            }
+            for scenario in benchmark_validation.EXPECTED_AGGREGATE_NOISE_SCENARIOS
+            for threshold, suppressed_share in [
+                (25, 0.00),
+                (50, 0.01),
+                (100, 0.03),
+                (200, 0.12),
+                (400, 0.37),
+                (800, 0.56),
+            ]
+        ]
+    )
+
+
 def _multiseed_recovery_raw() -> pd.DataFrame:
     return pd.DataFrame(
         [
@@ -124,6 +150,7 @@ def _checks() -> pd.DataFrame:
         score_calibration=_score_calibration(),
         public_reference=_public_reference(),
         aggregate_noise_sensitivity_raw=_aggregate_noise_sensitivity_raw(),
+        cohort_threshold_sensitivity=_cohort_threshold_sensitivity(),
         multiseed_recovery_raw=_multiseed_recovery_raw(),
         multiseed_capacity_raw=_multiseed_capacity_raw(),
     )

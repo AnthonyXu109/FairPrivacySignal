@@ -28,6 +28,7 @@ This command regenerates:
 - score-matched subgroup calibration metrics
 - public-reference calibration metrics from a tracked QuickFacts snapshot
 - aggregate-noise sensitivity metrics across reproducible perturbations
+- cohort-threshold sensitivity metrics for aggregate fallback coverage
 - benchmark overview figure
 - architecture diagram
 - benchmark validation report
@@ -52,6 +53,7 @@ Signal-suppression scenarios and privacy-exposure weights are loaded from:
     docs/assets/score_matched_calibration.png
     docs/assets/public_reference_calibration.png
     docs/assets/aggregate_noise_sensitivity.png
+    docs/assets/cohort_threshold_sensitivity.png
     docs/multiseed_results.md
     docs/validation_report.md
     outputs/tables/multiseed_privacy_recovery_summary.csv
@@ -65,6 +67,7 @@ Signal-suppression scenarios and privacy-exposure weights are loaded from:
     outputs/tables/public_reference_calibration.csv
     outputs/tables/aggregate_noise_sensitivity_raw.csv
     outputs/tables/aggregate_noise_sensitivity_summary.csv
+    outputs/tables/cohort_threshold_sensitivity.csv
     outputs/tables/benchmark_validation_checks.csv
 
 ## 4. Run the regression tests
