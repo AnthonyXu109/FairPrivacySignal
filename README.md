@@ -18,6 +18,7 @@ The same technical pattern can apply to public agencies, healthcare outreach, no
 - Readable policy-rule configuration with validation
 - Cohort aggregation and k-thresholding
 - Differential-privacy-style noise for aggregate features
+- Aggregate-noise sensitivity analysis across reproducible perturbations
 - Contextual and geography-level signals
 - Utility metrics such as AUC and NDCG@K
 - Fairness metrics for low-signal or underserved participants
@@ -99,7 +100,17 @@ a real population. See [`docs/public_reference_calibration.md`](docs/public_refe
 
 ![Privacy recovery NDCG](docs/assets/privacy_recovery_ndcg.png)
 
-### 4. Privacy-utility tradeoff across signal-loss scenarios
+### 4. Aggregate recovery remains inspectable across noise strengths
+
+![Aggregate-noise sensitivity](docs/assets/aggregate_noise_sensitivity.png)
+
+The benchmark varies the DP-style aggregate-noise stress scale and repeats each
+setting across three reproducible noise realizations. This exposes whether the
+recovery result depends on one favorable perturbation or parameter point. The sweep
+is a stress diagnostic, not a formal privacy-budget analysis. See
+[`docs/aggregate_noise_sensitivity.md`](docs/aggregate_noise_sensitivity.md).
+
+### 5. Privacy-utility tradeoff across signal-loss scenarios
 
 ![Privacy utility tradeoff](docs/assets/privacy_utility_tradeoff.png)
 

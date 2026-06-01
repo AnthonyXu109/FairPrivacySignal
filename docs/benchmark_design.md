@@ -134,7 +134,17 @@ The privacy-safe recovery layer adds non-raw aggregate and contextual signals:
 
 This layer is intentionally simple and inspectable. It is not a claim of production-grade differential privacy. It is a benchmark mechanism for studying how aggregate substitutes can recover useful signal after raw behavioral features are suppressed.
 
-### 7.1 Fairness-Aware Recovery Variant
+### 7.1 Aggregate-Noise Sensitivity
+
+The benchmark fixes one synthetic dataset and repeats privacy-safe recovery across
+multiple DP-style aggregate-noise stress scales and reproducible noise seeds. This
+isolates the transformation's sensitivity from variation in the generated
+population and makes the default noise setting auditable.
+
+The sweep is not a formal privacy-budget analysis. See
+[`docs/aggregate_noise_sensitivity.md`](aggregate_noise_sensitivity.md).
+
+### 7.2 Fairness-Aware Recovery Variant
 
 The fairness-aware variant trains a low-signal-specific model after privacy-safe aggregate recovery. Relevant low-signal examples receive additional training weight, and the low-signal-specific predictions are blended with predictions from the global model.
 
@@ -252,7 +262,8 @@ See [`docs/capacity_allocation.md`](capacity_allocation.md) for details.
 The one-command pipeline ends with machine-checked methodological invariants. These
 checks cover signal-loss scenario completeness, privacy-exposure monotonicity,
 bounded metrics, valid allocation counts, score-matched calibration coverage,
-documented public-reference targets, and multi-seed completeness.
+documented public-reference targets, aggregate-noise sensitivity coverage, and
+multi-seed completeness.
 
 Required checks fail the pipeline when an invariant drifts. Informational checks
 record current result behavior without blocking future experimentation. The current

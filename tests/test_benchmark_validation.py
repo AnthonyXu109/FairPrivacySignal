@@ -73,6 +73,25 @@ def _public_reference() -> pd.DataFrame:
     )
 
 
+def _aggregate_noise_sensitivity_raw() -> pd.DataFrame:
+    return pd.DataFrame(
+        [
+            {
+                "scenario": scenario,
+                "noise_scale": noise_scale,
+                "noise_seed": noise_seed,
+                "baseline_overall_ndcg_at_3": 0.50,
+                "aggregate_overall_ndcg_at_3": 0.53,
+                "baseline_low_signal_ndcg_at_3": 0.40,
+                "aggregate_low_signal_ndcg_at_3": 0.44,
+            }
+            for scenario in benchmark_validation.EXPECTED_AGGREGATE_NOISE_SCENARIOS
+            for noise_scale in benchmark_validation.EXPECTED_AGGREGATE_NOISE_SCALES
+            for noise_seed in benchmark_validation.EXPECTED_AGGREGATE_NOISE_SEEDS
+        ]
+    )
+
+
 def _multiseed_recovery_raw() -> pd.DataFrame:
     return pd.DataFrame(
         [
@@ -104,6 +123,7 @@ def _checks() -> pd.DataFrame:
         capacity=_capacity(),
         score_calibration=_score_calibration(),
         public_reference=_public_reference(),
+        aggregate_noise_sensitivity_raw=_aggregate_noise_sensitivity_raw(),
         multiseed_recovery_raw=_multiseed_recovery_raw(),
         multiseed_capacity_raw=_multiseed_capacity_raw(),
     )

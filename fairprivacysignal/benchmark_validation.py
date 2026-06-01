@@ -29,6 +29,12 @@ EXPECTED_PUBLIC_REFERENCE_METRICS = {
     "median_household_income",
     "broadband_subscription_share",
 }
+EXPECTED_AGGREGATE_NOISE_SCENARIOS = {
+    "severe_signal_loss",
+    "policy_restricted",
+}
+EXPECTED_AGGREGATE_NOISE_SCALES = {0.0, 0.5, 1.0, 2.0, 4.0}
+EXPECTED_AGGREGATE_NOISE_SEEDS = {7, 42, 101}
 
 
 def _check(
@@ -61,6 +67,7 @@ def build_validation_checks(
     capacity: pd.DataFrame,
     score_calibration: pd.DataFrame,
     public_reference: pd.DataFrame,
+    aggregate_noise_sensitivity_raw: pd.DataFrame,
     multiseed_recovery_raw: pd.DataFrame,
     multiseed_capacity_raw: pd.DataFrame,
 ) -> pd.DataFrame:
@@ -220,6 +227,36 @@ def build_validation_checks(
         )
     )
 
+    aggregate_noise_seed_counts = aggregate_noise_sensitivity_raw.groupby(
+        ["scenario", "noise_scale"]
+    )["noise_seed"].nunique()
+    aggregate_noise_metrics = aggregate_noise_sensitivity_raw[
+        [
+            "baseline_overall_ndcg_at_3",
+            "aggregate_overall_ndcg_at_3",
+            "baseline_low_signal_ndcg_at_3",
+            "aggregate_low_signal_ndcg_at_3",
+        ]
+    ]
+    checks.append(
+        _check(
+            "aggregate-noise sensitivity coverage is complete",
+            "calibration",
+            set(aggregate_noise_sensitivity_raw["scenario"])
+            == EXPECTED_AGGREGATE_NOISE_SCENARIOS
+            and set(aggregate_noise_sensitivity_raw["noise_scale"])
+            == EXPECTED_AGGREGATE_NOISE_SCALES
+            and set(aggregate_noise_sensitivity_raw["noise_seed"])
+            == EXPECTED_AGGREGATE_NOISE_SEEDS
+            and (aggregate_noise_seed_counts == len(EXPECTED_AGGREGATE_NOISE_SEEDS)).all()
+            and _columns_are_bounded(
+                aggregate_noise_metrics,
+                list(aggregate_noise_metrics.columns),
+            ),
+            "two scenarios cover five stress scales and three aggregate-noise seeds",
+        )
+    )
+
     recovery_seed_counts = multiseed_recovery_raw.groupby("experiment")["seed"].nunique()
     checks.append(
         _check(
@@ -312,6 +349,9 @@ def main() -> None:
         ),
         public_reference=pd.read_csv(
             tables_dir / "public_reference_calibration.csv"
+        ),
+        aggregate_noise_sensitivity_raw=pd.read_csv(
+            tables_dir / "aggregate_noise_sensitivity_raw.csv"
         ),
         multiseed_recovery_raw=pd.read_csv(
             tables_dir / "multiseed_privacy_recovery_raw.csv"

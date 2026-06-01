@@ -9,6 +9,7 @@ python -m fairprivacysignal.public_reference_calibration
 python -m fairprivacysignal.signal_loss
 python -m fairprivacysignal.ranking
 python -m fairprivacysignal.privacy_recovery
+python -m fairprivacysignal.aggregate_noise_sensitivity
 python -m fairprivacysignal.visualize_results
 python -m fairprivacysignal.capacity_allocation
 python -m fairprivacysignal.capacity_sensitivity

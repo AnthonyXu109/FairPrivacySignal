@@ -70,6 +70,10 @@ FairPrivacySignal currently includes:
     Compares selected synthetic community priors with tracked Census QuickFacts anchors
     while reporting gaps rather than automatically fitting the generator.
 
+14. **Aggregate-noise sensitivity analysis**
+    Repeats privacy-safe recovery across DP-style noise stress scales and reproducible
+    perturbations while holding the synthetic dataset fixed.
+
 ## 4. Current Benchmark Results
 
 The current benchmark results show:

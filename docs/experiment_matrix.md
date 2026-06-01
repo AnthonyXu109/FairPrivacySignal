@@ -42,6 +42,7 @@ This document summarizes the current and planned FairPrivacySignal experiments.
 | Selection-rate gap | Compare low-signal and not-low-signal allocation rates |
 | Score-matched subgroup calibration | Compare observed relevance for low-signal and not-low-signal events within shared predicted-score bins |
 | Public-reference calibration | Compare selected synthetic community priors with tracked Census QuickFacts anchors without automatic fitting |
+| Aggregate-noise sensitivity | Repeat privacy-safe recovery across stress scales and noise realizations while holding the synthetic dataset fixed |
 
 ## Planned Experiments
 
