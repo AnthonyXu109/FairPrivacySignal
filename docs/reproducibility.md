@@ -71,6 +71,18 @@ Signal-suppression scenarios and privacy-exposure weights are loaded from:
 
     python -m pytest -q
 
-## 5. Notes
+## 5. Run the complete verification sequence
+
+To run the regression tests, Python compilation check, full benchmark pipeline, and
+final validation gate together:
+
+    bash scripts/verify_benchmark.sh
+
+The repository workflow in
+[`benchmark-checks.yml`](../.github/workflows/benchmark-checks.yml) runs the same
+verification sequence for pull requests and `main` updates. It uploads the generated
+validation report so that the completed methodological checks remain inspectable.
+
+## 6. Notes
 
 Generated CSV files under `data/synthetic/` and `outputs/` are intentionally not tracked by Git. The repository tracks source code, documentation, and selected figures used in the README.
