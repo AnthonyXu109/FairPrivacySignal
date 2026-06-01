@@ -46,3 +46,11 @@ FairPrivacySignal therefore prioritizes:
 - tracked figures generated from auditable CSV outputs
 - focused regression tests for experiment orchestration
 - explicit limitations and non-confidential synthetic-data framing
+
+## Public-Reference Anchors
+
+The benchmark also uses a small tracked snapshot from the
+[U.S. Census Bureau QuickFacts United States page](https://www.census.gov/quickfacts/fact/table/US/PST045225)
+to make selected synthetic context priors inspectable. The comparison reports gaps
+without claiming that synthetic communities are representative of a real
+population. See [`docs/public_reference_calibration.md`](public_reference_calibration.md).
