@@ -53,6 +53,26 @@ def _score_calibration() -> pd.DataFrame:
     )
 
 
+def _public_reference() -> pd.DataFrame:
+    return pd.DataFrame(
+        {
+            "metric": [
+                "median_household_income",
+                "broadband_subscription_share",
+            ],
+            "reference_value": [80734, 0.91],
+            "synthetic_value": [65000, 0.80],
+            "synthetic_minus_reference": [-15734, -0.11],
+            "relative_gap_vs_reference": [-0.19, -0.12],
+            "synthetic_as_share_of_reference": [0.81, 0.88],
+            "source_url": [
+                "https://www.census.gov/quickfacts/example",
+                "https://www.census.gov/quickfacts/example",
+            ],
+        }
+    )
+
+
 def _multiseed_recovery_raw() -> pd.DataFrame:
     return pd.DataFrame(
         [
@@ -83,6 +103,7 @@ def _checks() -> pd.DataFrame:
         recovery=_recovery(),
         capacity=_capacity(),
         score_calibration=_score_calibration(),
+        public_reference=_public_reference(),
         multiseed_recovery_raw=_multiseed_recovery_raw(),
         multiseed_capacity_raw=_multiseed_capacity_raw(),
     )

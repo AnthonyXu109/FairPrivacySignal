@@ -25,6 +25,10 @@ EXPECTED_RECOVERY_EXPERIMENTS = [
 
 
 EXPECTED_SEEDS = {7, 11, 23, 42, 101}
+EXPECTED_PUBLIC_REFERENCE_METRICS = {
+    "median_household_income",
+    "broadband_subscription_share",
+}
 
 
 def _check(
@@ -56,6 +60,7 @@ def build_validation_checks(
     recovery: pd.DataFrame,
     capacity: pd.DataFrame,
     score_calibration: pd.DataFrame,
+    public_reference: pd.DataFrame,
     multiseed_recovery_raw: pd.DataFrame,
     multiseed_capacity_raw: pd.DataFrame,
 ) -> pd.DataFrame:
@@ -191,6 +196,30 @@ def build_validation_checks(
         )
     )
 
+    public_reference_metrics = set(public_reference["metric"])
+    public_reference_values = public_reference[
+        [
+            "reference_value",
+            "synthetic_value",
+            "synthetic_minus_reference",
+            "relative_gap_vs_reference",
+            "synthetic_as_share_of_reference",
+        ]
+    ].to_numpy(dtype=float)
+    checks.append(
+        _check(
+            "public-reference calibration targets are documented",
+            "calibration",
+            public_reference_metrics == EXPECTED_PUBLIC_REFERENCE_METRICS
+            and np.isfinite(public_reference_values).all()
+            and (public_reference["reference_value"] > 0).all()
+            and public_reference["source_url"]
+            .str.startswith("https://www.census.gov/")
+            .all(),
+            "tracked Census QuickFacts targets are present with finite comparison metrics",
+        )
+    )
+
     recovery_seed_counts = multiseed_recovery_raw.groupby("experiment")["seed"].nunique()
     checks.append(
         _check(
@@ -280,6 +309,9 @@ def main() -> None:
         capacity=pd.read_csv(tables_dir / "capacity_allocation_metrics.csv"),
         score_calibration=pd.read_csv(
             tables_dir / "score_matched_calibration_summary.csv"
+        ),
+        public_reference=pd.read_csv(
+            tables_dir / "public_reference_calibration.csv"
         ),
         multiseed_recovery_raw=pd.read_csv(
             tables_dir / "multiseed_privacy_recovery_raw.csv"

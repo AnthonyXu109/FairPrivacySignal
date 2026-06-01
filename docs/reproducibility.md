@@ -26,6 +26,7 @@ This command regenerates:
 - capacity-sensitivity frontier metrics
 - multi-seed capacity-sensitivity metrics
 - score-matched subgroup calibration metrics
+- public-reference calibration metrics from a tracked QuickFacts snapshot
 - benchmark overview figure
 - architecture diagram
 - benchmark validation report
@@ -33,6 +34,7 @@ This command regenerates:
 Signal-suppression scenarios and privacy-exposure weights are loaded from:
 
     config/policy_rules.json
+    config/public_reference_targets.csv
 
 ## 3. Key result files
 
@@ -47,6 +49,7 @@ Signal-suppression scenarios and privacy-exposure weights are loaded from:
     docs/assets/capacity_sensitivity_frontier.png
     docs/assets/multiseed_capacity_sensitivity.png
     docs/assets/score_matched_calibration.png
+    docs/assets/public_reference_calibration.png
     docs/multiseed_results.md
     docs/validation_report.md
     outputs/tables/multiseed_privacy_recovery_summary.csv
@@ -57,6 +60,7 @@ Signal-suppression scenarios and privacy-exposure weights are loaded from:
     outputs/tables/multiseed_capacity_sensitivity_summary.csv
     outputs/tables/score_matched_calibration_bins.csv
     outputs/tables/score_matched_calibration_summary.csv
+    outputs/tables/public_reference_calibration.csv
     outputs/tables/benchmark_validation_checks.csv
 
 ## 4. Run the regression tests

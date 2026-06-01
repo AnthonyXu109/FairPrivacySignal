@@ -92,7 +92,20 @@ Each household-service pair receives a synthetic relevance label. Relevance is g
 
 Service-specific engagement is intentionally important because it allows signal loss to affect within-household ranking order, not merely global classification quality.
 
-## 5. Signal-Loss Scenarios
+## 5. Public-Reference Calibration Diagnostic
+
+The benchmark compares selected synthetic community-context priors against a
+tracked U.S. Census Bureau QuickFacts snapshot. The current diagnostic reports
+population-weighted synthetic averages for median income and broadband access
+alongside national public-reference anchors.
+
+This comparison exposes synthetic-prior gaps without automatically fitting the
+generator to public values. It is directional only: community-level synthetic
+context variables are not equivalent to national household-level statistics, and
+the comparison does not establish representativeness. See
+[`docs/public_reference_calibration.md`](public_reference_calibration.md).
+
+## 6. Signal-Loss Scenarios
 
 FairPrivacySignal evaluates multiple signal availability scenarios.
 
@@ -109,7 +122,7 @@ The executable scenario flags and privacy-exposure weights are stored in
 [`docs/policy_rules.md`](policy_rules.md) for the readable rule table and validation
 behavior.
 
-## 6. Privacy-Safe Recovery Design
+## 7. Privacy-Safe Recovery Design
 
 The privacy-safe recovery layer adds non-raw aggregate and contextual signals:
 
@@ -121,7 +134,7 @@ The privacy-safe recovery layer adds non-raw aggregate and contextual signals:
 
 This layer is intentionally simple and inspectable. It is not a claim of production-grade differential privacy. It is a benchmark mechanism for studying how aggregate substitutes can recover useful signal after raw behavioral features are suppressed.
 
-### 6.1 Fairness-Aware Recovery Variant
+### 7.1 Fairness-Aware Recovery Variant
 
 The fairness-aware variant trains a low-signal-specific model after privacy-safe aggregate recovery. Relevant low-signal examples receive additional training weight, and the low-signal-specific predictions are blended with predictions from the global model.
 
@@ -129,7 +142,7 @@ Extra positive weighting shifts the probability scale of a logistic model. Befor
 
 This variant is an experimental baseline, not a claim that fairness gaps are solved. The benchmark reports its utility and low-signal metrics alongside the simpler privacy-safe aggregate baseline.
 
-## 7. Ranking Model
+## 8. Ranking Model
 
 The current benchmark uses an interpretable baseline model rather than a complex neural model.
 
@@ -142,30 +155,30 @@ This is intentional:
 
 Future versions can add gradient-boosted trees, learning-to-rank objectives, or neural ranking models, but the v0.x baseline prioritizes transparency.
 
-## 8. Evaluation Metrics
+## 9. Evaluation Metrics
 
 FairPrivacySignal reports three categories of metrics.
 
-### 8.1 Utility
+### 9.1 Utility
 
 - AUC
 - NDCG@3
 
 NDCG@3 is emphasized because the benchmark is a ranking task: the system must recommend the most relevant services near the top of the list.
 
-### 8.2 Privacy Exposure
+### 9.2 Privacy Exposure
 
 The benchmark uses an interpretable privacy exposure score. Higher scores indicate more individual-level behavioral signal remains available to the model.
 
 This is not a formal privacy guarantee. It is a diagnostic proxy used to compare scenarios.
 
-### 8.3 Low-Signal Fairness Diagnostics
+### 9.3 Low-Signal Fairness Diagnostics
 
 The benchmark tracks low-signal NDCG@3 and the NDCG gap between not-low-signal and low-signal households.
 
 The project does not claim that the current privacy-safe recovery layer solves fairness. Instead, it reports fairness gaps explicitly so that utility recovery does not hide unequal downstream effects.
 
-### 8.4 Score-Matched Subgroup Calibration
+### 9.4 Score-Matched Subgroup Calibration
 
 The benchmark also places test-set events into shared predicted-score bins and
 compares observed relevance rates for low-signal and not-low-signal groups within
@@ -175,7 +188,7 @@ absolute matched relevance gap.
 This is a lightweight diagnostic inspired by ranking-calibration research. It does
 not implement a formal matched-pair estimator or prove that a ranking policy is fair.
 
-## 9. Multi-Seed Evaluation
+## 10. Multi-Seed Evaluation
 
 The benchmark runs the privacy-recovery experiment across multiple synthetic seeds.
 
@@ -191,13 +204,13 @@ The current multi-seed result shows:
 - fairness-aware variants produce modest low-signal gap improvements under the current synthetic configuration
 - fairness gaps remain diagnostic and require further evaluation
 
-## 10. What the Current Benchmark Shows
+## 11. What the Current Benchmark Shows
 
 The current version supports a modest, evidence-aligned claim:
 
 > Privacy-driven signal loss can reduce ranking utility in synthetic public-service matching. Privacy-safe aggregate and contextual features can partially recover utility while keeping individual behavioral exposure reduced. Low-signal fairness gaps should be separately measured rather than assumed to improve automatically.
 
-## 11. What the Current Benchmark Does Not Claim
+## 12. What the Current Benchmark Does Not Claim
 
 FairPrivacySignal does not claim that:
 
@@ -208,21 +221,21 @@ FairPrivacySignal does not claim that:
 - it should be used directly for public-service eligibility decisions
 - synthetic results alone prove real-world effectiveness or adoption
 
-## 12. Planned Extensions
+## 13. Planned Extensions
 
 Near-term planned extensions include:
 
-1. adding public aggregate calibration examples
-2. comparing the interpretable baseline with a ranking-specific model
+1. comparing the interpretable baseline with a ranking-specific model
+2. expanding public-reference coverage while keeping mappings explicit
 3. improving the technical whitepaper for independent expert review
 
-## 13. Why This Matters
+## 14. Why This Matters
 
 Privacy regulations and data minimization practices can reduce access to individual-level behavioral signals. This is often necessary for protecting users, but it can also degrade ranking quality and disproportionately affect low-signal groups.
 
 A benchmark like FairPrivacySignal helps make these tradeoffs visible. It gives researchers, engineers, public-sector technologists, and reviewers a non-confidential way to reason about privacy-preserving ranking systems before deploying them in sensitive settings.
 
-## 14. Capacity-Constrained Allocation Extension
+## 15. Capacity-Constrained Allocation Extension
 
 FairPrivacySignal also includes a capacity-constrained allocation experiment. This extension models a practical public-service outreach constraint: even if a ranking system can score every household-service pair, real service providers often have limited outreach slots, appointment capacity, staff time, or funding.
 
@@ -234,12 +247,12 @@ supported by one favorable seed.
 
 See [`docs/capacity_allocation.md`](capacity_allocation.md) for details.
 
-## 15. Benchmark Validation Gate
+## 16. Benchmark Validation Gate
 
 The one-command pipeline ends with machine-checked methodological invariants. These
 checks cover signal-loss scenario completeness, privacy-exposure monotonicity,
-bounded metrics, valid allocation counts, score-matched calibration coverage, and
-multi-seed completeness.
+bounded metrics, valid allocation counts, score-matched calibration coverage,
+documented public-reference targets, and multi-seed completeness.
 
 Required checks fail the pipeline when an invariant drifts. Informational checks
 record current result behavior without blocking future experimentation. The current

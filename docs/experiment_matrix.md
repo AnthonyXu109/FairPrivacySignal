@@ -41,10 +41,11 @@ This document summarizes the current and planned FairPrivacySignal experiments.
 | Allocated relevance rate | Measure utility after service-capacity constraints are applied |
 | Selection-rate gap | Compare low-signal and not-low-signal allocation rates |
 | Score-matched subgroup calibration | Compare observed relevance for low-signal and not-low-signal events within shared predicted-score bins |
+| Public-reference calibration | Compare selected synthetic community priors with tracked Census QuickFacts anchors without automatic fitting |
 
 ## Planned Experiments
 
 | Planned experiment | Purpose |
 |---|---|
-| Public aggregate calibration | Calibrate synthetic community distributions with public aggregate datasets |
+| Expanded public-reference coverage | Add carefully mapped public aggregate anchors while preserving explicit limitations |
 | Stronger learning-to-rank model | Compare interpretable logistic baseline with ranking-specific models |

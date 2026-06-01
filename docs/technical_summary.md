@@ -66,6 +66,10 @@ FairPrivacySignal currently includes:
 12. **Benchmark validation gate**
     Enforces stable methodological invariants and writes a reviewer-readable validation report.
 
+13. **Public-reference calibration diagnostic**
+    Compares selected synthetic community priors with tracked Census QuickFacts anchors
+    while reporting gaps rather than automatically fitting the generator.
+
 ## 4. Current Benchmark Results
 
 The current benchmark results show:
@@ -105,6 +109,6 @@ The broader goal is to make privacy-preserving and fairness-aware ranking evalua
 Planned improvements include:
 
 - expanding synthetic scenarios beyond public-service outreach
-- integrating public aggregate datasets for calibration
+- expanding public-reference coverage with explicit synthetic-to-public mappings
 - improving documentation for independent technical review
 - collecting external expert feedback

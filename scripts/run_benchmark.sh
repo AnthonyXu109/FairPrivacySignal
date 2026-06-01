@@ -5,6 +5,7 @@ echo "Running FairPrivacySignal benchmark pipeline..."
 
 python -m fairprivacysignal.data_generator --out data/synthetic --seed 42
 python -m fairprivacysignal.sanity_checks
+python -m fairprivacysignal.public_reference_calibration
 python -m fairprivacysignal.signal_loss
 python -m fairprivacysignal.ranking
 python -m fairprivacysignal.privacy_recovery

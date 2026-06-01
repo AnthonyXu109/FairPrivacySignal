@@ -23,6 +23,7 @@ The same technical pattern can apply to public agencies, healthcare outreach, no
 - Fairness metrics for low-signal or underserved participants
 - Fairness-aware recovery variants for low-signal ranking diagnostics
 - Score-matched subgroup calibration diagnostics
+- Public-reference calibration diagnostic with a tracked Census QuickFacts snapshot
 - Capacity-constrained allocation under limited outreach slots
 - Multi-seed allocation sensitivity analysis
 - Privacy exposure scoring
@@ -62,6 +63,9 @@ The auditable signal-suppression configuration is documented in [`docs/policy_ru
 
 The pipeline also writes a machine-checked [`benchmark validation report`](docs/validation_report.md).
 
+The selected synthetic context priors are compared with a tracked public-reference
+snapshot in [`docs/public_reference_calibration.md`](docs/public_reference_calibration.md).
+
 ## System architecture
 
 FairPrivacySignal is organized as a reproducible benchmark pipeline: synthetic public-service data generation, privacy-driven signal-loss simulation, policy and consent-based feature suppression, privacy-safe aggregate recovery, ranking evaluation, and fairness diagnostics.
@@ -82,11 +86,20 @@ This overview combines multi-seed recovery results with the capacity-constrained
 
 ![Low signal by underserved bucket](docs/assets/low_signal_by_underserved_bucket.png)
 
-### 2. Privacy-safe aggregate features partially recover ranking utility
+### 2. Selected synthetic priors are explicit and inspectable
+
+![Public-reference calibration diagnostic](docs/assets/public_reference_calibration.png)
+
+The benchmark compares selected synthetic context priors with a tracked U.S. Census
+Bureau QuickFacts snapshot. The visible gaps are intentional: this is a directional
+diagnostic, not an automatic fit or a claim that the synthetic benchmark represents
+a real population. See [`docs/public_reference_calibration.md`](docs/public_reference_calibration.md).
+
+### 3. Privacy-safe aggregate features partially recover ranking utility
 
 ![Privacy recovery NDCG](docs/assets/privacy_recovery_ndcg.png)
 
-### 3. Privacy-utility tradeoff across signal-loss scenarios
+### 4. Privacy-utility tradeoff across signal-loss scenarios
 
 ![Privacy utility tradeoff](docs/assets/privacy_utility_tradeoff.png)
 
