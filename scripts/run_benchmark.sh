@@ -11,6 +11,7 @@ python -m fairprivacysignal.ranking
 python -m fairprivacysignal.privacy_recovery
 python -m fairprivacysignal.recovery_feature_ablation
 python -m fairprivacysignal.model_sensitivity
+python -m fairprivacysignal.underserved_recovery_profile
 python -m fairprivacysignal.aggregate_noise_sensitivity
 python -m fairprivacysignal.cohort_threshold_sensitivity
 python -m fairprivacysignal.visualize_results

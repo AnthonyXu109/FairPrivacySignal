@@ -29,6 +29,19 @@ observed relevance within score bins.
 The implementation is intentionally lightweight. It is inspired by public
 ranking-calibration research but is not a full matched-pair estimator.
 
+### Underserved Quartile Recovery Profile
+
+Pooled ranking recovery can hide uneven subgroup effects. The underserved quartile
+profile:
+
+1. assigns distinct synthetic communities to quartiles using their underserved score
+2. compares privacy-safe aggregates with the same-seed signal-loss baseline
+3. reports overall and low-signal NDCG@3 recovery for each quartile
+4. repeats the paired comparison across five synthetic draws
+
+The quartiles are synthetic community-context diagnostics. They are not real-world
+demographic groups and should not be treated as evidence of domain-specific fairness.
+
 ## Allocation Diagnostics
 
 When service capacity is limited, the benchmark reports:

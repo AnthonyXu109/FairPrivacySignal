@@ -45,6 +45,7 @@ FairPrivacySignal therefore prioritizes:
 - multi-seed mean and standard-deviation reporting
 - paired feature-ablation reporting
 - lightweight baseline model comparison
+- paired quartile-level heterogeneity reporting
 - tracked figures generated from auditable CSV outputs
 - focused regression tests for experiment orchestration
 - explicit limitations and non-confidential synthetic-data framing

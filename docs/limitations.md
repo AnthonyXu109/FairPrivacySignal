@@ -41,3 +41,6 @@ real deployment.
 The model-sensitivity diagnostic compares two lightweight classifier families. It
 does not establish robustness across all model classes or implement a
 ranking-specific learning objective.
+The underserved-quartile recovery profile exposes heterogeneity across synthetic
+community contexts. Its quartiles are benchmark constructs, not real-world
+demographic groups, and positive pooled recovery does not establish uniform benefit.

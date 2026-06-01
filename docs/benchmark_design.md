@@ -174,7 +174,19 @@ This lightweight comparison shows whether recovery is stable across model classe
 It is not a ranking-specific learning objective and does not replace the logistic
 primary baseline. See [`docs/model_sensitivity.md`](model_sensitivity.md).
 
-### 7.5 Fairness-Aware Recovery Variant
+### 7.5 Underserved Quartile Recovery Profile
+
+The benchmark groups distinct synthetic communities into underserved-score
+quartiles before comparing privacy-safe aggregates with the same-seed signal-loss
+baseline. It reports overall and low-signal NDCG@3 recovery separately for each
+quartile across five synthetic draws.
+
+This diagnostic checks whether pooled recovery hides uneven effects across
+community contexts. The quartiles are synthetic benchmark constructs, not
+real-world demographic groups. See
+[`docs/underserved_recovery_profile.md`](underserved_recovery_profile.md).
+
+### 7.6 Fairness-Aware Recovery Variant
 
 The fairness-aware variant trains a low-signal-specific model after privacy-safe aggregate recovery. Relevant low-signal examples receive additional training weight, and the low-signal-specific predictions are blended with predictions from the global model.
 
@@ -193,7 +205,10 @@ This is intentional:
 - it allows reviewers to inspect whether the signal-loss and recovery effects are plausible
 - it keeps the project runnable on ordinary laptops
 
-Future versions can add gradient-boosted trees, learning-to-rank objectives, or neural ranking models, but the v0.x baseline prioritizes transparency.
+The benchmark also includes a lightweight histogram-gradient-boosting sensitivity
+check while keeping logistic regression as the primary baseline. Future versions
+can add learning-to-rank objectives or neural ranking models, but the v0.x baseline
+prioritizes transparency.
 
 ## 9. Evaluation Metrics
 

@@ -24,6 +24,7 @@ The same technical pattern can apply to public agencies, healthcare outreach, no
 - Cohort-threshold sensitivity analysis for aggregate fallback coverage
 - Recovery feature ablation with paired multi-seed comparisons
 - Lightweight model-class sensitivity diagnostic
+- Underserved quartile recovery profile with paired multi-seed comparisons
 - Contextual and geography-level signals
 - Utility metrics such as AUC and NDCG@K
 - Fairness metrics for low-signal or underserved participants
@@ -155,11 +156,21 @@ logistic baseline, but smaller or absent for the non-linear comparison model. Th
 keeps the claim bounded: recovery depends on the model and scenario rather than
 holding automatically. See [`docs/model_sensitivity.md`](docs/model_sensitivity.md).
 
-### 7. Privacy-utility tradeoff across signal-loss scenarios
+### 7. Pooled gains can hide quartile-specific regressions
+
+![Underserved quartile recovery profile](docs/assets/underserved_recovery_profile.png)
+
+The paired five-seed profile groups distinct synthetic communities by underserved
+score before measuring aggregate-minus-baseline recovery. Pooled recovery does not
+imply uniform benefit: low-signal recovery varies across quartiles and can be
+negative in some contexts. See
+[`docs/underserved_recovery_profile.md`](docs/underserved_recovery_profile.md).
+
+### 8. Privacy-utility tradeoff across signal-loss scenarios
 
 ![Privacy utility tradeoff](docs/assets/privacy_utility_tradeoff.png)
 
-### 8. Higher cohort thresholds expose the fallback-utility tradeoff
+### 9. Higher cohort thresholds expose the fallback-utility tradeoff
 
 ![Cohort-threshold sensitivity](docs/assets/cohort_threshold_sensitivity.png)
 

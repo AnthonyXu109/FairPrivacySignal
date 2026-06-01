@@ -107,6 +107,13 @@ def test_build_benchmark_card_summarizes_auditable_outputs() -> None:
                 "seed": [7, 42],
             }
         ),
+        underserved_recovery_profile_raw=pd.DataFrame(
+            {
+                "scenario": ["severe_signal_loss", "policy_restricted"],
+                "underserved_quartile": ["q1_lower", "q4_higher"],
+                "seed": [7, 42],
+            }
+        ),
         validation_checks=pd.DataFrame(
             [
                 {
@@ -130,4 +137,5 @@ def test_build_benchmark_card_summarizes_auditable_outputs() -> None:
     assert "## Cohort-Threshold Checkpoints" in card
     assert "Recovery feature ablation" in card
     assert "Model sensitivity diagnostic" in card
+    assert "Underserved quartile recovery profile" in card
     assert "[Limitations](limitations.md)" in card
