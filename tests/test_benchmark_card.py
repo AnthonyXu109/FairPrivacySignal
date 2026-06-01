@@ -87,6 +87,16 @@ def test_build_benchmark_card_summarizes_auditable_outputs() -> None:
         ),
         aggregate_noise_summary=aggregate_noise_summary,
         threshold_sensitivity=threshold_sensitivity,
+        recovery_feature_ablation_raw=pd.DataFrame(
+            {
+                "scenario": ["severe_signal_loss", "policy_restricted"],
+                "variant": [
+                    "engagement_aggregate_only",
+                    "combined_privacy_safe_aggregates",
+                ],
+                "seed": [7, 42],
+            }
+        ),
         validation_checks=pd.DataFrame(
             [
                 {
@@ -108,4 +118,5 @@ def test_build_benchmark_card_summarizes_auditable_outputs() -> None:
     assert "## Multi-Seed Recovery Results" in card
     assert "## Aggregate-Noise Checkpoint" in card
     assert "## Cohort-Threshold Checkpoints" in card
+    assert "Recovery feature ablation" in card
     assert "[Limitations](limitations.md)" in card

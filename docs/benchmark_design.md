@@ -152,7 +152,18 @@ service-level fallback signals. The diagnostic reports fallback coverage alongsi
 overall and low-signal utility recovery. See
 [`docs/cohort_threshold_sensitivity.md`](cohort_threshold_sensitivity.md).
 
-### 7.3 Fairness-Aware Recovery Variant
+### 7.3 Recovery Feature Ablation
+
+The benchmark separates the privacy-safe recovery layer into four feature sets:
+no aggregate substitutes, an engagement aggregate only, cohort-context aggregates
+only, and their combined use. It reports paired recovery deltas against the
+same-seed no-aggregate baseline across five synthetic draws.
+
+This ablation makes the source of utility recovery inspectable rather than
+attributing the result to an undifferentiated feature bundle. See
+[`docs/recovery_feature_ablation.md`](recovery_feature_ablation.md).
+
+### 7.4 Fairness-Aware Recovery Variant
 
 The fairness-aware variant trains a low-signal-specific model after privacy-safe aggregate recovery. Relevant low-signal examples receive additional training weight, and the low-signal-specific predictions are blended with predictions from the global model.
 
@@ -271,7 +282,8 @@ The one-command pipeline ends with machine-checked methodological invariants. Th
 checks cover signal-loss scenario completeness, privacy-exposure monotonicity,
 bounded metrics, valid allocation counts, score-matched calibration coverage,
 documented public-reference targets, aggregate-noise sensitivity coverage,
-cohort-threshold sensitivity coverage, and multi-seed completeness.
+cohort-threshold sensitivity coverage, recovery feature-ablation coverage, and
+multi-seed completeness.
 
 Required checks fail the pipeline when an invariant drifts. Informational checks
 record current result behavior without blocking future experimentation. The current

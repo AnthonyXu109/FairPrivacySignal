@@ -44,6 +44,7 @@ This document summarizes the current and planned FairPrivacySignal experiments.
 | Public-reference calibration | Compare selected synthetic community priors with tracked Census QuickFacts anchors without automatic fitting |
 | Aggregate-noise sensitivity | Repeat privacy-safe recovery across stress scales and noise realizations while holding the synthetic dataset fixed |
 | Cohort-threshold sensitivity | Sweep the minimum cohort size and measure fallback coverage plus utility recovery |
+| Recovery feature ablation | Compare no substitutes, engagement aggregates, cohort-context aggregates, and their combination with paired multi-seed deltas |
 
 ## Planned Experiments
 
