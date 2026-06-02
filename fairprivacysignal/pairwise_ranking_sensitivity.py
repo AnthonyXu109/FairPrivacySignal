@@ -6,6 +6,7 @@ from typing import Iterable, List
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from scipy.optimize import minimize
 from sklearn.compose import ColumnTransformer
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
@@ -76,11 +77,19 @@ OBJECTIVES = {
         "display_name": "Pointwise logistic",
         "color": "#0f766e",
         "marker": "o",
+        "annotation_offset": (-14, -24),
     },
     "linear_pairwise": {
         "display_name": "Linear pairwise ranker",
         "color": "#ea580c",
         "marker": "s",
+        "annotation_offset": (0, 14),
+    },
+    "linear_listwise": {
+        "display_name": "Linear listwise ranker",
+        "color": "#2563eb",
+        "marker": "^",
+        "annotation_offset": (14, -7),
     },
 }
 
@@ -91,22 +100,32 @@ def _dense_array(values) -> np.ndarray:
     return np.asarray(values)
 
 
+def _build_linear_preprocessor(numeric_features: List[str]) -> ColumnTransformer:
+    return ColumnTransformer(
+        transformers=[
+            ("num", StandardScaler(), numeric_features),
+            (
+                "cat",
+                OneHotEncoder(handle_unknown="ignore"),
+                CATEGORICAL_FEATURES,
+            ),
+        ]
+    )
+
+
+def _softmax(values: np.ndarray) -> np.ndarray:
+    shifted = values - np.max(values)
+    exponentiated = np.exp(shifted)
+    return exponentiated / exponentiated.sum()
+
+
 class LinearPairwiseRanker:
     """Lightweight linear pairwise ranking comparator for sensitivity analysis."""
 
     def __init__(self, numeric_features: List[str]) -> None:
         self.numeric_features = numeric_features
         self.features = numeric_features + CATEGORICAL_FEATURES
-        self.preprocessor = ColumnTransformer(
-            transformers=[
-                ("num", StandardScaler(), numeric_features),
-                (
-                    "cat",
-                    OneHotEncoder(handle_unknown="ignore"),
-                    CATEGORICAL_FEATURES,
-                ),
-            ]
-        )
+        self.preprocessor = _build_linear_preprocessor(numeric_features)
         self.classifier = LogisticRegression(
             max_iter=1000,
             fit_intercept=False,
@@ -163,31 +182,129 @@ class LinearPairwiseRanker:
         return np.column_stack([1.0 - positive, positive])
 
 
+class LinearListwiseRanker:
+    """Lightweight linear top-one listwise comparator for sensitivity analysis."""
+
+    def __init__(
+        self,
+        numeric_features: List[str],
+        l2_strength: float = 1e-3,
+    ) -> None:
+        self.numeric_features = numeric_features
+        self.features = numeric_features + CATEGORICAL_FEATURES
+        self.preprocessor = _build_linear_preprocessor(numeric_features)
+        self.l2_strength = float(l2_strength)
+        self.num_training_lists_ = 0
+
+    def fit(self, events: pd.DataFrame) -> "LinearListwiseRanker":
+        prepared = events.reset_index(drop=True)
+        encoded = _dense_array(
+            self.preprocessor.fit_transform(prepared[self.features])
+        )
+        comparable_positions = []
+        target_probabilities = []
+        group_sizes = []
+
+        for positions in prepared.groupby("household_id", sort=False).indices.values():
+            group_positions = np.asarray(positions, dtype=int)
+            relevance = prepared.iloc[group_positions]["relevant"].to_numpy(
+                dtype=float
+            )
+
+            if relevance.min() == relevance.max():
+                continue
+
+            comparable_positions.append(group_positions)
+            target_probabilities.append(_softmax(relevance))
+            group_sizes.append(len(group_positions))
+
+        if not comparable_positions:
+            raise ValueError("listwise ranking requires at least one comparable list")
+
+        list_features = encoded[np.concatenate(comparable_positions)]
+        targets = np.concatenate(target_probabilities)
+        sizes = np.asarray(group_sizes, dtype=int)
+        starts = np.concatenate([[0], np.cumsum(sizes)[:-1]])
+        self.num_training_lists_ = int(len(sizes))
+
+        def objective(weights: np.ndarray) -> tuple[float, np.ndarray]:
+            scores = list_features @ weights
+            maximums = np.maximum.reduceat(scores, starts)
+            shifted = scores - np.repeat(maximums, sizes)
+            exponentiated = np.exp(shifted)
+            denominators = np.add.reduceat(exponentiated, starts)
+            repeated_denominators = np.repeat(denominators, sizes)
+            probabilities = exponentiated / repeated_denominators
+            log_probabilities = shifted - np.log(repeated_denominators)
+            loss = (
+                -float(targets @ log_probabilities) / self.num_training_lists_
+                + 0.5 * self.l2_strength * float(weights @ weights)
+            )
+            gradient = (
+                list_features.T @ (probabilities - targets)
+            ) / self.num_training_lists_ + self.l2_strength * weights
+            return loss, np.asarray(gradient)
+
+        result = minimize(
+            objective,
+            np.zeros(list_features.shape[1], dtype=float),
+            jac=True,
+            method="L-BFGS-B",
+            options={"maxiter": 200},
+        )
+        if not result.success:
+            raise RuntimeError(f"listwise optimization failed: {result.message}")
+
+        self.coef_ = np.asarray(result.x)
+        return self
+
+    def predict_proba(self, events: pd.DataFrame) -> np.ndarray:
+        encoded = _dense_array(
+            self.preprocessor.transform(events[self.features])
+        )
+        decision = encoded @ self.coef_
+        positive = 1.0 / (1.0 + np.exp(-np.clip(decision, -30.0, 30.0)))
+        return np.column_stack([1.0 - positive, positive])
+
+
 def _score_pointwise(
     train: pd.DataFrame,
     test: pd.DataFrame,
     numeric_features: List[str],
-) -> tuple[pd.DataFrame, int]:
+) -> tuple[pd.DataFrame, int, int]:
     features = numeric_features + CATEGORICAL_FEATURES
     model = build_model(numeric_features)
     model.fit(train[features], train["relevant"])
 
     scored = test.copy()
     scored["predicted_relevance"] = model.predict_proba(scored[features])[:, 1]
-    return scored, 0
+    return scored, 0, 0
 
 
 def _score_pairwise(
     train: pd.DataFrame,
     test: pd.DataFrame,
     numeric_features: List[str],
-) -> tuple[pd.DataFrame, int]:
+) -> tuple[pd.DataFrame, int, int]:
     model = LinearPairwiseRanker(numeric_features)
     model.fit(train)
 
     scored = test.copy()
     scored["predicted_relevance"] = model.predict_proba(scored)[:, 1]
-    return scored, model.num_training_pairs_
+    return scored, model.num_training_pairs_, 0
+
+
+def _score_listwise(
+    train: pd.DataFrame,
+    test: pd.DataFrame,
+    numeric_features: List[str],
+) -> tuple[pd.DataFrame, int, int]:
+    model = LinearListwiseRanker(numeric_features)
+    model.fit(train)
+
+    scored = test.copy()
+    scored["predicted_relevance"] = model.predict_proba(scored)[:, 1]
+    return scored, 0, model.num_training_lists_
 
 
 def _summarize_scored(
@@ -196,6 +313,7 @@ def _summarize_scored(
     objective: str,
     experiment: str,
     num_training_pairs: int,
+    num_training_lists: int,
     aggregate_reference_scope: str,
 ) -> dict:
     low_signal = scored[scored["low_signal"].astype(bool)]
@@ -214,6 +332,7 @@ def _summarize_scored(
         "not_low_signal_ndcg_at_3": not_low_signal_ndcg,
         "ndcg_gap_not_low_minus_low": not_low_signal_ndcg - low_signal_ndcg,
         "num_training_pairs": int(num_training_pairs),
+        "num_training_lists": int(num_training_lists),
         "aggregate_reference_scope": aggregate_reference_scope,
     }
 
@@ -243,8 +362,9 @@ def run_pairwise_ranking_sensitivity(
         for objective, scorer in [
             ("pointwise_logistic", _score_pointwise),
             ("linear_pairwise", _score_pairwise),
+            ("linear_listwise", _score_listwise),
         ]:
-            scored, num_training_pairs = scorer(
+            scored, num_training_pairs, num_training_lists = scorer(
                 train,
                 test,
                 metadata["numeric_features"],
@@ -256,6 +376,7 @@ def run_pairwise_ranking_sensitivity(
                     objective=objective,
                     experiment=experiment,
                     num_training_pairs=num_training_pairs,
+                    num_training_lists=num_training_lists,
                     aggregate_reference_scope=aggregate_reference_scope,
                 )
             )
@@ -280,6 +401,7 @@ def build_summary(raw: pd.DataFrame) -> pd.DataFrame:
         "not_low_signal_ndcg_at_3",
         "ndcg_gap_not_low_minus_low",
         "num_training_pairs",
+        "num_training_lists",
     ]
     summary = (
         raw.groupby(
@@ -413,8 +535,7 @@ def _plot_metric(
             ("policy_restricted", 4),
         ]:
             delta = recovery_rows.loc[scenario, f"{recovery_metric}_mean"]
-            vertical_offset = -18 if objective == "pointwise_logistic" else 12
-            horizontal_offset = -10 if objective == "pointwise_logistic" else 10
+            horizontal_offset, vertical_offset = metadata["annotation_offset"]
             axis.annotate(
                 f"{delta:+.3f}",
                 xy=(x_position, mean[x_position]),
@@ -466,7 +587,7 @@ def plot_pairwise_ranking_sensitivity(
     )
     axes[0].legend(frameon=False, fontsize=9, loc="lower left")
     fig.suptitle(
-        "Ranking-objective sensitivity: pointwise versus pairwise training",
+        "Ranking-objective sensitivity: pointwise, pairwise, and listwise training",
         x=0.055,
         y=0.98,
         ha="left",
@@ -477,7 +598,7 @@ def plot_pairwise_ranking_sensitivity(
     fig.text(
         0.055,
         0.91,
-        "The lightweight comparator learns ordered service pairs within each synthetic household; the pointwise logistic model remains the primary baseline.",
+        "The lightweight comparators learn from ordered pairs or complete service lists within each synthetic household; the pointwise logistic model remains the primary baseline.",
         ha="left",
         fontsize=10.5,
         color="#475569",
@@ -549,12 +670,15 @@ def write_markdown_summary(
             )
 
     out_path.write_text(
-        "# Pairwise Ranking-Objective Sensitivity Diagnostic\n\n"
+        "# Ranking-Objective Sensitivity Diagnostic\n\n"
         "This diagnostic compares the interpretable pointwise logistic primary "
-        "baseline with a lightweight linear pairwise ranker. The comparator creates "
+        "baseline with lightweight linear pairwise and listwise rankers. The pairwise "
+        "comparator creates "
         "ordered relevant-versus-nonrelevant service pairs within each synthetic "
-        "household, then learns a linear score from feature differences.\n\n"
-        "Both objectives receive the same synthetic-data draws, household-level "
+        "household, then learns a linear score from feature differences. The listwise "
+        "comparator uses each household's complete candidate-service list as one "
+        "training instance and optimizes a top-one softmax cross-entropy loss.\n\n"
+        "All three objectives receive the same synthetic-data draws, household-level "
         "train/test split, signal-loss scenarios, and training-fitted privacy-safe "
         "aggregate features.\n\n"
         "## Paired aggregate-recovery deltas\n\n"
@@ -564,10 +688,11 @@ def write_markdown_summary(
         + pd.DataFrame(score_rows).to_markdown(index=False, disable_numparse=True)
         + "\n\n"
         "## Interpretation limits\n\n"
-        "The pairwise comparator is a lightweight linear sensitivity check inspired "
-        "by pairwise learning-to-rank formulations. It is not an implementation of "
-        "a neural ranking architecture, does not optimize a listwise objective, and "
-        "does not replace the interpretable primary baseline.\n"
+        "The pairwise and listwise comparators are lightweight linear sensitivity "
+        "checks inspired by learning-to-rank formulations. The listwise comparator "
+        "uses a top-one softmax objective but is not an implementation of the "
+        "original neural ListNet architecture. Neither comparator replaces the "
+        "interpretable primary baseline.\n"
     )
 
 
@@ -600,7 +725,7 @@ def main(seeds: Iterable[int] = SEEDS) -> None:
     plot_pairwise_ranking_sensitivity(summary, paired_recovery, figure_path)
     write_markdown_summary(summary, paired_recovery, markdown_path)
 
-    print("\nPairwise ranking-objective recovery:")
+    print("\nRanking-objective recovery:")
     print(paired_recovery.round(4).to_string(index=False))
     print("\nWrote:")
     print(f"- {raw_path}")

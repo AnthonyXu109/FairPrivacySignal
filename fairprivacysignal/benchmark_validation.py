@@ -65,18 +65,19 @@ EXPECTED_MODEL_SENSITIVITY_EXPERIMENTS = {
     "policy_restricted_with_privacy_safe_aggregates",
 }
 EXPECTED_MODEL_SENSITIVITY_SEEDS = {7, 42, 101}
-EXPECTED_PAIRWISE_RANKING_OBJECTIVES = {
+EXPECTED_RANKING_OBJECTIVES = {
     "pointwise_logistic",
     "linear_pairwise",
+    "linear_listwise",
 }
-EXPECTED_PAIRWISE_RANKING_EXPERIMENTS = {
+EXPECTED_RANKING_EXPERIMENTS = {
     "full_signal_raw_baseline",
     "severe_signal_loss_baseline",
     "severe_signal_loss_with_privacy_safe_aggregates",
     "policy_restricted_baseline",
     "policy_restricted_with_privacy_safe_aggregates",
 }
-EXPECTED_PAIRWISE_RANKING_SEEDS = {7, 42, 101}
+EXPECTED_RANKING_SEEDS = {7, 42, 101}
 EXPECTED_UNDERSERVED_PROFILE_VARIANTS = {
     "signal_loss_baseline",
     "privacy_safe_aggregates",
@@ -435,7 +436,7 @@ def build_validation_checks(
         )
     )
 
-    pairwise_ranking_seed_counts = pairwise_ranking_sensitivity_raw.groupby(
+    ranking_objective_seed_counts = pairwise_ranking_sensitivity_raw.groupby(
         ["objective", "experiment"]
     )["seed"].nunique()
     pairwise_ranking_metrics = pairwise_ranking_sensitivity_raw[
@@ -449,39 +450,50 @@ def build_validation_checks(
     pairwise_rows = pairwise_ranking_sensitivity_raw[
         pairwise_ranking_sensitivity_raw["objective"] == "linear_pairwise"
     ]
+    listwise_rows = pairwise_ranking_sensitivity_raw[
+        pairwise_ranking_sensitivity_raw["objective"] == "linear_listwise"
+    ]
     pointwise_rows = pairwise_ranking_sensitivity_raw[
         pairwise_ranking_sensitivity_raw["objective"] == "pointwise_logistic"
     ]
-    aggregate_pairwise_rows = pairwise_ranking_sensitivity_raw[
+    non_pairwise_rows = pairwise_ranking_sensitivity_raw[
+        pairwise_ranking_sensitivity_raw["objective"] != "linear_pairwise"
+    ]
+    non_listwise_rows = pairwise_ranking_sensitivity_raw[
+        pairwise_ranking_sensitivity_raw["objective"] != "linear_listwise"
+    ]
+    aggregate_ranking_rows = pairwise_ranking_sensitivity_raw[
         pairwise_ranking_sensitivity_raw["experiment"].isin(
             EXPECTED_TRAIN_FITTED_RECOVERY_EXPERIMENTS
         )
     ]
     checks.append(
         _check(
-            "pairwise ranking-objective coverage is complete",
+            "ranking-objective sensitivity coverage is complete",
             "ranking",
             set(pairwise_ranking_sensitivity_raw["objective"])
-            == EXPECTED_PAIRWISE_RANKING_OBJECTIVES
+            == EXPECTED_RANKING_OBJECTIVES
             and set(pairwise_ranking_sensitivity_raw["experiment"])
-            == EXPECTED_PAIRWISE_RANKING_EXPERIMENTS
+            == EXPECTED_RANKING_EXPERIMENTS
             and set(pairwise_ranking_sensitivity_raw["seed"])
-            == EXPECTED_PAIRWISE_RANKING_SEEDS
+            == EXPECTED_RANKING_SEEDS
             and (
-                pairwise_ranking_seed_counts
-                == len(EXPECTED_PAIRWISE_RANKING_SEEDS)
+                ranking_objective_seed_counts
+                == len(EXPECTED_RANKING_SEEDS)
             ).all()
             and _columns_are_bounded(
                 pairwise_ranking_metrics,
                 list(pairwise_ranking_metrics.columns),
             )
             and (pairwise_rows["num_training_pairs"] > 0).all()
-            and (pointwise_rows["num_training_pairs"] == 0).all()
+            and (non_pairwise_rows["num_training_pairs"] == 0).all()
+            and (listwise_rows["num_training_lists"] > 0).all()
+            and (non_listwise_rows["num_training_lists"] == 0).all()
             and (
-                aggregate_pairwise_rows["aggregate_reference_scope"]
+                aggregate_ranking_rows["aggregate_reference_scope"]
                 == "train_households_only"
             ).all(),
-            "two training objectives cover five scenarios and three paired seeds; pairwise samples are present",
+            "three training objectives cover five scenarios and three paired seeds; pairwise samples and listwise lists are present",
         )
     )
 

@@ -179,18 +179,22 @@ This lightweight comparison shows whether recovery is stable across model classe
 It is not a ranking-specific learning objective and does not replace the logistic
 primary baseline. See [`docs/model_sensitivity.md`](model_sensitivity.md).
 
-### 7.5 Pairwise Ranking-Objective Sensitivity Diagnostic
+### 7.5 Ranking-Objective Sensitivity Diagnostic
 
 The benchmark compares its pointwise logistic primary baseline with a lightweight
-linear pairwise ranker. Within each training household, relevant services are paired
-with nonrelevant services. The comparator learns a linear score from ordered feature
-differences, then ranks holdout services using one score per candidate.
+linear pairwise ranker and a lightweight linear listwise ranker. Within each
+training household, the pairwise comparator learns from ordered
+relevant-versus-nonrelevant feature differences. The listwise comparator treats the
+complete candidate-service list as one training instance and optimizes a top-one
+softmax cross-entropy loss. Both rank holdout services using one score per
+candidate.
 
-Both objectives receive the same synthetic draws, household-level split,
+All three objectives receive the same synthetic draws, household-level split,
 signal-loss scenarios, and training-fitted aggregate features. This checks whether
-aggregate recovery depends on the pointwise classification objective. The linear
-pairwise comparator is not a neural ranking architecture and does not optimize a
-listwise objective. See
+aggregate recovery depends on one training objective. The linear comparators are
+sensitivity checks, not neural ranking architectures. The listwise comparator is
+inspired by top-one listwise formulations but is not an implementation of the
+original neural ListNet architecture. See
 [`docs/pairwise_ranking_sensitivity.md`](pairwise_ranking_sensitivity.md).
 
 ### 7.6 Underserved Quartile Recovery Profile
@@ -237,10 +241,10 @@ This is intentional:
 - it allows reviewers to inspect whether the signal-loss and recovery effects are plausible
 - it keeps the project runnable on ordinary laptops
 
-The benchmark also includes lightweight histogram-gradient-boosting and linear
-pairwise sensitivity checks while keeping logistic regression as the primary
-baseline. Future versions can add listwise objectives or neural ranking models, but
-the v0.x baseline prioritizes transparency.
+The benchmark also includes lightweight histogram-gradient-boosting, linear
+pairwise, and linear listwise sensitivity checks while keeping logistic regression
+as the primary baseline. Future versions can add neural ranking models, but the
+v0.x baseline prioritizes transparency.
 
 ## 9. Evaluation Metrics
 
@@ -312,7 +316,7 @@ FairPrivacySignal does not claim that:
 
 Near-term planned extensions include:
 
-1. extending the lightweight pairwise comparator with a listwise sensitivity check
+1. adding a temporal-shift stress test for synthetic context drift
 2. adding public-reference uncertainty metadata while keeping mappings explicit
 3. improving the technical whitepaper for independent expert review
 
@@ -341,7 +345,7 @@ checks cover signal-loss scenario completeness, privacy-exposure monotonicity,
 bounded metrics, valid allocation counts, score-matched calibration coverage,
 documented public-reference targets, aggregate-noise sensitivity coverage,
 cohort-threshold sensitivity coverage, recovery feature-ablation coverage,
-model-sensitivity coverage, pairwise ranking-objective coverage, and multi-seed
+model-sensitivity coverage, ranking-objective coverage, and multi-seed
 completeness.
 
 Required checks fail the pipeline when an invariant drifts. Informational checks

@@ -32,7 +32,7 @@ This command regenerates:
 - cohort-threshold sensitivity metrics for aggregate fallback coverage
 - paired multi-seed recovery feature-ablation metrics
 - paired model-sensitivity metrics for logistic and histogram gradient boosting
-- paired ranking-objective metrics for pointwise logistic and linear pairwise training
+- paired ranking-objective metrics for pointwise logistic, linear pairwise, and linear listwise training
 - paired underserved-quartile recovery metrics across synthetic community contexts
 - paired community-held-out robustness metrics across disjoint synthetic contexts
 - benchmark overview figure

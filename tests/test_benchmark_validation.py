@@ -179,6 +179,9 @@ def _pairwise_ranking_sensitivity_raw() -> pd.DataFrame:
                 "num_training_pairs": (
                     100 if objective == "linear_pairwise" else 0
                 ),
+                "num_training_lists": (
+                    100 if objective == "linear_listwise" else 0
+                ),
                 "aggregate_reference_scope": (
                     "train_households_only"
                     if experiment
@@ -186,9 +189,9 @@ def _pairwise_ranking_sensitivity_raw() -> pd.DataFrame:
                     else "not_applicable"
                 ),
             }
-            for objective in benchmark_validation.EXPECTED_PAIRWISE_RANKING_OBJECTIVES
-            for experiment in benchmark_validation.EXPECTED_PAIRWISE_RANKING_EXPERIMENTS
-            for seed in benchmark_validation.EXPECTED_PAIRWISE_RANKING_SEEDS
+            for objective in benchmark_validation.EXPECTED_RANKING_OBJECTIVES
+            for experiment in benchmark_validation.EXPECTED_RANKING_EXPERIMENTS
+            for seed in benchmark_validation.EXPECTED_RANKING_SEEDS
         ]
     )
 
@@ -334,14 +337,14 @@ def test_benchmark_validation_rejects_community_holdout_drift() -> None:
         benchmark_validation.raise_for_failed_required_checks(checks)
 
 
-def test_benchmark_validation_rejects_pairwise_ranking_drift() -> None:
+def test_benchmark_validation_rejects_ranking_objective_drift() -> None:
     checks = _checks()
     checks.loc[
-        checks["check"] == "pairwise ranking-objective coverage is complete",
+        checks["check"] == "ranking-objective sensitivity coverage is complete",
         "status",
     ] = "FAIL"
 
-    with pytest.raises(RuntimeError, match="pairwise ranking-objective"):
+    with pytest.raises(RuntimeError, match="ranking-objective sensitivity"):
         benchmark_validation.raise_for_failed_required_checks(checks)
 
 
