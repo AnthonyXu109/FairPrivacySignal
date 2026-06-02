@@ -48,9 +48,11 @@ real deployment.
 The model-sensitivity diagnostic compares two lightweight classifier families. It
 does not establish robustness across all model classes or implement a
 ranking-specific learning objective.
-The pairwise ranking-objective diagnostic adds a lightweight linear comparator, but
-it does not implement a neural ranking architecture, optimize a listwise objective,
-or establish that one training objective is universally better.
+The ranking-objective diagnostic adds lightweight linear pairwise and listwise
+comparators, but it does not implement a neural ranking architecture or establish
+that one training objective is universally better. The listwise comparator uses a
+top-one softmax objective but is not an implementation of the original neural
+ListNet architecture.
 The underserved-quartile recovery profile exposes heterogeneity across synthetic
 community contexts. Its quartiles are benchmark constructs, not real-world
 demographic groups, and positive pooled recovery does not establish uniform benefit.

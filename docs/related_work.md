@@ -33,14 +33,16 @@ and not-low-signal groups. This is not an implementation of the paper's full met
 
 [Learning to Rank using Gradient Descent](https://www.microsoft.com/en-us/research/publication/learning-to-rank-using-gradient-descent/)
 introduces RankNet and a pairwise probabilistic cost for ranking functions.
-[Learning to Rank: From Pairwise Approach to Listwise Approach](https://www.microsoft.com/en-us/research/publication/learning-to-rank-from-pairwise-approach-to-listwise-approach-2/)
+[Learning to Rank: From Pairwise Approach to Listwise Approach](https://www.microsoft.com/en-us/research/?p=153086)
 describes pairwise methods as treating object pairs as learning instances and
-motivates listwise objectives that operate on complete ranked lists.
+introduces permutation and top-one probability models for listwise learning.
 
-FairPrivacySignal adds a lightweight linear pairwise comparator: each synthetic
-household acts as a ranking context, and ordered service pairs become training
-instances. This is an objective-sensitivity diagnostic inspired by pairwise
-learning-to-rank formulations, not an implementation of RankNet or a listwise model.
+FairPrivacySignal adds lightweight linear pairwise and listwise comparators. Each
+synthetic household yields relevant-versus-nonrelevant service pairs for the
+pairwise path and a complete candidate-service list for the top-one softmax
+listwise path. These are objective-sensitivity diagnostics inspired by
+learning-to-rank formulations, not implementations of RankNet or the original
+neural ListNet architecture.
 
 ## Standardized Benchmark Practice
 

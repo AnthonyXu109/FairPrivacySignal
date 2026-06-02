@@ -58,7 +58,12 @@ def _raw_results() -> pd.DataFrame:
                         "low_signal_ndcg_at_3": overall - 0.08,
                         "not_low_signal_ndcg_at_3": overall + 0.02,
                         "ndcg_gap_not_low_minus_low": 0.10,
-                        "num_training_pairs": 100,
+                        "num_training_pairs": (
+                            100 if objective == "linear_pairwise" else 0
+                        ),
+                        "num_training_lists": (
+                            8 if objective == "linear_listwise" else 0
+                        ),
                     }
                 )
 
@@ -73,6 +78,21 @@ def test_linear_pairwise_ranker_learns_ordered_service_pairs() -> None:
     scored = ranker.predict_proba(events)[:, 1]
 
     assert ranker.num_training_pairs_ == 16
+    for household_id, group in events.assign(score=scored).groupby("household_id"):
+        assert household_id
+        positive = group[group["relevant"] == 1]["score"].iloc[0]
+        negative = group[group["relevant"] == 0]["score"].max()
+        assert positive > negative
+
+
+def test_linear_listwise_ranker_learns_complete_service_lists() -> None:
+    events = _pairwise_events()
+    ranker = pairwise_ranking_sensitivity.LinearListwiseRanker(
+        BASE_NUMERIC_FEATURES
+    ).fit(events)
+    scored = ranker.predict_proba(events)[:, 1]
+
+    assert ranker.num_training_lists_ == 8
     for household_id, group in events.assign(score=scored).groupby("household_id"):
         assert household_id
         positive = group[group["relevant"] == 1]["score"].iloc[0]
@@ -110,7 +130,7 @@ def test_run_sensitivity_scores_both_training_objectives(monkeypatch) -> None:
 
     def fake_score(train, test, numeric_features):
         observed.append(tuple(numeric_features))
-        return scored, 3
+        return scored, 3, 2
 
     monkeypatch.setattr(
         pairwise_ranking_sensitivity,
@@ -122,14 +142,19 @@ def test_run_sensitivity_scores_both_training_objectives(monkeypatch) -> None:
         "_score_pairwise",
         fake_score,
     )
+    monkeypatch.setattr(
+        pairwise_ranking_sensitivity,
+        "_score_listwise",
+        fake_score,
+    )
 
     results = pairwise_ranking_sensitivity.run_pairwise_ranking_sensitivity(
         events,
         seed=42,
     )
 
-    assert len(results) == 10
-    assert len(observed) == 10
+    assert len(results) == 15
+    assert len(observed) == 15
     assert set(results["objective"]) == set(
         pairwise_ranking_sensitivity.OBJECTIVES
     )
@@ -154,7 +179,9 @@ def test_summary_plot_and_markdown_render(tmp_path: Path) -> None:
     )
 
     severe = paired[paired["scenario"] == "severe_signal_loss"]
-    assert severe["overall_recovery_mean"].tolist() == pytest.approx([0.02, 0.02])
+    assert severe["overall_recovery_mean"].tolist() == pytest.approx(
+        [0.02, 0.02, 0.02]
+    )
     assert figure_path.exists()
     assert figure_path.stat().st_size > 0
     assert "## Interpretation limits" in markdown_path.read_text()

@@ -118,12 +118,17 @@ def test_build_benchmark_card_summarizes_auditable_outputs() -> None:
         ),
         pairwise_ranking_sensitivity_raw=pd.DataFrame(
             {
-                "objective": ["pointwise_logistic", "linear_pairwise"],
+                "objective": [
+                    "pointwise_logistic",
+                    "linear_pairwise",
+                    "linear_listwise",
+                ],
                 "experiment": [
                     "full_signal_raw_baseline",
                     "severe_signal_loss_baseline",
+                    "policy_restricted_baseline",
                 ],
-                "seed": [7, 42],
+                "seed": [7, 42, 101],
             }
         ),
         underserved_recovery_profile_raw=pd.DataFrame(
@@ -163,7 +168,7 @@ def test_build_benchmark_card_summarizes_auditable_outputs() -> None:
     assert "## Cohort-Threshold Checkpoints" in card
     assert "Recovery feature ablation" in card
     assert "Model sensitivity diagnostic" in card
-    assert "Pairwise ranking-objective sensitivity" in card
+    assert "Ranking-objective sensitivity" in card
     assert "Underserved quartile recovery profile" in card
     assert "Community-held-out robustness diagnostic" in card
     assert "3 versioned Census Bureau anchors" in card

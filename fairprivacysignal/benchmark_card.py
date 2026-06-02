@@ -256,7 +256,7 @@ def build_benchmark_card(
         "- [Cohort-threshold sensitivity](cohort_threshold_sensitivity.md)\n"
         "- [Recovery feature ablation](recovery_feature_ablation.md)\n"
         "- [Model sensitivity diagnostic](model_sensitivity.md)\n"
-        "- [Pairwise ranking-objective sensitivity](pairwise_ranking_sensitivity.md)\n"
+        "- [Ranking-objective sensitivity](pairwise_ranking_sensitivity.md)\n"
         "- [Underserved quartile recovery profile](underserved_recovery_profile.md)\n"
         "- [Community-held-out robustness diagnostic](community_holdout_robustness.md)\n"
         "- [Capacity-constrained allocation](capacity_allocation.md)\n"

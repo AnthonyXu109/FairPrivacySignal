@@ -25,7 +25,7 @@ The same technical pattern can apply to public agencies, healthcare outreach, no
 - Cohort-threshold sensitivity analysis for aggregate fallback coverage
 - Recovery feature ablation with paired multi-seed comparisons
 - Lightweight model-class sensitivity diagnostic
-- Pairwise ranking-objective sensitivity diagnostic
+- Pointwise, pairwise, and listwise ranking-objective sensitivity diagnostic
 - Underserved quartile recovery profile with paired multi-seed comparisons
 - Community-held-out robustness diagnostic with paired multi-seed comparisons
 - Contextual and geography-level signals
@@ -163,17 +163,18 @@ logistic baseline, but smaller or absent for the non-linear comparison model. Th
 keeps the claim bounded: recovery depends on the model and scenario rather than
 holding automatically. See [`docs/model_sensitivity.md`](docs/model_sensitivity.md).
 
-### 7. Aggregate recovery remains visible with pairwise ranking training
+### 7. Aggregate recovery remains visible across ranking objectives
 
-![Pairwise ranking-objective sensitivity](docs/assets/pairwise_ranking_sensitivity.png)
+![Ranking-objective sensitivity](docs/assets/pairwise_ranking_sensitivity.png)
 
 The benchmark compares its pointwise logistic primary baseline with a lightweight
-linear pairwise ranker trained on ordered service pairs within each synthetic
-household. Aggregate recovery remains directionally similar across objectives:
-under severe signal loss, mean overall NDCG@3 recovery is `+0.0115` for pointwise
-training and `+0.0110` for pairwise training across three seeds. This is a
-ranking-objective sensitivity check, not a claim that a linear pairwise comparator
-is universally stronger. See
+linear pairwise ranker trained on ordered service pairs and a lightweight linear
+listwise ranker trained on complete candidate-service lists within each synthetic
+household. Aggregate recovery is reported separately for each objective across
+three paired seeds. Under severe signal loss, mean overall NDCG@3 recovery is
+`+0.0115` for pointwise training, `+0.0110` for pairwise training, and `+0.0115`
+for listwise training. This is a ranking-objective sensitivity check, not a claim
+that one comparator is universally stronger. See
 [`docs/pairwise_ranking_sensitivity.md`](docs/pairwise_ranking_sensitivity.md).
 
 ### 8. Pooled gains can hide quartile-specific regressions
