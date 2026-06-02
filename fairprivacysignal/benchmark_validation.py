@@ -34,7 +34,12 @@ EXPECTED_SEEDS = {7, 11, 23, 42, 101}
 EXPECTED_PUBLIC_REFERENCE_METRICS = {
     "median_household_income",
     "broadband_subscription_share",
+    "unemployment_rate",
 }
+CENSUS_SOURCE_PREFIXES = (
+    "https://www.census.gov/",
+    "https://data.census.gov/",
+)
 EXPECTED_AGGREGATE_NOISE_SCENARIOS = {
     "severe_signal_loss",
     "policy_restricted",
@@ -301,9 +306,9 @@ def build_validation_checks(
             and np.isfinite(public_reference_values).all()
             and (public_reference["reference_value"] > 0).all()
             and public_reference["source_url"]
-            .str.startswith("https://www.census.gov/")
+            .str.startswith(CENSUS_SOURCE_PREFIXES)
             .all(),
-            "tracked Census QuickFacts targets are present with finite comparison metrics",
+            "three tracked Census Bureau targets are present with finite comparison metrics",
         )
     )
 

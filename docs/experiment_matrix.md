@@ -42,7 +42,7 @@ This document summarizes the current and planned FairPrivacySignal experiments.
 | Allocated relevance rate | Measure utility after service-capacity constraints are applied |
 | Selection-rate gap | Compare low-signal and not-low-signal allocation rates |
 | Score-matched subgroup calibration | Compare observed relevance for low-signal and not-low-signal events within shared predicted-score bins |
-| Public-reference calibration | Compare selected synthetic community priors with tracked Census QuickFacts anchors without automatic fitting |
+| Public-reference calibration | Compare selected synthetic community priors with tracked Census Bureau anchors without automatic fitting |
 | Aggregate-noise sensitivity | Repeat privacy-safe recovery across stress scales and noise realizations while holding the synthetic dataset fixed |
 | Cohort-threshold sensitivity | Sweep the minimum cohort size and measure fallback coverage plus utility recovery |
 | Recovery feature ablation | Compare no substitutes, engagement aggregates, cohort-context aggregates, and their combination with paired multi-seed deltas |
@@ -55,5 +55,5 @@ This document summarizes the current and planned FairPrivacySignal experiments.
 
 | Planned experiment | Purpose |
 |---|---|
-| Expanded public-reference coverage | Add carefully mapped public aggregate anchors while preserving explicit limitations |
+| Public-reference uncertainty metadata | Add source-universe and uncertainty details while preserving explicit limitations |
 | Listwise ranking-objective extension | Extend the lightweight pairwise comparator with a listwise sensitivity check |

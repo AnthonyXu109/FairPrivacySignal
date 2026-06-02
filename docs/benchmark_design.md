@@ -95,9 +95,9 @@ Service-specific engagement is intentionally important because it allows signal 
 ## 5. Public-Reference Calibration Diagnostic
 
 The benchmark compares selected synthetic community-context priors against a
-tracked U.S. Census Bureau QuickFacts snapshot. The current diagnostic reports
-population-weighted synthetic averages for median income and broadband access
-alongside national public-reference anchors.
+tracked U.S. Census Bureau snapshot. The current diagnostic reports
+population-weighted synthetic averages for median income, broadband access, and
+unemployment rate alongside national public-reference anchors.
 
 This comparison exposes synthetic-prior gaps without automatically fitting the
 generator to public values. It is directional only: community-level synthetic
@@ -313,7 +313,7 @@ FairPrivacySignal does not claim that:
 Near-term planned extensions include:
 
 1. extending the lightweight pairwise comparator with a listwise sensitivity check
-2. expanding public-reference coverage while keeping mappings explicit
+2. adding public-reference uncertainty metadata while keeping mappings explicit
 3. improving the technical whitepaper for independent expert review
 
 ## 14. Why This Matters

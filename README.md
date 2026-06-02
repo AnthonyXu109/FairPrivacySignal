@@ -33,7 +33,7 @@ The same technical pattern can apply to public agencies, healthcare outreach, no
 - Fairness metrics for low-signal or underserved participants
 - Fairness-aware recovery variants for low-signal ranking diagnostics
 - Score-matched subgroup calibration diagnostics
-- Public-reference calibration diagnostic with a tracked Census QuickFacts snapshot
+- Public-reference calibration diagnostic with a tracked Census Bureau snapshot
 - Capacity-constrained allocation under limited outreach slots
 - Multi-seed allocation sensitivity analysis
 - Privacy exposure scoring
@@ -125,7 +125,7 @@ This overview combines multi-seed recovery results with the capacity-constrained
 ![Public-reference calibration diagnostic](docs/assets/public_reference_calibration.png)
 
 The benchmark compares selected synthetic context priors with a tracked U.S. Census
-Bureau QuickFacts snapshot. The visible gaps are intentional: this is a directional
+Bureau snapshot. The visible gaps are intentional: this is a directional
 diagnostic, not an automatic fit or a claim that the synthetic benchmark represents
 a real population. See [`docs/public_reference_calibration.md`](docs/public_reference_calibration.md).
 

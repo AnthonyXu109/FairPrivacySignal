@@ -27,7 +27,7 @@ This command regenerates:
 - capacity-sensitivity frontier metrics
 - multi-seed capacity-sensitivity metrics
 - score-matched subgroup calibration metrics
-- public-reference calibration metrics from a tracked QuickFacts snapshot
+- public-reference calibration metrics from a tracked Census Bureau snapshot
 - aggregate-noise sensitivity metrics across reproducible perturbations
 - cohort-threshold sensitivity metrics for aggregate fallback coverage
 - paired multi-seed recovery feature-ablation metrics

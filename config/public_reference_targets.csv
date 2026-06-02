@@ -1,3 +1,4 @@
 metric,display_name,synthetic_column,aggregation,reference_value,unit,source_name,source_period,source_url,retrieved_on,notes
 median_household_income,Median household income,median_income,population_weighted_mean,80734,usd,U.S. Census Bureau QuickFacts,2020-2024,https://www.census.gov/quickfacts/fact/table/US/PST045225,2026-05-31,National public reference anchor; synthetic diagnostic only
 broadband_subscription_share,Broadband subscription share,broadband_access,population_weighted_mean,0.91,share,U.S. Census Bureau QuickFacts,2020-2024,https://www.census.gov/quickfacts/fact/table/US/PST045225,2026-05-31,National public reference anchor; synthetic diagnostic only
+unemployment_rate,Unemployment rate,unemployment_rate,population_weighted_mean,0.052,share,U.S. Census Bureau ACS 5-Year Data Profile DP03,2020-2024,https://data.census.gov/table/ACSDP5Y2024.DP03?g=010XX00US,2026-06-01,National civilian labor force reference anchor (DP03_0009PE); synthetic diagnostic only

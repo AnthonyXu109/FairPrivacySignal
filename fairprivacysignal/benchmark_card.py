@@ -94,6 +94,7 @@ def build_benchmark_card(
     households: pd.DataFrame,
     events: pd.DataFrame,
     signal_loss: pd.DataFrame,
+    public_reference: pd.DataFrame,
     multiseed_recovery_raw: pd.DataFrame,
     recovery_summary: pd.DataFrame,
     multiseed_capacity_raw: pd.DataFrame,
@@ -205,6 +206,12 @@ def build_benchmark_card(
             "Coverage": "training households only before holdout scoring",
         },
         {
+            "Diagnostic": "Public-reference calibration",
+            "Coverage": (
+                f"{public_reference['metric'].nunique()} versioned Census Bureau anchors"
+            ),
+        },
+        {
             "Diagnostic": "Validation gate",
             "Coverage": (
                 f"{len(required_checks)} required checks; "
@@ -276,6 +283,9 @@ def main() -> None:
         households=pd.read_csv(data_dir / "synthetic_households.csv"),
         events=pd.read_csv(data_dir / "synthetic_outreach_events.csv"),
         signal_loss=pd.read_csv(tables_dir / "signal_loss_summary.csv"),
+        public_reference=pd.read_csv(
+            tables_dir / "public_reference_calibration.csv"
+        ),
         multiseed_recovery_raw=pd.read_csv(
             tables_dir / "multiseed_privacy_recovery_raw.csv"
         ),

@@ -69,15 +69,17 @@ def _public_reference() -> pd.DataFrame:
             "metric": [
                 "median_household_income",
                 "broadband_subscription_share",
+                "unemployment_rate",
             ],
-            "reference_value": [80734, 0.91],
-            "synthetic_value": [65000, 0.80],
-            "synthetic_minus_reference": [-15734, -0.11],
-            "relative_gap_vs_reference": [-0.19, -0.12],
-            "synthetic_as_share_of_reference": [0.81, 0.88],
+            "reference_value": [80734, 0.91, 0.052],
+            "synthetic_value": [65000, 0.80, 0.07],
+            "synthetic_minus_reference": [-15734, -0.11, 0.018],
+            "relative_gap_vs_reference": [-0.19, -0.12, 0.35],
+            "synthetic_as_share_of_reference": [0.81, 0.88, 1.35],
             "source_url": [
                 "https://www.census.gov/quickfacts/example",
                 "https://www.census.gov/quickfacts/example",
+                "https://data.census.gov/table/example",
             ],
         }
     )

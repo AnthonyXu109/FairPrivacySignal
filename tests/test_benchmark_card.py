@@ -69,6 +69,15 @@ def test_build_benchmark_card_summarizes_auditable_outputs() -> None:
         signal_loss=pd.DataFrame(
             {"scenario": ["full_signal", "severe_signal_loss"]}
         ),
+        public_reference=pd.DataFrame(
+            {
+                "metric": [
+                    "median_household_income",
+                    "broadband_subscription_share",
+                    "unemployment_rate",
+                ]
+            }
+        ),
         multiseed_recovery_raw=pd.DataFrame({"seed": [7, 42, 101]}),
         recovery_summary=recovery_summary,
         multiseed_capacity_raw=pd.DataFrame(
@@ -157,4 +166,5 @@ def test_build_benchmark_card_summarizes_auditable_outputs() -> None:
     assert "Pairwise ranking-objective sensitivity" in card
     assert "Underserved quartile recovery profile" in card
     assert "Community-held-out robustness diagnostic" in card
+    assert "3 versioned Census Bureau anchors" in card
     assert "[Limitations](limitations.md)" in card

@@ -67,7 +67,7 @@ FairPrivacySignal currently includes:
     Enforces stable methodological invariants and writes a reviewer-readable validation report.
 
 13. **Public-reference calibration diagnostic**
-    Compares selected synthetic community priors with tracked Census QuickFacts anchors
+    Compares selected synthetic community priors with tracked Census Bureau anchors
     while reporting gaps rather than automatically fitting the generator.
 
 14. **Aggregate-noise sensitivity analysis**
@@ -164,6 +164,6 @@ The broader goal is to make privacy-preserving and fairness-aware ranking evalua
 Planned improvements include:
 
 - expanding synthetic scenarios beyond public-service outreach
-- expanding public-reference coverage with explicit synthetic-to-public mappings
+- adding public-reference uncertainty metadata with explicit synthetic-to-public mappings
 - improving documentation for independent technical review
 - collecting external expert feedback

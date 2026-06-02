@@ -86,6 +86,7 @@ the result as real geographic validation.
 
 The benchmark also uses a small tracked snapshot from the
 [U.S. Census Bureau QuickFacts United States page](https://www.census.gov/quickfacts/fact/table/US/PST045225)
+and [2024 ACS 5-Year Data Profile DP03](https://data.census.gov/table/ACSDP5Y2024.DP03?g=010XX00US)
 to make selected synthetic context priors inspectable. The comparison reports gaps
 without claiming that synthetic communities are representative of a real
 population. See [`docs/public_reference_calibration.md`](public_reference_calibration.md).
