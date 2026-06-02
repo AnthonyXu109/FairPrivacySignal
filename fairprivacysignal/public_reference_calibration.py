@@ -9,6 +9,10 @@ import pandas as pd
 
 
 SUPPORTED_AGGREGATIONS = {"population_weighted_mean"}
+CENSUS_SOURCE_PREFIXES = (
+    "https://www.census.gov/",
+    "https://data.census.gov/",
+)
 REQUIRED_TARGET_COLUMNS = {
     "metric",
     "display_name",
@@ -50,7 +54,7 @@ def load_public_reference_targets(path: Path) -> pd.DataFrame:
         raise ValueError("public reference target metric names must be unique")
     if not set(targets["aggregation"]).issubset(SUPPORTED_AGGREGATIONS):
         raise ValueError("public reference targets contain an unsupported aggregation")
-    if not (targets["source_url"].str.startswith("https://www.census.gov/")).all():
+    if not targets["source_url"].str.startswith(CENSUS_SOURCE_PREFIXES).all():
         raise ValueError("public reference targets must use documented Census sources")
 
     reference_values = targets["reference_value"].to_numpy(dtype=float)
@@ -135,7 +139,12 @@ def plot_public_reference_comparison(
         synthetic_percent,
         plot_frame.iterrows(),
     ):
-        label_offset = -24 if position == positions.max() else 15
+        if position == positions.max():
+            synthetic_label_offset = -24
+            reference_label_offset = -48
+        else:
+            synthetic_label_offset = -26 if position > positions.min() else 16
+            reference_label_offset = 16
         ratio_axis.plot(
             [synthetic_value, 100],
             [position, position],
@@ -165,7 +174,7 @@ def plot_public_reference_comparison(
         ratio_axis.annotate(
             f"Synthetic {_format_value(row['synthetic_value'], row['unit'])}",
             (synthetic_value, position),
-            xytext=(0, label_offset),
+            xytext=(0, synthetic_label_offset),
             textcoords="offset points",
             ha="center",
             fontsize=9,
@@ -175,7 +184,7 @@ def plot_public_reference_comparison(
         ratio_axis.annotate(
             f"Reference {_format_value(row['reference_value'], row['unit'])}",
             (100, position),
-            xytext=(0, label_offset),
+            xytext=(0, reference_label_offset),
             textcoords="offset points",
             ha="center",
             fontsize=9,
@@ -245,7 +254,7 @@ def plot_public_reference_comparison(
     fig.text(
         0.07,
         0.915,
-        "Tracked U.S. Census Bureau QuickFacts anchors make selected synthetic "
+        "Tracked U.S. Census Bureau anchors make selected synthetic "
         "context priors inspectable.",
         ha="left",
         fontsize=10.5,
