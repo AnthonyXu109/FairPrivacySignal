@@ -29,6 +29,19 @@ score-matched subgroup calibration diagnostic beyond aggregate group gaps. It bi
 similarly scored test-set events and compares observed relevance between low-signal
 and not-low-signal groups. This is not an implementation of the paper's full method.
 
+## Learning-to-Rank Objectives
+
+[Learning to Rank using Gradient Descent](https://www.microsoft.com/en-us/research/publication/learning-to-rank-using-gradient-descent/)
+introduces RankNet and a pairwise probabilistic cost for ranking functions.
+[Learning to Rank: From Pairwise Approach to Listwise Approach](https://www.microsoft.com/en-us/research/publication/learning-to-rank-from-pairwise-approach-to-listwise-approach-2/)
+describes pairwise methods as treating object pairs as learning instances and
+motivates listwise objectives that operate on complete ranked lists.
+
+FairPrivacySignal adds a lightweight linear pairwise comparator: each synthetic
+household acts as a ranking context, and ordered service pairs become training
+instances. This is an objective-sensitivity diagnostic inspired by pairwise
+learning-to-rank formulations, not an implementation of RankNet or a listwise model.
+
 ## Standardized Benchmark Practice
 
 Public benchmarks such as [WILDS](https://proceedings.mlr.press/v139/koh21a.html)
@@ -45,6 +58,7 @@ FairPrivacySignal therefore prioritizes:
 - multi-seed mean and standard-deviation reporting
 - paired feature-ablation reporting
 - lightweight baseline model comparison
+- paired ranking-objective comparison
 - paired quartile-level heterogeneity reporting
 - tracked figures generated from auditable CSV outputs
 - focused regression tests for experiment orchestration

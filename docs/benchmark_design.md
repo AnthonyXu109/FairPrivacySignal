@@ -179,7 +179,21 @@ This lightweight comparison shows whether recovery is stable across model classe
 It is not a ranking-specific learning objective and does not replace the logistic
 primary baseline. See [`docs/model_sensitivity.md`](model_sensitivity.md).
 
-### 7.5 Underserved Quartile Recovery Profile
+### 7.5 Pairwise Ranking-Objective Sensitivity Diagnostic
+
+The benchmark compares its pointwise logistic primary baseline with a lightweight
+linear pairwise ranker. Within each training household, relevant services are paired
+with nonrelevant services. The comparator learns a linear score from ordered feature
+differences, then ranks holdout services using one score per candidate.
+
+Both objectives receive the same synthetic draws, household-level split,
+signal-loss scenarios, and training-fitted aggregate features. This checks whether
+aggregate recovery depends on the pointwise classification objective. The linear
+pairwise comparator is not a neural ranking architecture and does not optimize a
+listwise objective. See
+[`docs/pairwise_ranking_sensitivity.md`](pairwise_ranking_sensitivity.md).
+
+### 7.6 Underserved Quartile Recovery Profile
 
 The benchmark groups distinct synthetic communities into underserved-score
 quartiles before comparing privacy-safe aggregates with the same-seed signal-loss
@@ -191,7 +205,7 @@ community contexts. The quartiles are synthetic benchmark constructs, not
 real-world demographic groups. See
 [`docs/underserved_recovery_profile.md`](underserved_recovery_profile.md).
 
-### 7.6 Community-Held-Out Robustness Diagnostic
+### 7.7 Community-Held-Out Robustness Diagnostic
 
 The primary protocol uses a household-level holdout. The benchmark also runs a
 paired synthetic community-held-out stress test using the same signal-loss
@@ -204,7 +218,7 @@ of generated community contexts. It is not a real geographic, temporal, or
 deployment validation study. See
 [`docs/community_holdout_robustness.md`](community_holdout_robustness.md).
 
-### 7.7 Fairness-Aware Recovery Variant
+### 7.8 Fairness-Aware Recovery Variant
 
 The fairness-aware variant trains a low-signal-specific model after privacy-safe aggregate recovery. Relevant low-signal examples receive additional training weight, and the low-signal-specific predictions are blended with predictions from the global model.
 
@@ -223,10 +237,10 @@ This is intentional:
 - it allows reviewers to inspect whether the signal-loss and recovery effects are plausible
 - it keeps the project runnable on ordinary laptops
 
-The benchmark also includes a lightweight histogram-gradient-boosting sensitivity
-check while keeping logistic regression as the primary baseline. Future versions
-can add learning-to-rank objectives or neural ranking models, but the v0.x baseline
-prioritizes transparency.
+The benchmark also includes lightweight histogram-gradient-boosting and linear
+pairwise sensitivity checks while keeping logistic regression as the primary
+baseline. Future versions can add listwise objectives or neural ranking models, but
+the v0.x baseline prioritizes transparency.
 
 ## 9. Evaluation Metrics
 
@@ -298,7 +312,7 @@ FairPrivacySignal does not claim that:
 
 Near-term planned extensions include:
 
-1. comparing the interpretable baseline with a ranking-specific model
+1. extending the lightweight pairwise comparator with a listwise sensitivity check
 2. expanding public-reference coverage while keeping mappings explicit
 3. improving the technical whitepaper for independent expert review
 
@@ -327,7 +341,8 @@ checks cover signal-loss scenario completeness, privacy-exposure monotonicity,
 bounded metrics, valid allocation counts, score-matched calibration coverage,
 documented public-reference targets, aggregate-noise sensitivity coverage,
 cohort-threshold sensitivity coverage, recovery feature-ablation coverage,
-model-sensitivity coverage, and multi-seed completeness.
+model-sensitivity coverage, pairwise ranking-objective coverage, and multi-seed
+completeness.
 
 Required checks fail the pipeline when an invariant drifts. Informational checks
 record current result behavior without blocking future experimentation. The current

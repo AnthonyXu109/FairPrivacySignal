@@ -163,6 +163,34 @@ def _model_sensitivity_raw() -> pd.DataFrame:
     )
 
 
+def _pairwise_ranking_sensitivity_raw() -> pd.DataFrame:
+    return pd.DataFrame(
+        [
+            {
+                "objective": objective,
+                "experiment": experiment,
+                "seed": seed,
+                "overall_auc": 0.60,
+                "overall_ndcg_at_3": 0.53,
+                "low_signal_ndcg_at_3": 0.44,
+                "not_low_signal_ndcg_at_3": 0.55,
+                "num_training_pairs": (
+                    100 if objective == "linear_pairwise" else 0
+                ),
+                "aggregate_reference_scope": (
+                    "train_households_only"
+                    if experiment
+                    in benchmark_validation.EXPECTED_TRAIN_FITTED_RECOVERY_EXPERIMENTS
+                    else "not_applicable"
+                ),
+            }
+            for objective in benchmark_validation.EXPECTED_PAIRWISE_RANKING_OBJECTIVES
+            for experiment in benchmark_validation.EXPECTED_PAIRWISE_RANKING_EXPERIMENTS
+            for seed in benchmark_validation.EXPECTED_PAIRWISE_RANKING_SEEDS
+        ]
+    )
+
+
 def _underserved_recovery_profile_raw() -> pd.DataFrame:
     return pd.DataFrame(
         [
@@ -255,6 +283,7 @@ def _checks() -> pd.DataFrame:
         cohort_threshold_sensitivity=_cohort_threshold_sensitivity(),
         recovery_feature_ablation_raw=_recovery_feature_ablation_raw(),
         model_sensitivity_raw=_model_sensitivity_raw(),
+        pairwise_ranking_sensitivity_raw=_pairwise_ranking_sensitivity_raw(),
         underserved_recovery_profile_raw=_underserved_recovery_profile_raw(),
         community_holdout_robustness_raw=_community_holdout_robustness_raw(),
         multiseed_recovery_raw=_multiseed_recovery_raw(),
@@ -300,6 +329,17 @@ def test_benchmark_validation_rejects_community_holdout_drift() -> None:
     ] = "FAIL"
 
     with pytest.raises(RuntimeError, match="community-held-out"):
+        benchmark_validation.raise_for_failed_required_checks(checks)
+
+
+def test_benchmark_validation_rejects_pairwise_ranking_drift() -> None:
+    checks = _checks()
+    checks.loc[
+        checks["check"] == "pairwise ranking-objective coverage is complete",
+        "status",
+    ] = "FAIL"
+
+    with pytest.raises(RuntimeError, match="pairwise ranking-objective"):
         benchmark_validation.raise_for_failed_required_checks(checks)
 
 
