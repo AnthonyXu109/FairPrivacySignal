@@ -253,6 +253,39 @@ def _community_holdout_robustness_raw() -> pd.DataFrame:
     )
 
 
+def _heldout_context_shift_raw() -> pd.DataFrame:
+    return pd.DataFrame(
+        [
+            {
+                "scenario": scenario,
+                "shift_level": shift_level,
+                "shift_strength": shift_strength,
+                "variant": variant,
+                "seed": seed,
+                "overall_auc": 0.60,
+                "overall_ndcg_at_3": 0.53,
+                "low_signal_ndcg_at_3": 0.44,
+                "not_low_signal_ndcg_at_3": 0.55,
+                "fallback_event_share": 0.05,
+                "bucket_migration_share": shift_strength * 0.80,
+                "num_test_events": 100,
+                "num_test_households": 20,
+                "aggregate_reference_scope": (
+                    "train_households_only"
+                    if variant == "privacy_safe_aggregates"
+                    else "not_applicable"
+                ),
+            }
+            for scenario in benchmark_validation.EXPECTED_CONTEXT_SHIFT_SCENARIOS
+            for shift_level, shift_strength in (
+                benchmark_validation.EXPECTED_CONTEXT_SHIFT_LEVELS.items()
+            )
+            for variant in benchmark_validation.EXPECTED_CONTEXT_SHIFT_VARIANTS
+            for seed in benchmark_validation.EXPECTED_CONTEXT_SHIFT_SEEDS
+        ]
+    )
+
+
 def _multiseed_recovery_raw() -> pd.DataFrame:
     return pd.DataFrame(
         [
@@ -291,6 +324,7 @@ def _checks() -> pd.DataFrame:
         pairwise_ranking_sensitivity_raw=_pairwise_ranking_sensitivity_raw(),
         underserved_recovery_profile_raw=_underserved_recovery_profile_raw(),
         community_holdout_robustness_raw=_community_holdout_robustness_raw(),
+        heldout_context_shift_raw=_heldout_context_shift_raw(),
         multiseed_recovery_raw=_multiseed_recovery_raw(),
         multiseed_capacity_raw=_multiseed_capacity_raw(),
     )
@@ -345,6 +379,17 @@ def test_benchmark_validation_rejects_ranking_objective_drift() -> None:
     ] = "FAIL"
 
     with pytest.raises(RuntimeError, match="ranking-objective sensitivity"):
+        benchmark_validation.raise_for_failed_required_checks(checks)
+
+
+def test_benchmark_validation_rejects_heldout_context_shift_drift() -> None:
+    checks = _checks()
+    checks.loc[
+        checks["check"] == "heldout context-shift coverage is complete",
+        "status",
+    ] = "FAIL"
+
+    with pytest.raises(RuntimeError, match="heldout context-shift"):
         benchmark_validation.raise_for_failed_required_checks(checks)
 
 

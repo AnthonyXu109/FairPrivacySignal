@@ -96,6 +96,20 @@ EXPECTED_COMMUNITY_HOLDOUT_VARIANTS = {
     "signal_loss_baseline",
     "privacy_safe_aggregates",
 }
+EXPECTED_CONTEXT_SHIFT_SCENARIOS = {
+    "severe_signal_loss",
+    "policy_restricted",
+}
+EXPECTED_CONTEXT_SHIFT_LEVELS = {
+    "no_shift": 0.0,
+    "moderate_shift": 0.5,
+    "pronounced_shift": 1.0,
+}
+EXPECTED_CONTEXT_SHIFT_VARIANTS = {
+    "signal_loss_baseline",
+    "privacy_safe_aggregates",
+}
+EXPECTED_CONTEXT_SHIFT_SEEDS = {7, 42, 101}
 
 
 def _check(
@@ -135,6 +149,7 @@ def build_validation_checks(
     pairwise_ranking_sensitivity_raw: pd.DataFrame,
     underserved_recovery_profile_raw: pd.DataFrame,
     community_holdout_robustness_raw: pd.DataFrame,
+    heldout_context_shift_raw: pd.DataFrame,
     multiseed_recovery_raw: pd.DataFrame,
     multiseed_capacity_raw: pd.DataFrame,
 ) -> pd.DataFrame:
@@ -582,6 +597,57 @@ def build_validation_checks(
         )
     )
 
+    context_shift_seed_counts = heldout_context_shift_raw.groupby(
+        ["scenario", "shift_level", "variant"]
+    )["seed"].nunique()
+    context_shift_metrics = heldout_context_shift_raw[
+        [
+            "overall_auc",
+            "overall_ndcg_at_3",
+            "low_signal_ndcg_at_3",
+            "not_low_signal_ndcg_at_3",
+            "fallback_event_share",
+            "bucket_migration_share",
+        ]
+    ]
+    shift_mapping = (
+        heldout_context_shift_raw[["shift_level", "shift_strength"]]
+        .drop_duplicates()
+        .set_index("shift_level")["shift_strength"]
+        .to_dict()
+    )
+    aggregate_context_shift_rows = heldout_context_shift_raw[
+        heldout_context_shift_raw["variant"] == "privacy_safe_aggregates"
+    ]
+    checks.append(
+        _check(
+            "heldout context-shift coverage is complete",
+            "reproducibility",
+            set(heldout_context_shift_raw["scenario"])
+            == EXPECTED_CONTEXT_SHIFT_SCENARIOS
+            and set(heldout_context_shift_raw["shift_level"])
+            == set(EXPECTED_CONTEXT_SHIFT_LEVELS)
+            and shift_mapping == EXPECTED_CONTEXT_SHIFT_LEVELS
+            and set(heldout_context_shift_raw["variant"])
+            == EXPECTED_CONTEXT_SHIFT_VARIANTS
+            and set(heldout_context_shift_raw["seed"]) == EXPECTED_CONTEXT_SHIFT_SEEDS
+            and (
+                context_shift_seed_counts == len(EXPECTED_CONTEXT_SHIFT_SEEDS)
+            ).all()
+            and _columns_are_bounded(
+                context_shift_metrics,
+                list(context_shift_metrics.columns),
+            )
+            and (
+                aggregate_context_shift_rows["aggregate_reference_scope"]
+                == "train_households_only"
+            ).all()
+            and (heldout_context_shift_raw["num_test_events"] > 0).all()
+            and (heldout_context_shift_raw["num_test_households"] > 0).all(),
+            "two scenarios cover three controlled shift levels, two paired variants, and three seeds; aggregate references remain train-fitted",
+        )
+    )
+
     recovery_seed_counts = multiseed_recovery_raw.groupby("experiment")["seed"].nunique()
     checks.append(
         _check(
@@ -695,6 +761,9 @@ def main() -> None:
         ),
         community_holdout_robustness_raw=pd.read_csv(
             tables_dir / "community_holdout_robustness_raw.csv"
+        ),
+        heldout_context_shift_raw=pd.read_csv(
+            tables_dir / "heldout_context_shift_raw.csv"
         ),
         multiseed_recovery_raw=pd.read_csv(
             tables_dir / "multiseed_privacy_recovery_raw.csv"

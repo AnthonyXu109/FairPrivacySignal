@@ -106,6 +106,7 @@ def build_benchmark_card(
     pairwise_ranking_sensitivity_raw: pd.DataFrame,
     underserved_recovery_profile_raw: pd.DataFrame,
     community_holdout_robustness_raw: pd.DataFrame,
+    heldout_context_shift_raw: pd.DataFrame,
     validation_checks: pd.DataFrame,
 ) -> str:
     required_checks = validation_checks[validation_checks["required"].astype(bool)]
@@ -202,6 +203,15 @@ def build_benchmark_card(
             ),
         },
         {
+            "Diagnostic": "Heldout context-shift stress",
+            "Coverage": (
+                f"{heldout_context_shift_raw['scenario'].nunique()} scenarios; "
+                f"{heldout_context_shift_raw['shift_level'].nunique()} controlled "
+                "shift levels; "
+                f"{heldout_context_shift_raw['seed'].nunique()} paired seeds"
+            ),
+        },
+        {
             "Diagnostic": "Aggregate preprocessing scope",
             "Coverage": "training households only before holdout scoring",
         },
@@ -259,6 +269,7 @@ def build_benchmark_card(
         "- [Ranking-objective sensitivity](pairwise_ranking_sensitivity.md)\n"
         "- [Underserved quartile recovery profile](underserved_recovery_profile.md)\n"
         "- [Community-held-out robustness diagnostic](community_holdout_robustness.md)\n"
+        "- [Heldout context-shift stress test](heldout_context_shift.md)\n"
         "- [Capacity-constrained allocation](capacity_allocation.md)\n"
         "- [Fairness metrics](fairness_metrics.md)\n"
         "- [Limitations](limitations.md)\n"
@@ -318,6 +329,9 @@ def main() -> None:
         ),
         community_holdout_robustness_raw=pd.read_csv(
             tables_dir / "community_holdout_robustness_raw.csv"
+        ),
+        heldout_context_shift_raw=pd.read_csv(
+            tables_dir / "heldout_context_shift_raw.csv"
         ),
         validation_checks=pd.read_csv(
             tables_dir / "benchmark_validation_checks.csv"

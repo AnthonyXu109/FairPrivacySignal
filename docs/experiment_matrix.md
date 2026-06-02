@@ -50,10 +50,11 @@ This document summarizes the current and planned FairPrivacySignal experiments.
 | Ranking-objective sensitivity | Compare pointwise logistic training with lightweight linear pairwise and listwise rankers across paired scenarios and seeds |
 | Underserved quartile recovery profile | Check whether pooled recovery hides quartile-specific regressions across synthetic community contexts |
 | Community-held-out robustness diagnostic | Compare household-level holdout with a stricter paired split that keeps training and evaluation communities disjoint |
+| Heldout context-shift stress test | Move bounded synthetic context covariates and deterministic context buckets on the evaluation side while keeping training households and labels fixed |
 
 ## Planned Experiments
 
 | Planned experiment | Purpose |
 |---|---|
 | Public-reference uncertainty metadata | Add source-universe and uncertainty details while preserving explicit limitations |
-| Temporal-shift stress test | Check aggregate recovery under controlled synthetic context drift |
+| Broader drift mechanisms | Extend the controlled covariate proxy with additional documented shift families |

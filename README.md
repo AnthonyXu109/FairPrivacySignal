@@ -26,6 +26,7 @@ The same technical pattern can apply to public agencies, healthcare outreach, no
 - Recovery feature ablation with paired multi-seed comparisons
 - Lightweight model-class sensitivity diagnostic
 - Pointwise, pairwise, and listwise ranking-objective sensitivity diagnostic
+- Controlled heldout context-shift stress test
 - Underserved quartile recovery profile with paired multi-seed comparisons
 - Community-held-out robustness diagnostic with paired multi-seed comparisons
 - Contextual and geography-level signals
@@ -199,11 +200,26 @@ for community holdout versus `+0.015` for household holdout. This is a synthetic
 robustness stress test, not a geographic validation claim. See
 [`docs/community_holdout_robustness.md`](docs/community_holdout_robustness.md).
 
-### 10. Privacy-utility tradeoff across signal-loss scenarios
+### 10. Controlled context drift exposes another holdout failure mode
+
+![Heldout context-shift stress test](docs/assets/heldout_context_shift.png)
+
+This paired stress test keeps training households, labels, and service candidates
+fixed while moving seven synthetic context covariates and remapping a deterministic
+share of holdout context buckets on the evaluation side. Privacy-safe aggregates
+continue to use training-household reference statistics only. The result is a
+controlled covariate-drift proxy: it makes recovery curves inspectable under a
+distribution-shift stress without presenting synthetic results as temporal or
+deployment validation. In this configuration, severe-loss overall recovery falls
+from `+0.0115` at the reference holdout to `+0.0037` under pronounced shift, while
+policy-restricted low-signal recovery falls from `+0.0050` to `-0.0011`. See
+[`docs/heldout_context_shift.md`](docs/heldout_context_shift.md).
+
+### 11. Privacy-utility tradeoff across signal-loss scenarios
 
 ![Privacy utility tradeoff](docs/assets/privacy_utility_tradeoff.png)
 
-### 11. Higher cohort thresholds expose the fallback-utility tradeoff
+### 12. Higher cohort thresholds expose the fallback-utility tradeoff
 
 ![Cohort-threshold sensitivity](docs/assets/cohort_threshold_sensitivity.png)
 
