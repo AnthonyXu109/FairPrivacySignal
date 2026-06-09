@@ -97,11 +97,14 @@ analysis, documentation, or figure clarity are welcome. See
 [`CONTRIBUTING.md`](CONTRIBUTING.md) for the verification workflow, data
 boundaries, and guidance for proposing benchmark extensions.
 
-## System architecture
+## Benchmark system map
 
-FairPrivacySignal is organized as a reproducible benchmark pipeline: synthetic public-service data generation, privacy-driven signal-loss simulation, policy and consent-based feature suppression, privacy-safe aggregate recovery, ranking evaluation, and fairness diagnostics.
+FairPrivacySignal is organized as a reproducible benchmark system rather than a
+single model demo. The map connects the synthetic foundation, privacy and recovery
+mechanisms, ranking and allocation paths, reviewer-facing evidence surfaces, and
+the machine-checked validation gate.
 
-![FairPrivacySignal architecture](docs/assets/architecture_diagram.png)
+![FairPrivacySignal benchmark system map](docs/assets/architecture_diagram.png)
 
 ## Results
 
