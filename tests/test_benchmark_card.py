@@ -106,6 +106,16 @@ def test_build_benchmark_card_summarizes_auditable_outputs() -> None:
                 "seed": [7, 42],
             }
         ),
+        aggregate_alignment_negative_control_raw=pd.DataFrame(
+            {
+                "scenario": ["severe_signal_loss", "policy_restricted"],
+                "variant": [
+                    "aligned_privacy_safe_aggregates",
+                    "service_permuted_aggregates",
+                ],
+                "seed": [7, 42],
+            }
+        ),
         model_sensitivity_raw=pd.DataFrame(
             {
                 "model": ["logistic_regression", "hist_gradient_boosting"],
@@ -174,6 +184,7 @@ def test_build_benchmark_card_summarizes_auditable_outputs() -> None:
     assert "## Aggregate-Noise Checkpoint" in card
     assert "## Cohort-Threshold Checkpoints" in card
     assert "Recovery feature ablation" in card
+    assert "Aggregate-alignment negative control" in card
     assert "Model sensitivity diagnostic" in card
     assert "Ranking-objective sensitivity" in card
     assert "Underserved quartile recovery profile" in card

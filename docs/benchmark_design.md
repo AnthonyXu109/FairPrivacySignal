@@ -168,7 +168,22 @@ This ablation makes the source of utility recovery inspectable rather than
 attributing the result to an undifferentiated feature bundle. See
 [`docs/recovery_feature_ablation.md`](recovery_feature_ablation.md).
 
-### 7.4 Model-Class Sensitivity Diagnostic
+### 7.4 Aggregate-Alignment Negative Control
+
+The benchmark adds a structural negative control that cyclically permutes service
+categories in the training reference before privacy-safe aggregates are
+constructed. This preserves the aggregate pipeline, event counts, noise mechanism,
+and train-only fitting scope while deliberately breaking the intended
+service-to-signal alignment.
+
+Aligned and service-permuted aggregates are compared with the same-seed
+no-aggregate baseline. A weaker permuted result supports the interpretation that
+the benchmark's recovery is tied to semantically aligned aggregate structure
+rather than the mere presence of additional numeric columns. It is not a causal
+identification strategy. See
+[`docs/aggregate_alignment_negative_control.md`](aggregate_alignment_negative_control.md).
+
+### 7.5 Model-Class Sensitivity Diagnostic
 
 The benchmark compares its interpretable logistic primary baseline with histogram
 gradient boosting across three paired synthetic draws. Both models receive the same
@@ -179,7 +194,7 @@ This lightweight comparison shows whether recovery is stable across model classe
 It is not a ranking-specific learning objective and does not replace the logistic
 primary baseline. See [`docs/model_sensitivity.md`](model_sensitivity.md).
 
-### 7.5 Ranking-Objective Sensitivity Diagnostic
+### 7.6 Ranking-Objective Sensitivity Diagnostic
 
 The benchmark compares its pointwise logistic primary baseline with a lightweight
 linear pairwise ranker and a lightweight linear listwise ranker. Within each
@@ -197,7 +212,7 @@ inspired by top-one listwise formulations but is not an implementation of the
 original neural ListNet architecture. See
 [`docs/pairwise_ranking_sensitivity.md`](pairwise_ranking_sensitivity.md).
 
-### 7.6 Underserved Quartile Recovery Profile
+### 7.7 Underserved Quartile Recovery Profile
 
 The benchmark groups distinct synthetic communities into underserved-score
 quartiles before comparing privacy-safe aggregates with the same-seed signal-loss
@@ -209,7 +224,7 @@ community contexts. The quartiles are synthetic benchmark constructs, not
 real-world demographic groups. See
 [`docs/underserved_recovery_profile.md`](underserved_recovery_profile.md).
 
-### 7.7 Community-Held-Out Robustness Diagnostic
+### 7.8 Community-Held-Out Robustness Diagnostic
 
 The primary protocol uses a household-level holdout. The benchmark also runs a
 paired synthetic community-held-out stress test using the same signal-loss
@@ -222,7 +237,7 @@ of generated community contexts. It is not a real geographic, temporal, or
 deployment validation study. See
 [`docs/community_holdout_robustness.md`](community_holdout_robustness.md).
 
-### 7.8 Heldout Context-Shift Stress Test
+### 7.9 Heldout Context-Shift Stress Test
 
 The benchmark adds a paired controlled covariate-drift diagnostic after the
 household-level train/test split. Training households, relevance labels, and
@@ -250,7 +265,7 @@ This is a controlled covariate-drift proxy with fixed labels, not a temporal
 validation study or an estimate of real-world distribution shift. See
 [`docs/heldout_context_shift.md`](heldout_context_shift.md).
 
-### 7.9 Fairness-Aware Recovery Variant
+### 7.10 Fairness-Aware Recovery Variant
 
 The fairness-aware variant trains a low-signal-specific model after privacy-safe aggregate recovery. Relevant low-signal examples receive additional training weight, and the low-signal-specific predictions are blended with predictions from the global model.
 

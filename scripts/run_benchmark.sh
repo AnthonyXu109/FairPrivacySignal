@@ -10,6 +10,7 @@ python -m fairprivacysignal.signal_loss
 python -m fairprivacysignal.ranking
 python -m fairprivacysignal.privacy_recovery
 python -m fairprivacysignal.recovery_feature_ablation
+python -m fairprivacysignal.aggregate_alignment_negative_control
 python -m fairprivacysignal.model_sensitivity
 python -m fairprivacysignal.pairwise_ranking_sensitivity
 python -m fairprivacysignal.underserved_recovery_profile

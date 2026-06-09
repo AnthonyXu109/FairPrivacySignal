@@ -53,6 +53,17 @@ EXPECTED_ABLATION_VARIANTS = {
     "cohort_context_aggregates_only",
     "combined_privacy_safe_aggregates",
 }
+EXPECTED_ALIGNMENT_CONTROL_VARIANTS = {
+    "no_aggregate_substitutes",
+    "aligned_privacy_safe_aggregates",
+    "service_permuted_aggregates",
+}
+EXPECTED_ALIGNMENT_CONTROL_ALIGNMENTS = {
+    "no_aggregate_substitutes": "not_applicable",
+    "aligned_privacy_safe_aggregates": "aligned",
+    "service_permuted_aggregates": "permuted",
+}
+EXPECTED_ALIGNMENT_CONTROL_SEEDS = {7, 42, 101}
 EXPECTED_MODEL_SENSITIVITY_MODELS = {
     "logistic_regression",
     "hist_gradient_boosting",
@@ -145,6 +156,7 @@ def build_validation_checks(
     aggregate_noise_sensitivity_raw: pd.DataFrame,
     cohort_threshold_sensitivity: pd.DataFrame,
     recovery_feature_ablation_raw: pd.DataFrame,
+    aggregate_alignment_negative_control_raw: pd.DataFrame,
     model_sensitivity_raw: pd.DataFrame,
     pairwise_ranking_sensitivity_raw: pd.DataFrame,
     underserved_recovery_profile_raw: pd.DataFrame,
@@ -416,6 +428,62 @@ def build_validation_checks(
                 list(ablation_metrics.columns),
             ),
             "two scenarios cover four feature sets and five paired synthetic-data seeds",
+        )
+    )
+
+    alignment_control_seed_counts = aggregate_alignment_negative_control_raw.groupby(
+        ["scenario", "variant"]
+    )["seed"].nunique()
+    alignment_control_metrics = aggregate_alignment_negative_control_raw[
+        ["overall_ndcg_at_3", "low_signal_ndcg_at_3"]
+    ]
+    alignment_mapping = (
+        aggregate_alignment_negative_control_raw[
+            ["variant", "service_alignment"]
+        ]
+        .drop_duplicates()
+        .set_index("variant")["service_alignment"]
+        .to_dict()
+    )
+    aggregate_alignment_rows = aggregate_alignment_negative_control_raw[
+        aggregate_alignment_negative_control_raw["variant"]
+        != "no_aggregate_substitutes"
+    ]
+    baseline_alignment_rows = aggregate_alignment_negative_control_raw[
+        aggregate_alignment_negative_control_raw["variant"]
+        == "no_aggregate_substitutes"
+    ]
+    checks.append(
+        _check(
+            "aggregate-alignment negative-control coverage is complete",
+            "ranking",
+            set(aggregate_alignment_negative_control_raw["scenario"])
+            == EXPECTED_AGGREGATE_NOISE_SCENARIOS
+            and set(aggregate_alignment_negative_control_raw["variant"])
+            == EXPECTED_ALIGNMENT_CONTROL_VARIANTS
+            and set(aggregate_alignment_negative_control_raw["seed"])
+            == EXPECTED_ALIGNMENT_CONTROL_SEEDS
+            and alignment_mapping == EXPECTED_ALIGNMENT_CONTROL_ALIGNMENTS
+            and (
+                alignment_control_seed_counts
+                == len(EXPECTED_ALIGNMENT_CONTROL_SEEDS)
+            ).all()
+            and _columns_are_bounded(
+                alignment_control_metrics,
+                list(alignment_control_metrics.columns),
+            )
+            and (
+                aggregate_alignment_rows["aggregate_reference_scope"]
+                == "train_households_only"
+            ).all()
+            and (
+                baseline_alignment_rows["aggregate_reference_scope"]
+                == "not_applicable"
+            ).all()
+            and (
+                aggregate_alignment_negative_control_raw["num_test_events"] > 0
+            ).all(),
+            "two scenarios cover aligned and service-permuted aggregates against a shared baseline across three paired seeds",
         )
     )
 
@@ -749,6 +817,9 @@ def main() -> None:
         ),
         recovery_feature_ablation_raw=pd.read_csv(
             tables_dir / "recovery_feature_ablation_raw.csv"
+        ),
+        aggregate_alignment_negative_control_raw=pd.read_csv(
+            tables_dir / "aggregate_alignment_negative_control_raw.csv"
         ),
         model_sensitivity_raw=pd.read_csv(
             tables_dir / "model_sensitivity_raw.csv"
