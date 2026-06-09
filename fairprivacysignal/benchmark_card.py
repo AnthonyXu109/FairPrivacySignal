@@ -270,6 +270,7 @@ def build_benchmark_card(
         + _threshold_checkpoint_table(threshold_sensitivity)
         + "\n\n"
         "## Evidence Map\n\n"
+        "- [Reviewer guide](reviewer_guide.md)\n"
         "- [Benchmark design](benchmark_design.md)\n"
         "- [Experiment matrix](experiment_matrix.md)\n"
         "- [Validation report](validation_report.md)\n"

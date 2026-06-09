@@ -67,6 +67,7 @@ The default threshold is `k=50`; `k=200` shows a more restrictive fallback regim
 
 ## Evidence Map
 
+- [Reviewer guide](reviewer_guide.md)
 - [Benchmark design](benchmark_design.md)
 - [Experiment matrix](experiment_matrix.md)
 - [Validation report](validation_report.md)
