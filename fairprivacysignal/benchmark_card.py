@@ -102,6 +102,7 @@ def build_benchmark_card(
     aggregate_noise_summary: pd.DataFrame,
     threshold_sensitivity: pd.DataFrame,
     recovery_feature_ablation_raw: pd.DataFrame,
+    aggregate_alignment_negative_control_raw: pd.DataFrame,
     model_sensitivity_raw: pd.DataFrame,
     pairwise_ranking_sensitivity_raw: pd.DataFrame,
     underserved_recovery_profile_raw: pd.DataFrame,
@@ -164,6 +165,17 @@ def build_benchmark_card(
                 f"{recovery_feature_ablation_raw['scenario'].nunique()} scenarios; "
                 f"{recovery_feature_ablation_raw['variant'].nunique()} feature sets; "
                 f"{recovery_feature_ablation_raw['seed'].nunique()} paired seeds"
+            ),
+        },
+        {
+            "Diagnostic": "Aggregate-alignment negative control",
+            "Coverage": (
+                f"{aggregate_alignment_negative_control_raw['scenario'].nunique()} "
+                "scenarios; "
+                f"{aggregate_alignment_negative_control_raw['variant'].nunique()} "
+                "alignment variants; "
+                f"{aggregate_alignment_negative_control_raw['seed'].nunique()} "
+                "paired seeds"
             ),
         },
         {
@@ -265,6 +277,7 @@ def build_benchmark_card(
         "- [Aggregate-noise sensitivity](aggregate_noise_sensitivity.md)\n"
         "- [Cohort-threshold sensitivity](cohort_threshold_sensitivity.md)\n"
         "- [Recovery feature ablation](recovery_feature_ablation.md)\n"
+        "- [Aggregate-alignment negative control](aggregate_alignment_negative_control.md)\n"
         "- [Model sensitivity diagnostic](model_sensitivity.md)\n"
         "- [Ranking-objective sensitivity](pairwise_ranking_sensitivity.md)\n"
         "- [Underserved quartile recovery profile](underserved_recovery_profile.md)\n"
@@ -317,6 +330,9 @@ def main() -> None:
         ),
         recovery_feature_ablation_raw=pd.read_csv(
             tables_dir / "recovery_feature_ablation_raw.csv"
+        ),
+        aggregate_alignment_negative_control_raw=pd.read_csv(
+            tables_dir / "aggregate_alignment_negative_control_raw.csv"
         ),
         model_sensitivity_raw=pd.read_csv(
             tables_dir / "model_sensitivity_raw.csv"

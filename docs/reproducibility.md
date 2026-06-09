@@ -31,6 +31,7 @@ This command regenerates:
 - aggregate-noise sensitivity metrics across reproducible perturbations
 - cohort-threshold sensitivity metrics for aggregate fallback coverage
 - paired multi-seed recovery feature-ablation metrics
+- paired aggregate-alignment negative-control metrics
 - paired model-sensitivity metrics for logistic and histogram gradient boosting
 - paired ranking-objective metrics for pointwise logistic, linear pairwise, and linear listwise training
 - paired underserved-quartile recovery metrics across synthetic community contexts
@@ -63,6 +64,7 @@ Signal-suppression scenarios and privacy-exposure weights are loaded from:
     docs/assets/aggregate_noise_sensitivity.png
     docs/assets/cohort_threshold_sensitivity.png
     docs/assets/recovery_feature_ablation.png
+    docs/assets/aggregate_alignment_negative_control.png
     docs/assets/model_sensitivity.png
     docs/assets/pairwise_ranking_sensitivity.png
     docs/assets/underserved_recovery_profile.png
@@ -70,6 +72,7 @@ Signal-suppression scenarios and privacy-exposure weights are loaded from:
     docs/assets/heldout_context_shift.png
     docs/multiseed_results.md
     docs/model_sensitivity.md
+    docs/aggregate_alignment_negative_control.md
     docs/heldout_context_shift.md
     docs/validation_report.md
     docs/benchmark_card.md
@@ -87,6 +90,8 @@ Signal-suppression scenarios and privacy-exposure weights are loaded from:
     outputs/tables/cohort_threshold_sensitivity.csv
     outputs/tables/recovery_feature_ablation_raw.csv
     outputs/tables/recovery_feature_ablation_summary.csv
+    outputs/tables/aggregate_alignment_negative_control_raw.csv
+    outputs/tables/aggregate_alignment_negative_control_summary.csv
     outputs/tables/model_sensitivity_raw.csv
     outputs/tables/model_sensitivity_summary.csv
     outputs/tables/model_sensitivity_paired_recovery.csv

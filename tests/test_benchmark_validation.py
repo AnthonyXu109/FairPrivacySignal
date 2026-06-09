@@ -147,6 +147,34 @@ def _recovery_feature_ablation_raw() -> pd.DataFrame:
     )
 
 
+def _aggregate_alignment_negative_control_raw() -> pd.DataFrame:
+    return pd.DataFrame(
+        [
+            {
+                "scenario": scenario,
+                "variant": variant,
+                "seed": seed,
+                "service_alignment": (
+                    benchmark_validation.EXPECTED_ALIGNMENT_CONTROL_ALIGNMENTS[
+                        variant
+                    ]
+                ),
+                "overall_ndcg_at_3": 0.53,
+                "low_signal_ndcg_at_3": 0.44,
+                "num_test_events": 100,
+                "aggregate_reference_scope": (
+                    "not_applicable"
+                    if variant == "no_aggregate_substitutes"
+                    else "train_households_only"
+                ),
+            }
+            for scenario in benchmark_validation.EXPECTED_AGGREGATE_NOISE_SCENARIOS
+            for variant in benchmark_validation.EXPECTED_ALIGNMENT_CONTROL_VARIANTS
+            for seed in benchmark_validation.EXPECTED_ALIGNMENT_CONTROL_SEEDS
+        ]
+    )
+
+
 def _model_sensitivity_raw() -> pd.DataFrame:
     return pd.DataFrame(
         [
@@ -320,6 +348,9 @@ def _checks() -> pd.DataFrame:
         aggregate_noise_sensitivity_raw=_aggregate_noise_sensitivity_raw(),
         cohort_threshold_sensitivity=_cohort_threshold_sensitivity(),
         recovery_feature_ablation_raw=_recovery_feature_ablation_raw(),
+        aggregate_alignment_negative_control_raw=(
+            _aggregate_alignment_negative_control_raw()
+        ),
         model_sensitivity_raw=_model_sensitivity_raw(),
         pairwise_ranking_sensitivity_raw=_pairwise_ranking_sensitivity_raw(),
         underserved_recovery_profile_raw=_underserved_recovery_profile_raw(),
@@ -379,6 +410,18 @@ def test_benchmark_validation_rejects_ranking_objective_drift() -> None:
     ] = "FAIL"
 
     with pytest.raises(RuntimeError, match="ranking-objective sensitivity"):
+        benchmark_validation.raise_for_failed_required_checks(checks)
+
+
+def test_benchmark_validation_rejects_alignment_control_drift() -> None:
+    checks = _checks()
+    checks.loc[
+        checks["check"]
+        == "aggregate-alignment negative-control coverage is complete",
+        "status",
+    ] = "FAIL"
+
+    with pytest.raises(RuntimeError, match="aggregate-alignment negative-control"):
         benchmark_validation.raise_for_failed_required_checks(checks)
 
 

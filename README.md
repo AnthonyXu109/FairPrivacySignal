@@ -24,6 +24,7 @@ The same technical pattern can apply to public agencies, healthcare outreach, no
 - Aggregate-noise sensitivity analysis across reproducible perturbations
 - Cohort-threshold sensitivity analysis for aggregate fallback coverage
 - Recovery feature ablation with paired multi-seed comparisons
+- Aggregate-alignment negative control with service-permuted references
 - Lightweight model-class sensitivity diagnostic
 - Pointwise, pairwise, and listwise ranking-objective sensitivity diagnostic
 - Controlled heldout context-shift stress test
@@ -157,7 +158,20 @@ aggregates contribute less when used alone, while their combined use adds a mode
 increment under severe signal loss. See
 [`docs/recovery_feature_ablation.md`](docs/recovery_feature_ablation.md).
 
-### 6. Recovery effects remain model-dependent
+### 6. Recovery depends on semantically aligned aggregate structure
+
+![Aggregate-alignment negative control](docs/assets/aggregate_alignment_negative_control.png)
+
+This structural negative control preserves train-only aggregate construction but
+cyclically permutes service categories in the reference data before feature
+generation. Under severe signal loss, mean overall NDCG@3 recovery changes from
+`+0.0115` with aligned aggregates to `-0.0014` after permutation. Under the
+policy-restricted scenario it changes from `+0.0102` to `+0.0009`. The
+policy-restricted low-signal comparison is less separated, so this diagnostic is
+interpreted metric by metric rather than as a uniform effect. See
+[`docs/aggregate_alignment_negative_control.md`](docs/aggregate_alignment_negative_control.md).
+
+### 7. Recovery effects remain model-dependent
 
 ![Model sensitivity diagnostic](docs/assets/model_sensitivity.png)
 
@@ -167,7 +181,7 @@ logistic baseline, but smaller or absent for the non-linear comparison model. Th
 keeps the claim bounded: recovery depends on the model and scenario rather than
 holding automatically. See [`docs/model_sensitivity.md`](docs/model_sensitivity.md).
 
-### 7. Aggregate recovery remains visible across ranking objectives
+### 8. Aggregate recovery remains visible across ranking objectives
 
 ![Ranking-objective sensitivity](docs/assets/pairwise_ranking_sensitivity.png)
 
@@ -181,7 +195,7 @@ for listwise training. This is a ranking-objective sensitivity check, not a clai
 that one comparator is universally stronger. See
 [`docs/pairwise_ranking_sensitivity.md`](docs/pairwise_ranking_sensitivity.md).
 
-### 8. Pooled gains can hide quartile-specific regressions
+### 9. Pooled gains can hide quartile-specific regressions
 
 ![Underserved quartile recovery profile](docs/assets/underserved_recovery_profile.png)
 
@@ -191,7 +205,7 @@ imply uniform benefit: low-signal recovery varies across quartiles and can be
 negative in some contexts. See
 [`docs/underserved_recovery_profile.md`](docs/underserved_recovery_profile.md).
 
-### 9. Recovery remains visible under a community-held-out stress test
+### 10. Recovery remains visible under a community-held-out stress test
 
 ![Community-held-out robustness diagnostic](docs/assets/community_holdout_robustness.png)
 
@@ -203,7 +217,7 @@ for community holdout versus `+0.015` for household holdout. This is a synthetic
 robustness stress test, not a geographic validation claim. See
 [`docs/community_holdout_robustness.md`](docs/community_holdout_robustness.md).
 
-### 10. Controlled context drift exposes another holdout failure mode
+### 11. Controlled context drift exposes another holdout failure mode
 
 ![Heldout context-shift stress test](docs/assets/heldout_context_shift.png)
 
@@ -218,11 +232,11 @@ from `+0.0115` at the reference holdout to `+0.0037` under pronounced shift, whi
 policy-restricted low-signal recovery falls from `+0.0050` to `-0.0011`. See
 [`docs/heldout_context_shift.md`](docs/heldout_context_shift.md).
 
-### 11. Privacy-utility tradeoff across signal-loss scenarios
+### 12. Privacy-utility tradeoff across signal-loss scenarios
 
 ![Privacy utility tradeoff](docs/assets/privacy_utility_tradeoff.png)
 
-### 12. Higher cohort thresholds expose the fallback-utility tradeoff
+### 13. Higher cohort thresholds expose the fallback-utility tradeoff
 
 ![Cohort-threshold sensitivity](docs/assets/cohort_threshold_sensitivity.png)
 

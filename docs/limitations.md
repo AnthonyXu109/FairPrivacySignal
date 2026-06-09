@@ -50,6 +50,10 @@ constraint, or long-term effect that could arise in deployed ranking systems.
 The recovery feature ablation isolates contributions within this synthetic
 configuration; it does not establish that the same contributions transfer to a
 real deployment.
+The aggregate-alignment negative control deliberately breaks service-to-signal
+alignment while preserving the surrounding synthetic pipeline. A weaker permuted
+result supports a structural interpretation within this benchmark, but it does
+not identify a causal mechanism or establish transfer beyond the generated data.
 The model-sensitivity diagnostic compares two lightweight classifier families. It
 does not establish robustness across all model classes or implement a
 ranking-specific learning objective.

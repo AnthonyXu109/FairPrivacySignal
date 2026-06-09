@@ -116,6 +116,11 @@ FairPrivacySignal currently includes:
     on the evaluation side after the household-level split while keeping labels
     and training-household aggregate references fixed.
 
+25. **Aggregate-alignment negative control**
+    Cyclically permutes service categories in the training reference while
+    preserving train-only aggregate construction, testing whether recovery depends
+    on semantically aligned aggregate structure.
+
 ## 4. Current Benchmark Results
 
 The current benchmark results show:
@@ -129,6 +134,9 @@ The current benchmark results show:
 - A paired feature ablation showed that the engagement aggregate provides most of
   the observed recovery in the current synthetic configuration, while combined
   cohort-context features add a modest increment under severe signal loss.
+- A structural negative control showed that overall recovery weakens when service
+  categories are permuted before aggregate construction, while the
+  policy-restricted low-signal comparison remains less clearly separated.
 - A lightweight model comparison showed that aggregate recovery is not
   model-invariant: it is clear for the logistic primary baseline but smaller or
   absent for histogram gradient boosting under the current synthetic configuration.

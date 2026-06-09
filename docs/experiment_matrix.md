@@ -46,6 +46,7 @@ This document summarizes the current and planned FairPrivacySignal experiments.
 | Aggregate-noise sensitivity | Repeat privacy-safe recovery across stress scales and noise realizations while holding the synthetic dataset fixed |
 | Cohort-threshold sensitivity | Sweep the minimum cohort size and measure fallback coverage plus utility recovery |
 | Recovery feature ablation | Compare no substitutes, engagement aggregates, cohort-context aggregates, and their combination with paired multi-seed deltas |
+| Aggregate-alignment negative control | Preserve train-only aggregate construction while cyclically permuting reference service categories to test whether recovery depends on service-aligned structure |
 | Model sensitivity diagnostic | Compare the interpretable logistic primary baseline with lightweight histogram gradient boosting across paired scenarios and seeds |
 | Ranking-objective sensitivity | Compare pointwise logistic training with lightweight linear pairwise and listwise rankers across paired scenarios and seeds |
 | Underserved quartile recovery profile | Check whether pooled recovery hides quartile-specific regressions across synthetic community contexts |
