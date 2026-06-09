@@ -222,7 +222,35 @@ of generated community contexts. It is not a real geographic, temporal, or
 deployment validation study. See
 [`docs/community_holdout_robustness.md`](community_holdout_robustness.md).
 
-### 7.8 Fairness-Aware Recovery Variant
+### 7.8 Heldout Context-Shift Stress Test
+
+The benchmark adds a paired controlled covariate-drift diagnostic after the
+household-level train/test split. Training households, relevance labels, and
+service candidates remain fixed. Holdout-side synthetic context covariates move
+across reference, moderate, and pronounced stress levels:
+
+- median household income
+- unemployment rate
+- broadband access
+- food-access risk
+- health-need score
+- housing pressure
+- underserved score
+
+A deterministic share of holdout household `income_band` and `urbanicity` buckets
+is also remapped. This makes the privacy-safe aggregate layer use different
+training-fitted cohort lookups without allowing holdout rows to influence those
+aggregate statistics.
+
+Privacy-safe aggregates remain fitted from unshifted training households only
+before the shifted holdout rows are scored. The diagnostic reports absolute
+NDCG@3 plus aggregate-minus-baseline recovery for overall and low-signal ranking.
+
+This is a controlled covariate-drift proxy with fixed labels, not a temporal
+validation study or an estimate of real-world distribution shift. See
+[`docs/heldout_context_shift.md`](heldout_context_shift.md).
+
+### 7.9 Fairness-Aware Recovery Variant
 
 The fairness-aware variant trains a low-signal-specific model after privacy-safe aggregate recovery. Relevant low-signal examples receive additional training weight, and the low-signal-specific predictions are blended with predictions from the global model.
 
@@ -316,7 +344,7 @@ FairPrivacySignal does not claim that:
 
 Near-term planned extensions include:
 
-1. adding a temporal-shift stress test for synthetic context drift
+1. broadening controlled context-shift mechanisms beyond the current covariate proxy
 2. adding public-reference uncertainty metadata while keeping mappings explicit
 3. improving the technical whitepaper for independent expert review
 
@@ -345,7 +373,8 @@ checks cover signal-loss scenario completeness, privacy-exposure monotonicity,
 bounded metrics, valid allocation counts, score-matched calibration coverage,
 documented public-reference targets, aggregate-noise sensitivity coverage,
 cohort-threshold sensitivity coverage, recovery feature-ablation coverage,
-model-sensitivity coverage, ranking-objective coverage, and multi-seed
+model-sensitivity coverage, ranking-objective coverage, heldout context-shift
+coverage, and multi-seed
 completeness.
 
 Required checks fail the pipeline when an invariant drifts. Informational checks

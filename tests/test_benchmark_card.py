@@ -145,6 +145,13 @@ def test_build_benchmark_card_summarizes_auditable_outputs() -> None:
                 "seed": [7, 42],
             }
         ),
+        heldout_context_shift_raw=pd.DataFrame(
+            {
+                "scenario": ["severe_signal_loss", "policy_restricted"],
+                "shift_level": ["no_shift", "pronounced_shift"],
+                "seed": [7, 42],
+            }
+        ),
         validation_checks=pd.DataFrame(
             [
                 {
@@ -171,5 +178,6 @@ def test_build_benchmark_card_summarizes_auditable_outputs() -> None:
     assert "Ranking-objective sensitivity" in card
     assert "Underserved quartile recovery profile" in card
     assert "Community-held-out robustness diagnostic" in card
+    assert "Heldout context-shift stress test" in card
     assert "3 versioned Census Bureau anchors" in card
     assert "[Limitations](limitations.md)" in card

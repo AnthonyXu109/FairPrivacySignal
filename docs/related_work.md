@@ -66,6 +66,16 @@ FairPrivacySignal therefore prioritizes:
 - focused regression tests for experiment orchestration
 - explicit limitations and non-confidential synthetic-data framing
 
+## Distribution-Shift Evaluation
+
+[WILDS](https://proceedings.mlr.press/v139/koh21a.html) highlights the importance
+of standardized evaluation when training and test distributions differ.
+FairPrivacySignal adds a narrow synthetic stress test in that spirit: after the
+household-level split, it moves bounded context covariates and context buckets only
+on the holdout side while keeping labels fixed. This is a controlled
+covariate-drift proxy, not a reproduction of a WILDS dataset or a temporal
+validation study.
+
 ## Holdout Evaluation Hygiene
 
 The [scikit-learn common pitfalls guide](https://scikit-learn.org/stable/common_pitfalls.html#data-leakage)

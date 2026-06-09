@@ -29,6 +29,11 @@ evaluation design rather than a full temporal or geographic validation study.
 The community-held-out robustness diagnostic adds a stricter synthetic split with
 disjoint training and evaluation communities, but it does not establish transfer
 to a real place, time period, or service-delivery setting.
+The heldout context-shift stress test moves selected synthetic covariates and
+deterministically remaps selected holdout context buckets after the household-level
+split while keeping labels fixed. It exposes sensitivity to one controlled drift
+family, but it is not a temporal validation study, a model of real-world shift, or
+evidence of deployment robustness.
 
 ## Fairness
 

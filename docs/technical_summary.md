@@ -111,6 +111,11 @@ FairPrivacySignal currently includes:
     pairwise and listwise rankers trained on ordered pairs or complete service
     lists within synthetic households.
 
+24. **Heldout context-shift stress test**
+    Moves bounded synthetic context covariates and deterministic context buckets
+    on the evaluation side after the household-level split while keeping labels
+    and training-household aggregate references fixed.
+
 ## 4. Current Benchmark Results
 
 The current benchmark results show:
@@ -135,6 +140,8 @@ The current benchmark results show:
   synthetic stress test.
 - A paired ranking-objective diagnostic reports aggregate recovery separately for
   pointwise logistic, linear pairwise, and linear listwise training.
+- A paired heldout context-shift diagnostic makes absolute utility and aggregate
+  recovery curves inspectable under controlled synthetic covariate drift.
 - Capacity-constrained allocation exposed a measurable tradeoff between allocated relevance and low-signal representation.
 - Low-signal fairness gaps are explicitly tracked as a diagnostic to prevent utility recovery from hiding unequal effects on low-signal or underserved populations.
 

@@ -35,6 +35,7 @@ This command regenerates:
 - paired ranking-objective metrics for pointwise logistic, linear pairwise, and linear listwise training
 - paired underserved-quartile recovery metrics across synthetic community contexts
 - paired community-held-out robustness metrics across disjoint synthetic contexts
+- paired heldout context-shift metrics across three controlled drift levels
 - benchmark overview figure
 - architecture diagram
 - benchmark validation report
@@ -66,8 +67,10 @@ Signal-suppression scenarios and privacy-exposure weights are loaded from:
     docs/assets/pairwise_ranking_sensitivity.png
     docs/assets/underserved_recovery_profile.png
     docs/assets/community_holdout_robustness.png
+    docs/assets/heldout_context_shift.png
     docs/multiseed_results.md
     docs/model_sensitivity.md
+    docs/heldout_context_shift.md
     docs/validation_report.md
     docs/benchmark_card.md
     outputs/tables/multiseed_privacy_recovery_summary.csv
@@ -96,6 +99,9 @@ Signal-suppression scenarios and privacy-exposure weights are loaded from:
     outputs/tables/community_holdout_robustness_raw.csv
     outputs/tables/community_holdout_robustness_paired.csv
     outputs/tables/community_holdout_robustness_summary.csv
+    outputs/tables/heldout_context_shift_raw.csv
+    outputs/tables/heldout_context_shift_paired.csv
+    outputs/tables/heldout_context_shift_summary.csv
     outputs/tables/benchmark_validation_checks.csv
 
 ## 4. Run the regression tests
