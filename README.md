@@ -88,6 +88,10 @@ For a compact reviewer-facing index of experimental scale, coverage, key results
 sensitivity checkpoints, and evidence links, see the generated
 [`benchmark card`](docs/benchmark_card.md).
 
+For a short audit path through the central claim, challenging diagnostics,
+validation gate, and interpretation boundaries, see the
+[`reviewer guide`](docs/reviewer_guide.md).
+
 The selected synthetic context priors are compared with a tracked public-reference
 snapshot in [`docs/public_reference_calibration.md`](docs/public_reference_calibration.md).
 

@@ -190,5 +190,6 @@ def test_build_benchmark_card_summarizes_auditable_outputs() -> None:
     assert "Underserved quartile recovery profile" in card
     assert "Community-held-out robustness diagnostic" in card
     assert "Heldout context-shift stress test" in card
+    assert "[Reviewer guide](reviewer_guide.md)" in card
     assert "3 versioned Census Bureau anchors" in card
     assert "[Limitations](limitations.md)" in card
