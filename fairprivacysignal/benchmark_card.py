@@ -103,6 +103,7 @@ def build_benchmark_card(
     threshold_sensitivity: pd.DataFrame,
     recovery_feature_ablation_raw: pd.DataFrame,
     aggregate_alignment_negative_control_raw: pd.DataFrame,
+    missingness_mechanism_sensitivity_raw: pd.DataFrame,
     model_sensitivity_raw: pd.DataFrame,
     pairwise_ranking_sensitivity_raw: pd.DataFrame,
     underserved_recovery_profile_raw: pd.DataFrame,
@@ -176,6 +177,16 @@ def build_benchmark_card(
                 "alignment variants; "
                 f"{aggregate_alignment_negative_control_raw['seed'].nunique()} "
                 "paired seeds"
+            ),
+        },
+        {
+            "Diagnostic": "Missingness-mechanism sensitivity",
+            "Coverage": (
+                f"{missingness_mechanism_sensitivity_raw['mechanism'].nunique()} "
+                "matched-rate mechanisms; "
+                f"{missingness_mechanism_sensitivity_raw['variant'].nunique()} "
+                "paired variants; "
+                f"{missingness_mechanism_sensitivity_raw['seed'].nunique()} seeds"
             ),
         },
         {
@@ -279,6 +290,7 @@ def build_benchmark_card(
         "- [Cohort-threshold sensitivity](cohort_threshold_sensitivity.md)\n"
         "- [Recovery feature ablation](recovery_feature_ablation.md)\n"
         "- [Aggregate-alignment negative control](aggregate_alignment_negative_control.md)\n"
+        "- [Missingness-mechanism sensitivity](missingness_mechanism_sensitivity.md)\n"
         "- [Model sensitivity diagnostic](model_sensitivity.md)\n"
         "- [Ranking-objective sensitivity](pairwise_ranking_sensitivity.md)\n"
         "- [Underserved quartile recovery profile](underserved_recovery_profile.md)\n"
@@ -334,6 +346,9 @@ def main() -> None:
         ),
         aggregate_alignment_negative_control_raw=pd.read_csv(
             tables_dir / "aggregate_alignment_negative_control_raw.csv"
+        ),
+        missingness_mechanism_sensitivity_raw=pd.read_csv(
+            tables_dir / "missingness_mechanism_sensitivity_raw.csv"
         ),
         model_sensitivity_raw=pd.read_csv(
             tables_dir / "model_sensitivity_raw.csv"

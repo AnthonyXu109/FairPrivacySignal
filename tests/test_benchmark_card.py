@@ -116,6 +116,21 @@ def test_build_benchmark_card_summarizes_auditable_outputs() -> None:
                 "seed": [7, 42],
             }
         ),
+        missingness_mechanism_sensitivity_raw=pd.DataFrame(
+            {
+                "mechanism": [
+                    "uniform_random",
+                    "observed_context",
+                    "signal_dependent",
+                ],
+                "variant": [
+                    "signal_loss_baseline",
+                    "privacy_safe_aggregates",
+                    "privacy_safe_aggregates",
+                ],
+                "seed": [7, 42, 101],
+            }
+        ),
         model_sensitivity_raw=pd.DataFrame(
             {
                 "model": ["logistic_regression", "hist_gradient_boosting"],
@@ -185,6 +200,7 @@ def test_build_benchmark_card_summarizes_auditable_outputs() -> None:
     assert "## Cohort-Threshold Checkpoints" in card
     assert "Recovery feature ablation" in card
     assert "Aggregate-alignment negative control" in card
+    assert "Missingness-mechanism sensitivity" in card
     assert "Model sensitivity diagnostic" in card
     assert "Ranking-objective sensitivity" in card
     assert "Underserved quartile recovery profile" in card

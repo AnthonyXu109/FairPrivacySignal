@@ -76,6 +76,24 @@ on the holdout side while keeping labels fixed. This is a controlled
 covariate-drift proxy, not a reproduction of a WILDS dataset or a temporal
 validation study.
 
+## Selection Bias and Missingness Mechanisms
+
+[Recommendations as Treatments](https://arxiv.org/abs/1602.05352) adapts
+causal-inference estimators to recommendation data affected by selection bias.
+[Unbiased Learning-to-Rank with Biased Feedback](https://arxiv.org/abs/1608.04468)
+develops propensity-weighted ranking under biased implicit feedback.
+[Unbiased Recommender Learning from Missing-Not-At-Random Implicit Feedback](https://arxiv.org/abs/1909.03601)
+formalizes MNAR implicit-feedback learning and studies clipped estimators that
+trade bias against variance. Work on
+[modeling missingness in algorithmic fairness](https://arxiv.org/abs/2012.11448)
+shows that ignored missingness can invalidate fairness guarantees.
+
+FairPrivacySignal does not implement an inverse-propensity estimator. It adds a
+semi-synthetic matched-rate diagnostic instead: uniform-random, observed-context,
+and signal-dependent masks retain the same total amount of behavioral signal while
+changing its incidence. This makes selection mechanism a first-class benchmark
+axis and exposes whether aggregate utility hides unequal signal availability.
+
 ## Holdout Evaluation Hygiene
 
 The [scikit-learn common pitfalls guide](https://scikit-learn.org/stable/common_pitfalls.html#data-leakage)

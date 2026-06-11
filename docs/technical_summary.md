@@ -121,6 +121,10 @@ FairPrivacySignal currently includes:
     preserving train-only aggregate construction, testing whether recovery depends
     on semantically aligned aggregate structure.
 
+26. **Matched-rate missingness-mechanism sensitivity**
+    Holds behavioral-signal availability fixed while comparing uniform-random,
+    observed-context, and signal-dependent incidence across paired synthetic draws.
+
 ## 4. Current Benchmark Results
 
 The current benchmark results show:
@@ -137,6 +141,9 @@ The current benchmark results show:
 - A structural negative control showed that overall recovery weakens when service
   categories are permuted before aggregate construction, while the
   policy-restricted low-signal comparison remains less clearly separated.
+- A matched-rate missingness experiment showed that equal aggregate signal
+  availability can coexist with substantially different low-signal incidence and
+  ranking difficulty.
 - A lightweight model comparison showed that aggregate recovery is not
   model-invariant: it is clear for the logistic primary baseline but smaller or
   absent for histogram gradient boosting under the current synthetic configuration.

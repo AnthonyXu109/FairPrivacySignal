@@ -64,6 +64,17 @@ EXPECTED_ALIGNMENT_CONTROL_ALIGNMENTS = {
     "service_permuted_aggregates": "permuted",
 }
 EXPECTED_ALIGNMENT_CONTROL_SEEDS = {7, 42, 101}
+EXPECTED_MISSINGNESS_MECHANISMS = {
+    "uniform_random",
+    "observed_context",
+    "signal_dependent",
+}
+EXPECTED_MISSINGNESS_VARIANTS = {
+    "signal_loss_baseline",
+    "privacy_safe_aggregates",
+}
+EXPECTED_MISSINGNESS_SEEDS = {7, 42, 101}
+EXPECTED_MISSINGNESS_AVAILABILITY = 0.56
 EXPECTED_MODEL_SENSITIVITY_MODELS = {
     "logistic_regression",
     "hist_gradient_boosting",
@@ -157,6 +168,7 @@ def build_validation_checks(
     cohort_threshold_sensitivity: pd.DataFrame,
     recovery_feature_ablation_raw: pd.DataFrame,
     aggregate_alignment_negative_control_raw: pd.DataFrame,
+    missingness_mechanism_sensitivity_raw: pd.DataFrame,
     model_sensitivity_raw: pd.DataFrame,
     pairwise_ranking_sensitivity_raw: pd.DataFrame,
     underserved_recovery_profile_raw: pd.DataFrame,
@@ -484,6 +496,62 @@ def build_validation_checks(
                 aggregate_alignment_negative_control_raw["num_test_events"] > 0
             ).all(),
             "two scenarios cover aligned and service-permuted aggregates against a shared baseline across three paired seeds",
+        )
+    )
+
+    missingness_seed_counts = missingness_mechanism_sensitivity_raw.groupby(
+        ["mechanism", "variant"]
+    )["seed"].nunique()
+    missingness_metrics = missingness_mechanism_sensitivity_raw[
+        [
+            "behavioral_available_share",
+            "low_signal_available_share",
+            "not_low_signal_available_share",
+            "overall_ndcg_at_3",
+            "low_signal_ndcg_at_3",
+        ]
+    ]
+    aggregate_missingness_rows = missingness_mechanism_sensitivity_raw[
+        missingness_mechanism_sensitivity_raw["variant"]
+        == "privacy_safe_aggregates"
+    ]
+    baseline_missingness_rows = missingness_mechanism_sensitivity_raw[
+        missingness_mechanism_sensitivity_raw["variant"]
+        == "signal_loss_baseline"
+    ]
+    checks.append(
+        _check(
+            "missingness-mechanism sensitivity coverage is complete",
+            "signal loss",
+            set(missingness_mechanism_sensitivity_raw["mechanism"])
+            == EXPECTED_MISSINGNESS_MECHANISMS
+            and set(missingness_mechanism_sensitivity_raw["variant"])
+            == EXPECTED_MISSINGNESS_VARIANTS
+            and set(missingness_mechanism_sensitivity_raw["seed"])
+            == EXPECTED_MISSINGNESS_SEEDS
+            and (missingness_seed_counts == len(EXPECTED_MISSINGNESS_SEEDS)).all()
+            and np.isclose(
+                missingness_mechanism_sensitivity_raw[
+                    "behavioral_available_share"
+                ],
+                EXPECTED_MISSINGNESS_AVAILABILITY,
+            ).all()
+            and _columns_are_bounded(
+                missingness_metrics,
+                list(missingness_metrics.columns),
+            )
+            and (
+                aggregate_missingness_rows["aggregate_reference_scope"]
+                == "train_households_only"
+            ).all()
+            and (
+                baseline_missingness_rows["aggregate_reference_scope"]
+                == "not_applicable"
+            ).all()
+            and (
+                missingness_mechanism_sensitivity_raw["num_test_events"] > 0
+            ).all(),
+            "three matched-rate mechanisms cover two paired variants and three seeds at 56% holdout availability",
         )
     )
 
@@ -820,6 +888,9 @@ def main() -> None:
         ),
         aggregate_alignment_negative_control_raw=pd.read_csv(
             tables_dir / "aggregate_alignment_negative_control_raw.csv"
+        ),
+        missingness_mechanism_sensitivity_raw=pd.read_csv(
+            tables_dir / "missingness_mechanism_sensitivity_raw.csv"
         ),
         model_sensitivity_raw=pd.read_csv(
             tables_dir / "model_sensitivity_raw.csv"

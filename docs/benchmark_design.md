@@ -122,6 +122,23 @@ The executable scenario flags and privacy-exposure weights are stored in
 [`docs/policy_rules.md`](policy_rules.md) for the readable rule table and validation
 behavior.
 
+### 6.1 Matched-Rate Missingness Mechanisms
+
+The primary scenarios specify operational rules such as consent restriction or
+complete behavioral-signal removal. A separate paired diagnostic holds holdout
+availability fixed at 56% and changes only the incidence mechanism:
+
+- uniform-random availability, an MCAR-like analogue
+- availability conditioned on observed context, a MAR-like analogue
+- availability conditioned on the behavioral value later suppressed, an
+  MNAR-like analogue
+
+The train and holdout partitions are each calibrated to the same target rate. This
+prevents differences in total signal quantity from explaining differences in
+ranking utility, subgroup incidence, or aggregate recovery. The mechanism names
+describe controlled synthetic analogues rather than empirical diagnoses. See
+[`docs/missingness_mechanism_sensitivity.md`](missingness_mechanism_sensitivity.md).
+
 ## 7. Privacy-Safe Recovery Design
 
 The privacy-safe recovery layer adds non-raw aggregate and contextual signals:
