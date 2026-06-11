@@ -52,6 +52,8 @@ The benchmark includes diagnostics designed to challenge the main result:
   fixes total signal quantity while changing which events retain signal
 - [model sensitivity](model_sensitivity.md): checks whether recovery survives a
   different lightweight model class
+- [uncertainty and ranking-stability audit](disparate_uncertainty_audit.md):
+  checks whether utility recovery remains stable under household resampling
 - [heldout context shift](heldout_context_shift.md): moves evaluation-side context
   while keeping training data and labels fixed
 - [underserved quartile profile](underserved_recovery_profile.md): checks whether
@@ -85,6 +87,7 @@ the benchmark card, and the validation report before required checks are enforce
 | Can aggregate substitutes recover some utility? | [Benchmark card](benchmark_card.md) and [feature ablation](recovery_feature_ablation.md) | Partial and model-dependent recovery |
 | Does recovery depend on meaningful aggregate structure? | [Alignment negative control](aggregate_alignment_negative_control.md) | Structural diagnostic, not causal identification |
 | Does equal signal quantity imply equal incidence? | [Missingness-mechanism sensitivity](missingness_mechanism_sensitivity.md) | Controlled analogues, not empirical missingness diagnoses |
+| Does utility recovery imply stable rankings? | [Uncertainty audit](disparate_uncertainty_audit.md) | Bootstrap instability, not calibrated posterior uncertainty |
 | Are pooled gains uniform across contexts? | [Underserved quartile profile](underserved_recovery_profile.md) | Some subgroup-context deltas are weak or negative |
 | Does the result survive stricter evaluation stress? | [Community holdout](community_holdout_robustness.md) and [context shift](heldout_context_shift.md) | Synthetic robustness tests, not geographic or temporal validation |
 | What happens after capacity constraints? | [Capacity allocation](capacity_allocation.md) | Simplified allocation policies |

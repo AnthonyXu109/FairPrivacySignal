@@ -104,6 +104,7 @@ def build_benchmark_card(
     recovery_feature_ablation_raw: pd.DataFrame,
     aggregate_alignment_negative_control_raw: pd.DataFrame,
     missingness_mechanism_sensitivity_raw: pd.DataFrame,
+    disparate_uncertainty_audit_raw: pd.DataFrame,
     model_sensitivity_raw: pd.DataFrame,
     pairwise_ranking_sensitivity_raw: pd.DataFrame,
     underserved_recovery_profile_raw: pd.DataFrame,
@@ -187,6 +188,16 @@ def build_benchmark_card(
                 f"{missingness_mechanism_sensitivity_raw['variant'].nunique()} "
                 "paired variants; "
                 f"{missingness_mechanism_sensitivity_raw['seed'].nunique()} seeds"
+            ),
+        },
+        {
+            "Diagnostic": "Disparate-uncertainty audit",
+            "Coverage": (
+                f"{disparate_uncertainty_audit_raw['experiment'].nunique()} "
+                "experiments; "
+                f"{disparate_uncertainty_audit_raw['bootstrap_replicates'].iloc[0]} "
+                "household-bootstrap fits; "
+                f"{disparate_uncertainty_audit_raw['seed'].nunique()} seeds"
             ),
         },
         {
@@ -291,6 +302,7 @@ def build_benchmark_card(
         "- [Recovery feature ablation](recovery_feature_ablation.md)\n"
         "- [Aggregate-alignment negative control](aggregate_alignment_negative_control.md)\n"
         "- [Missingness-mechanism sensitivity](missingness_mechanism_sensitivity.md)\n"
+        "- [Disparate-uncertainty audit](disparate_uncertainty_audit.md)\n"
         "- [Model sensitivity diagnostic](model_sensitivity.md)\n"
         "- [Ranking-objective sensitivity](pairwise_ranking_sensitivity.md)\n"
         "- [Underserved quartile recovery profile](underserved_recovery_profile.md)\n"
@@ -349,6 +361,9 @@ def main() -> None:
         ),
         missingness_mechanism_sensitivity_raw=pd.read_csv(
             tables_dir / "missingness_mechanism_sensitivity_raw.csv"
+        ),
+        disparate_uncertainty_audit_raw=pd.read_csv(
+            tables_dir / "disparate_uncertainty_audit_raw.csv"
         ),
         model_sensitivity_raw=pd.read_csv(
             tables_dir / "model_sensitivity_raw.csv"

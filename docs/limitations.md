@@ -74,5 +74,9 @@ ListNet architecture.
 The underserved-quartile recovery profile exposes heterogeneity across synthetic
 community contexts. Its quartiles are benchmark constructs, not real-world
 demographic groups, and positive pooled recovery does not establish uniform benefit.
+The uncertainty audit measures variation across household-bootstrap training
+samples. It is not a calibrated posterior distribution, an event-level confidence
+interval, or an implementation of Equal-Opportunity Ranking. Top-3 agreement
+measures membership stability rather than correctness.
 The community-held-out robustness diagnostic tests generated context separation,
 not real-world geographic generalization.
