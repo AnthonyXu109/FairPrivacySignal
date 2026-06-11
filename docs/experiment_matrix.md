@@ -52,6 +52,7 @@ This document summarizes the current and planned FairPrivacySignal experiments.
 | Underserved quartile recovery profile | Check whether pooled recovery hides quartile-specific regressions across synthetic community contexts |
 | Community-held-out robustness diagnostic | Compare household-level holdout with a stricter paired split that keeps training and evaluation communities disjoint |
 | Heldout context-shift stress test | Move bounded synthetic context covariates and deterministic context buckets on the evaluation side while keeping training households and labels fixed |
+| Matched-rate missingness-mechanism sensitivity | Hold overall behavioral availability fixed while comparing uniform-random, observed-context, and signal-dependent incidence |
 
 ## Planned Experiments
 

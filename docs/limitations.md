@@ -35,6 +35,11 @@ split while keeping labels fixed. It exposes sensitivity to one controlled drift
 family, but it is not a temporal validation study, a model of real-world shift, or
 evidence of deployment robustness.
 
+The matched-rate missingness diagnostic uses controlled MCAR-like, MAR-like, and
+MNAR-like analogues. These labels describe how the synthetic masks are generated;
+they do not identify a missingness mechanism in observed data or provide a
+counterfactual correction method.
+
 ## Fairness
 
 Low-signal ranking gaps, allocation gaps, and score-matched calibration metrics are
@@ -54,6 +59,10 @@ The aggregate-alignment negative control deliberately breaks service-to-signal
 alignment while preserving the surrounding synthetic pipeline. A weaker permuted
 result supports a structural interpretation within this benchmark, but it does
 not identify a causal mechanism or establish transfer beyond the generated data.
+The missingness-mechanism sensitivity experiment isolates signal quantity from
+incidence in a semi-synthetic stress test. Its signal-dependent path is
+intentionally adversarial and should not be interpreted as an estimated real-world
+selection process.
 The model-sensitivity diagnostic compares two lightweight classifier families. It
 does not establish robustness across all model classes or implement a
 ranking-specific learning objective.

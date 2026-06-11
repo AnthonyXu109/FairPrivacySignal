@@ -25,6 +25,7 @@ The same technical pattern can apply to public agencies, healthcare outreach, no
 - Cohort-threshold sensitivity analysis for aggregate fallback coverage
 - Recovery feature ablation with paired multi-seed comparisons
 - Aggregate-alignment negative control with service-permuted references
+- Matched-rate MCAR-like, MAR-like, and MNAR-like signal-loss mechanisms
 - Lightweight model-class sensitivity diagnostic
 - Pointwise, pairwise, and listwise ranking-objective sensitivity diagnostic
 - Controlled heldout context-shift stress test
@@ -142,7 +143,20 @@ a real population. See [`docs/public_reference_calibration.md`](docs/public_refe
 
 ![Privacy recovery NDCG](docs/assets/privacy_recovery_ndcg.png)
 
-### 4. Aggregate recovery remains inspectable across noise strengths
+### 4. Equal signal quantity can hide unequal missingness incidence
+
+![Missingness-mechanism sensitivity](docs/assets/missingness_mechanism_sensitivity.png)
+
+This paired experiment fixes holdout behavioral-signal availability at 56% while
+changing which events retain signal. Low-signal availability is `56.3%` under the
+uniform-random mechanism and `32.8%` under the signal-dependent mechanism, even
+though aggregate availability is identical. The signal-dependent baseline also
+has higher overall NDCG@3 because high-engagement events are more likely to remain
+visible. This separates signal quantity from selection incidence and shows why an
+aggregate utility score alone can conceal who lost information. See
+[`docs/missingness_mechanism_sensitivity.md`](docs/missingness_mechanism_sensitivity.md).
+
+### 5. Aggregate recovery remains inspectable across noise strengths
 
 ![Aggregate-noise sensitivity](docs/assets/aggregate_noise_sensitivity.png)
 
@@ -152,7 +166,7 @@ recovery result depends on one favorable perturbation or parameter point. The sw
 is a stress diagnostic, not a formal privacy-budget analysis. See
 [`docs/aggregate_noise_sensitivity.md`](docs/aggregate_noise_sensitivity.md).
 
-### 5. Feature ablation separates recovery components
+### 6. Feature ablation separates recovery components
 
 ![Recovery feature ablation](docs/assets/recovery_feature_ablation.png)
 
@@ -162,7 +176,7 @@ aggregates contribute less when used alone, while their combined use adds a mode
 increment under severe signal loss. See
 [`docs/recovery_feature_ablation.md`](docs/recovery_feature_ablation.md).
 
-### 6. Recovery depends on semantically aligned aggregate structure
+### 7. Recovery depends on semantically aligned aggregate structure
 
 ![Aggregate-alignment negative control](docs/assets/aggregate_alignment_negative_control.png)
 
@@ -175,7 +189,7 @@ policy-restricted low-signal comparison is less separated, so this diagnostic is
 interpreted metric by metric rather than as a uniform effect. See
 [`docs/aggregate_alignment_negative_control.md`](docs/aggregate_alignment_negative_control.md).
 
-### 7. Recovery effects remain model-dependent
+### 8. Recovery effects remain model-dependent
 
 ![Model sensitivity diagnostic](docs/assets/model_sensitivity.png)
 
@@ -185,7 +199,7 @@ logistic baseline, but smaller or absent for the non-linear comparison model. Th
 keeps the claim bounded: recovery depends on the model and scenario rather than
 holding automatically. See [`docs/model_sensitivity.md`](docs/model_sensitivity.md).
 
-### 8. Aggregate recovery remains visible across ranking objectives
+### 9. Aggregate recovery remains visible across ranking objectives
 
 ![Ranking-objective sensitivity](docs/assets/pairwise_ranking_sensitivity.png)
 
@@ -199,7 +213,7 @@ for listwise training. This is a ranking-objective sensitivity check, not a clai
 that one comparator is universally stronger. See
 [`docs/pairwise_ranking_sensitivity.md`](docs/pairwise_ranking_sensitivity.md).
 
-### 9. Pooled gains can hide quartile-specific regressions
+### 10. Pooled gains can hide quartile-specific regressions
 
 ![Underserved quartile recovery profile](docs/assets/underserved_recovery_profile.png)
 
@@ -209,7 +223,7 @@ imply uniform benefit: low-signal recovery varies across quartiles and can be
 negative in some contexts. See
 [`docs/underserved_recovery_profile.md`](docs/underserved_recovery_profile.md).
 
-### 10. Recovery remains visible under a community-held-out stress test
+### 11. Recovery remains visible under a community-held-out stress test
 
 ![Community-held-out robustness diagnostic](docs/assets/community_holdout_robustness.png)
 
@@ -221,7 +235,7 @@ for community holdout versus `+0.015` for household holdout. This is a synthetic
 robustness stress test, not a geographic validation claim. See
 [`docs/community_holdout_robustness.md`](docs/community_holdout_robustness.md).
 
-### 11. Controlled context drift exposes another holdout failure mode
+### 12. Controlled context drift exposes another holdout failure mode
 
 ![Heldout context-shift stress test](docs/assets/heldout_context_shift.png)
 
@@ -236,11 +250,11 @@ from `+0.0115` at the reference holdout to `+0.0037` under pronounced shift, whi
 policy-restricted low-signal recovery falls from `+0.0050` to `-0.0011`. See
 [`docs/heldout_context_shift.md`](docs/heldout_context_shift.md).
 
-### 12. Privacy-utility tradeoff across signal-loss scenarios
+### 13. Privacy-utility tradeoff across signal-loss scenarios
 
 ![Privacy utility tradeoff](docs/assets/privacy_utility_tradeoff.png)
 
-### 13. Higher cohort thresholds expose the fallback-utility tradeoff
+### 14. Higher cohort thresholds expose the fallback-utility tradeoff
 
 ![Cohort-threshold sensitivity](docs/assets/cohort_threshold_sensitivity.png)
 

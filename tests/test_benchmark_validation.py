@@ -175,6 +175,32 @@ def _aggregate_alignment_negative_control_raw() -> pd.DataFrame:
     )
 
 
+def _missingness_mechanism_sensitivity_raw() -> pd.DataFrame:
+    return pd.DataFrame(
+        [
+            {
+                "mechanism": mechanism,
+                "variant": variant,
+                "seed": seed,
+                "behavioral_available_share": 0.56,
+                "low_signal_available_share": 0.45,
+                "not_low_signal_available_share": 0.62,
+                "overall_ndcg_at_3": 0.53,
+                "low_signal_ndcg_at_3": 0.44,
+                "num_test_events": 100,
+                "aggregate_reference_scope": (
+                    "train_households_only"
+                    if variant == "privacy_safe_aggregates"
+                    else "not_applicable"
+                ),
+            }
+            for mechanism in benchmark_validation.EXPECTED_MISSINGNESS_MECHANISMS
+            for variant in benchmark_validation.EXPECTED_MISSINGNESS_VARIANTS
+            for seed in benchmark_validation.EXPECTED_MISSINGNESS_SEEDS
+        ]
+    )
+
+
 def _model_sensitivity_raw() -> pd.DataFrame:
     return pd.DataFrame(
         [
@@ -351,6 +377,9 @@ def _checks() -> pd.DataFrame:
         aggregate_alignment_negative_control_raw=(
             _aggregate_alignment_negative_control_raw()
         ),
+        missingness_mechanism_sensitivity_raw=(
+            _missingness_mechanism_sensitivity_raw()
+        ),
         model_sensitivity_raw=_model_sensitivity_raw(),
         pairwise_ranking_sensitivity_raw=_pairwise_ranking_sensitivity_raw(),
         underserved_recovery_profile_raw=_underserved_recovery_profile_raw(),
@@ -422,6 +451,18 @@ def test_benchmark_validation_rejects_alignment_control_drift() -> None:
     ] = "FAIL"
 
     with pytest.raises(RuntimeError, match="aggregate-alignment negative-control"):
+        benchmark_validation.raise_for_failed_required_checks(checks)
+
+
+def test_benchmark_validation_rejects_missingness_mechanism_drift() -> None:
+    checks = _checks()
+    checks.loc[
+        checks["check"]
+        == "missingness-mechanism sensitivity coverage is complete",
+        "status",
+    ] = "FAIL"
+
+    with pytest.raises(RuntimeError, match="missingness-mechanism sensitivity"):
         benchmark_validation.raise_for_failed_required_checks(checks)
 
 
