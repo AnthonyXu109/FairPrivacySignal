@@ -125,6 +125,10 @@ FairPrivacySignal currently includes:
     Holds behavioral-signal availability fixed while comparing uniform-random,
     observed-context, and signal-dependent incidence across paired synthetic draws.
 
+27. **Disparate-uncertainty and ranking-stability audit**
+    Uses household-bootstrap ensembles to compare prediction variability and Top-3
+    membership stability across signal groups and recovery variants.
+
 ## 4. Current Benchmark Results
 
 The current benchmark results show:
@@ -144,6 +148,9 @@ The current benchmark results show:
 - A matched-rate missingness experiment showed that equal aggregate signal
   availability can coexist with substantially different low-signal incidence and
   ranking difficulty.
+- A household-bootstrap audit showed that aggregate utility recovery can coincide
+  with higher training-resample score variability and lower Top-3 membership
+  stability.
 - A lightweight model comparison showed that aggregate recovery is not
   model-invariant: it is clear for the logistic primary baseline but smaller or
   absent for histogram gradient boosting under the current synthetic configuration.

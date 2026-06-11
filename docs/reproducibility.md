@@ -33,6 +33,7 @@ This command regenerates:
 - paired multi-seed recovery feature-ablation metrics
 - paired aggregate-alignment negative-control metrics
 - paired matched-rate missingness-mechanism metrics
+- household-bootstrap prediction-instability and Top-3 stability metrics
 - paired model-sensitivity metrics for logistic and histogram gradient boosting
 - paired ranking-objective metrics for pointwise logistic, linear pairwise, and linear listwise training
 - paired underserved-quartile recovery metrics across synthetic community contexts
@@ -67,6 +68,7 @@ Signal-suppression scenarios and privacy-exposure weights are loaded from:
     docs/assets/recovery_feature_ablation.png
     docs/assets/aggregate_alignment_negative_control.png
     docs/assets/missingness_mechanism_sensitivity.png
+    docs/assets/disparate_uncertainty_audit.png
     docs/assets/model_sensitivity.png
     docs/assets/pairwise_ranking_sensitivity.png
     docs/assets/underserved_recovery_profile.png
@@ -76,6 +78,7 @@ Signal-suppression scenarios and privacy-exposure weights are loaded from:
     docs/model_sensitivity.md
     docs/aggregate_alignment_negative_control.md
     docs/missingness_mechanism_sensitivity.md
+    docs/disparate_uncertainty_audit.md
     docs/heldout_context_shift.md
     docs/validation_report.md
     docs/benchmark_card.md
@@ -97,6 +100,9 @@ Signal-suppression scenarios and privacy-exposure weights are loaded from:
     outputs/tables/aggregate_alignment_negative_control_summary.csv
     outputs/tables/missingness_mechanism_sensitivity_raw.csv
     outputs/tables/missingness_mechanism_sensitivity_summary.csv
+    outputs/tables/disparate_uncertainty_audit_raw.csv
+    outputs/tables/disparate_uncertainty_audit_summary.csv
+    outputs/tables/disparate_uncertainty_audit_paired.csv
     outputs/tables/model_sensitivity_raw.csv
     outputs/tables/model_sensitivity_summary.csv
     outputs/tables/model_sensitivity_paired_recovery.csv

@@ -211,7 +211,21 @@ This lightweight comparison shows whether recovery is stable across model classe
 It is not a ranking-specific learning objective and does not replace the logistic
 primary baseline. See [`docs/model_sensitivity.md`](model_sensitivity.md).
 
-### 7.6 Ranking-Objective Sensitivity Diagnostic
+### 7.6 Disparate-Uncertainty and Ranking-Stability Audit
+
+The benchmark fits six household-bootstrap models for each experiment on the same
+holdout split. It reports the standard deviation of predicted relevance across
+training resamples and the share of Top-3 service memberships that agree with the
+ensemble-mean ranking, separately for low-signal and not-low-signal households.
+
+This diagnostic tests whether an apparent utility gain is accompanied by stable
+rankings and whether model instability differs by group. Aggregate features are
+recomputed from each bootstrapped training reference before the fixed holdout is
+scored. The resulting variability is a training-resample diagnostic, not calibrated
+posterior uncertainty. See
+[`docs/disparate_uncertainty_audit.md`](disparate_uncertainty_audit.md).
+
+### 7.7 Ranking-Objective Sensitivity Diagnostic
 
 The benchmark compares its pointwise logistic primary baseline with a lightweight
 linear pairwise ranker and a lightweight linear listwise ranker. Within each
@@ -229,7 +243,7 @@ inspired by top-one listwise formulations but is not an implementation of the
 original neural ListNet architecture. See
 [`docs/pairwise_ranking_sensitivity.md`](pairwise_ranking_sensitivity.md).
 
-### 7.7 Underserved Quartile Recovery Profile
+### 7.8 Underserved Quartile Recovery Profile
 
 The benchmark groups distinct synthetic communities into underserved-score
 quartiles before comparing privacy-safe aggregates with the same-seed signal-loss
@@ -241,7 +255,7 @@ community contexts. The quartiles are synthetic benchmark constructs, not
 real-world demographic groups. See
 [`docs/underserved_recovery_profile.md`](underserved_recovery_profile.md).
 
-### 7.8 Community-Held-Out Robustness Diagnostic
+### 7.9 Community-Held-Out Robustness Diagnostic
 
 The primary protocol uses a household-level holdout. The benchmark also runs a
 paired synthetic community-held-out stress test using the same signal-loss
@@ -254,7 +268,7 @@ of generated community contexts. It is not a real geographic, temporal, or
 deployment validation study. See
 [`docs/community_holdout_robustness.md`](community_holdout_robustness.md).
 
-### 7.9 Heldout Context-Shift Stress Test
+### 7.10 Heldout Context-Shift Stress Test
 
 The benchmark adds a paired controlled covariate-drift diagnostic after the
 household-level train/test split. Training households, relevance labels, and
@@ -282,7 +296,7 @@ This is a controlled covariate-drift proxy with fixed labels, not a temporal
 validation study or an estimate of real-world distribution shift. See
 [`docs/heldout_context_shift.md`](heldout_context_shift.md).
 
-### 7.10 Fairness-Aware Recovery Variant
+### 7.11 Fairness-Aware Recovery Variant
 
 The fairness-aware variant trains a low-signal-specific model after privacy-safe aggregate recovery. Relevant low-signal examples receive additional training weight, and the low-signal-specific predictions are blended with predictions from the global model.
 

@@ -75,6 +75,15 @@ EXPECTED_MISSINGNESS_VARIANTS = {
 }
 EXPECTED_MISSINGNESS_SEEDS = {7, 42, 101}
 EXPECTED_MISSINGNESS_AVAILABILITY = 0.56
+EXPECTED_UNCERTAINTY_EXPERIMENTS = {
+    "full_signal_raw_baseline",
+    "severe_signal_loss_baseline",
+    "severe_signal_loss_with_privacy_safe_aggregates",
+    "policy_restricted_baseline",
+    "policy_restricted_with_privacy_safe_aggregates",
+}
+EXPECTED_UNCERTAINTY_SEEDS = {7, 42, 101}
+EXPECTED_BOOTSTRAP_REPLICATES = 6
 EXPECTED_MODEL_SENSITIVITY_MODELS = {
     "logistic_regression",
     "hist_gradient_boosting",
@@ -169,6 +178,7 @@ def build_validation_checks(
     recovery_feature_ablation_raw: pd.DataFrame,
     aggregate_alignment_negative_control_raw: pd.DataFrame,
     missingness_mechanism_sensitivity_raw: pd.DataFrame,
+    disparate_uncertainty_audit_raw: pd.DataFrame,
     model_sensitivity_raw: pd.DataFrame,
     pairwise_ranking_sensitivity_raw: pd.DataFrame,
     underserved_recovery_profile_raw: pd.DataFrame,
@@ -555,6 +565,59 @@ def build_validation_checks(
         )
     )
 
+    uncertainty_seed_counts = disparate_uncertainty_audit_raw.groupby(
+        "experiment"
+    )["seed"].nunique()
+    uncertainty_bounded_metrics = disparate_uncertainty_audit_raw[
+        [
+            "overall_ndcg_at_3",
+            "low_signal_ndcg_at_3",
+            "low_signal_prediction_std",
+            "not_low_signal_prediction_std",
+            "low_signal_top3_agreement",
+            "not_low_signal_top3_agreement",
+        ]
+    ]
+    aggregate_uncertainty_rows = disparate_uncertainty_audit_raw[
+        disparate_uncertainty_audit_raw["uses_privacy_safe_aggregates"].astype(
+            bool
+        )
+    ]
+    baseline_uncertainty_rows = disparate_uncertainty_audit_raw[
+        ~disparate_uncertainty_audit_raw[
+            "uses_privacy_safe_aggregates"
+        ].astype(bool)
+    ]
+    checks.append(
+        _check(
+            "disparate-uncertainty audit coverage is complete",
+            "fairness",
+            set(disparate_uncertainty_audit_raw["experiment"])
+            == EXPECTED_UNCERTAINTY_EXPERIMENTS
+            and set(disparate_uncertainty_audit_raw["seed"])
+            == EXPECTED_UNCERTAINTY_SEEDS
+            and (
+                uncertainty_seed_counts == len(EXPECTED_UNCERTAINTY_SEEDS)
+            ).all()
+            and set(disparate_uncertainty_audit_raw["bootstrap_replicates"])
+            == {EXPECTED_BOOTSTRAP_REPLICATES}
+            and _columns_are_bounded(
+                uncertainty_bounded_metrics,
+                list(uncertainty_bounded_metrics.columns),
+            )
+            and (
+                aggregate_uncertainty_rows["aggregate_reference_scope"]
+                == "train_households_only"
+            ).all()
+            and (
+                baseline_uncertainty_rows["aggregate_reference_scope"]
+                == "not_applicable"
+            ).all()
+            and (disparate_uncertainty_audit_raw["num_test_events"] > 0).all(),
+            "five experiments cover three seeds and six household-bootstrap fits with group-stratified stability metrics",
+        )
+    )
+
     model_sensitivity_seed_counts = model_sensitivity_raw.groupby(
         ["model", "experiment"]
     )["seed"].nunique()
@@ -891,6 +954,9 @@ def main() -> None:
         ),
         missingness_mechanism_sensitivity_raw=pd.read_csv(
             tables_dir / "missingness_mechanism_sensitivity_raw.csv"
+        ),
+        disparate_uncertainty_audit_raw=pd.read_csv(
+            tables_dir / "disparate_uncertainty_audit_raw.csv"
         ),
         model_sensitivity_raw=pd.read_csv(
             tables_dir / "model_sensitivity_raw.csv"

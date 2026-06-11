@@ -201,6 +201,35 @@ def _missingness_mechanism_sensitivity_raw() -> pd.DataFrame:
     )
 
 
+def _disparate_uncertainty_audit_raw() -> pd.DataFrame:
+    return pd.DataFrame(
+        [
+            {
+                "experiment": experiment,
+                "seed": seed,
+                "uses_privacy_safe_aggregates": (
+                    "with_privacy_safe_aggregates" in experiment
+                ),
+                "bootstrap_replicates": 6,
+                "overall_ndcg_at_3": 0.53,
+                "low_signal_ndcg_at_3": 0.44,
+                "low_signal_prediction_std": 0.03,
+                "not_low_signal_prediction_std": 0.02,
+                "low_signal_top3_agreement": 0.88,
+                "not_low_signal_top3_agreement": 0.92,
+                "num_test_events": 100,
+                "aggregate_reference_scope": (
+                    "train_households_only"
+                    if "with_privacy_safe_aggregates" in experiment
+                    else "not_applicable"
+                ),
+            }
+            for experiment in benchmark_validation.EXPECTED_UNCERTAINTY_EXPERIMENTS
+            for seed in benchmark_validation.EXPECTED_UNCERTAINTY_SEEDS
+        ]
+    )
+
+
 def _model_sensitivity_raw() -> pd.DataFrame:
     return pd.DataFrame(
         [
@@ -380,6 +409,7 @@ def _checks() -> pd.DataFrame:
         missingness_mechanism_sensitivity_raw=(
             _missingness_mechanism_sensitivity_raw()
         ),
+        disparate_uncertainty_audit_raw=_disparate_uncertainty_audit_raw(),
         model_sensitivity_raw=_model_sensitivity_raw(),
         pairwise_ranking_sensitivity_raw=_pairwise_ranking_sensitivity_raw(),
         underserved_recovery_profile_raw=_underserved_recovery_profile_raw(),
@@ -463,6 +493,17 @@ def test_benchmark_validation_rejects_missingness_mechanism_drift() -> None:
     ] = "FAIL"
 
     with pytest.raises(RuntimeError, match="missingness-mechanism sensitivity"):
+        benchmark_validation.raise_for_failed_required_checks(checks)
+
+
+def test_benchmark_validation_rejects_uncertainty_audit_drift() -> None:
+    checks = _checks()
+    checks.loc[
+        checks["check"] == "disparate-uncertainty audit coverage is complete",
+        "status",
+    ] = "FAIL"
+
+    with pytest.raises(RuntimeError, match="disparate-uncertainty audit"):
         benchmark_validation.raise_for_failed_required_checks(checks)
 
 

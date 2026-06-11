@@ -26,6 +26,7 @@ The same technical pattern can apply to public agencies, healthcare outreach, no
 - Recovery feature ablation with paired multi-seed comparisons
 - Aggregate-alignment negative control with service-permuted references
 - Matched-rate MCAR-like, MAR-like, and MNAR-like signal-loss mechanisms
+- Household-bootstrap uncertainty and Top-3 stability audit
 - Lightweight model-class sensitivity diagnostic
 - Pointwise, pairwise, and listwise ranking-objective sensitivity diagnostic
 - Controlled heldout context-shift stress test
@@ -199,7 +200,20 @@ logistic baseline, but smaller or absent for the non-linear comparison model. Th
 keeps the claim bounded: recovery depends on the model and scenario rather than
 holding automatically. See [`docs/model_sensitivity.md`](docs/model_sensitivity.md).
 
-### 9. Aggregate recovery remains visible across ranking objectives
+### 9. Utility recovery can trade off against ranking stability
+
+![Disparate uncertainty and ranking-stability audit](docs/assets/disparate_uncertainty_audit.png)
+
+Six household-bootstrap fits per experiment measure sensitivity to training-sample
+composition. Aggregate features improve ensemble-mean overall NDCG@3 by `+0.0114`
+under severe signal loss and `+0.0084` under policy restriction, but low-signal
+prediction variability rises by `+0.0060` and `+0.0049`. Mean low-signal Top-3
+agreement changes by `-0.0303` and `-0.0323`. The score-variability gap between
+groups is small and not consistently directional, so the result is a
+utility-stability tradeoff rather than evidence of a stable uncertainty disparity.
+See [`docs/disparate_uncertainty_audit.md`](docs/disparate_uncertainty_audit.md).
+
+### 10. Aggregate recovery remains visible across ranking objectives
 
 ![Ranking-objective sensitivity](docs/assets/pairwise_ranking_sensitivity.png)
 
@@ -213,7 +227,7 @@ for listwise training. This is a ranking-objective sensitivity check, not a clai
 that one comparator is universally stronger. See
 [`docs/pairwise_ranking_sensitivity.md`](docs/pairwise_ranking_sensitivity.md).
 
-### 10. Pooled gains can hide quartile-specific regressions
+### 11. Pooled gains can hide quartile-specific regressions
 
 ![Underserved quartile recovery profile](docs/assets/underserved_recovery_profile.png)
 
@@ -223,7 +237,7 @@ imply uniform benefit: low-signal recovery varies across quartiles and can be
 negative in some contexts. See
 [`docs/underserved_recovery_profile.md`](docs/underserved_recovery_profile.md).
 
-### 11. Recovery remains visible under a community-held-out stress test
+### 12. Recovery remains visible under a community-held-out stress test
 
 ![Community-held-out robustness diagnostic](docs/assets/community_holdout_robustness.png)
 
@@ -235,7 +249,7 @@ for community holdout versus `+0.015` for household holdout. This is a synthetic
 robustness stress test, not a geographic validation claim. See
 [`docs/community_holdout_robustness.md`](docs/community_holdout_robustness.md).
 
-### 12. Controlled context drift exposes another holdout failure mode
+### 13. Controlled context drift exposes another holdout failure mode
 
 ![Heldout context-shift stress test](docs/assets/heldout_context_shift.png)
 
@@ -250,11 +264,11 @@ from `+0.0115` at the reference holdout to `+0.0037` under pronounced shift, whi
 policy-restricted low-signal recovery falls from `+0.0050` to `-0.0011`. See
 [`docs/heldout_context_shift.md`](docs/heldout_context_shift.md).
 
-### 13. Privacy-utility tradeoff across signal-loss scenarios
+### 14. Privacy-utility tradeoff across signal-loss scenarios
 
 ![Privacy utility tradeoff](docs/assets/privacy_utility_tradeoff.png)
 
-### 14. Higher cohort thresholds expose the fallback-utility tradeoff
+### 15. Higher cohort thresholds expose the fallback-utility tradeoff
 
 ![Cohort-threshold sensitivity](docs/assets/cohort_threshold_sensitivity.png)
 

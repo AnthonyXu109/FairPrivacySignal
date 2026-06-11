@@ -29,6 +29,21 @@ score-matched subgroup calibration diagnostic beyond aggregate group gaps. It bi
 similarly scored test-set events and compares observed relevance between low-signal
 and not-low-signal groups. This is not an implementation of the paper's full method.
 
+## Fair Ranking under Disparate Uncertainty
+
+[Fairness in Ranking under Disparate Uncertainty](https://arxiv.org/abs/2309.01610)
+argues that relevance-estimate uncertainty can differ across groups and proposes
+Equal-Opportunity Ranking as a fairness criterion designed for that setting.
+[Deep Reinforcement Learning at the Edge of the Statistical Precipice](https://arxiv.org/abs/2108.13264)
+shows more broadly that point estimates from a small number of runs can support
+misleading benchmark conclusions and advocates interval-aware evaluation.
+
+FairPrivacySignal does not implement Equal-Opportunity Ranking or Bayesian
+uncertainty estimation. It adds a household-bootstrap audit that measures
+training-resample score variability and Top-3 membership stability by signal group.
+This reveals whether aggregate utility recovery is accompanied by stable rankings
+or introduces a separate utility-stability tradeoff.
+
 ## Learning-to-Rank Objectives
 
 [Learning to Rank using Gradient Descent](https://www.microsoft.com/en-us/research/publication/learning-to-rank-using-gradient-descent/)
