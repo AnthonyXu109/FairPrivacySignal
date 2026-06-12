@@ -393,6 +393,36 @@ def _multiseed_capacity_raw() -> pd.DataFrame:
     )
 
 
+def _policy_aware_signal_recovery_raw() -> pd.DataFrame:
+    rows = []
+    for scenario in benchmark_validation.EXPECTED_POLICY_AWARE_RECOVERY_SCENARIOS:
+        for seed in benchmark_validation.EXPECTED_SEEDS:
+            for variant in benchmark_validation.EXPECTED_POLICY_AWARE_RECOVERY_VARIANTS:
+                recovery = (
+                    0.02
+                    if variant == "policy_aware_signal_recovery"
+                    else 0.0
+                )
+                rows.append(
+                    {
+                        "scenario": scenario,
+                        "variant": variant,
+                        "seed": seed,
+                        "overall_auc": 0.60 + recovery,
+                        "overall_ndcg_at_3": 0.50 + recovery,
+                        "low_signal_ndcg_at_3": 0.40 + recovery,
+                        "not_low_signal_ndcg_at_3": 0.55,
+                        "avg_privacy_exposure_score": 0.50,
+                        "behavioral_available_share": 0.50,
+                        "reconstruction_applied_share": 0.50,
+                        "reconstruction_folds": 5,
+                        "reconstruction_oof_mae": 3.0,
+                        "reconstruction_oof_correlation": 0.10,
+                    }
+                )
+    return pd.DataFrame(rows)
+
+
 def _checks() -> pd.DataFrame:
     return benchmark_validation.build_validation_checks(
         signal_loss=_signal_loss(),
@@ -415,6 +445,7 @@ def _checks() -> pd.DataFrame:
         underserved_recovery_profile_raw=_underserved_recovery_profile_raw(),
         community_holdout_robustness_raw=_community_holdout_robustness_raw(),
         heldout_context_shift_raw=_heldout_context_shift_raw(),
+        policy_aware_signal_recovery_raw=_policy_aware_signal_recovery_raw(),
         multiseed_recovery_raw=_multiseed_recovery_raw(),
         multiseed_capacity_raw=_multiseed_capacity_raw(),
     )

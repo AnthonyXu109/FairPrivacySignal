@@ -61,6 +61,25 @@ def test_build_benchmark_card_summarizes_auditable_outputs() -> None:
             for threshold, suppressed_share in [(50, 0.01), (200, 0.12)]
         ]
     )
+    policy_aware_recovery_summary = pd.DataFrame(
+        [
+            {
+                "scenario": scenario,
+                "variant": variant,
+                "overall_ndcg_at_3_mean": value,
+                "overall_ndcg_at_3_std": 0.01,
+                "low_signal_ndcg_at_3_mean": value - 0.08,
+                "low_signal_ndcg_at_3_std": 0.02,
+                "overall_gap_closed_mean": gap_closed,
+            }
+            for scenario in ["severe_signal_loss", "policy_restricted"]
+            for variant, value, gap_closed in [
+                ("no_recovery", 0.50, 0.0),
+                ("flat_privacy_safe_aggregates", 0.52, 0.40),
+                ("policy_aware_signal_recovery", 0.53, 0.60),
+            ]
+        ]
+    )
 
     card = build_benchmark_card(
         communities=pd.DataFrame({"community_id": ["C1", "C2"]}),
@@ -188,6 +207,7 @@ def test_build_benchmark_card_summarizes_auditable_outputs() -> None:
                 "seed": [7, 42],
             }
         ),
+        policy_aware_recovery_summary=policy_aware_recovery_summary,
         validation_checks=pd.DataFrame(
             [
                 {
@@ -206,6 +226,8 @@ def test_build_benchmark_card_summarizes_auditable_outputs() -> None:
 
     assert "**Required-check status:** PASS" in card
     assert "| Synthetic household-service events" in card
+    assert "## Primary Signal-Recovery Method" in card
+    assert "Policy-aware recovery" in card
     assert "## Multi-Seed Recovery Results" in card
     assert "## Aggregate-Noise Checkpoint" in card
     assert "## Cohort-Threshold Checkpoints" in card
