@@ -23,6 +23,18 @@ interpreted as epsilon or as formal privacy accounting.
 The cohort-threshold sensitivity sweep makes fallback coverage visible, but it does
 not establish that any threshold is appropriate for a real deployment.
 
+Policy-Aware Signal Recovery assumes historical behavioral signal may be processed
+inside a controlled offline training or aggregation environment even when the
+serving ranker cannot receive that signal. The reconstruction path is not
+applicable when policy prohibits use of the signal during offline fitting. Model
+weights and reconstructed values are not formally differentially private, and the
+benchmark does not evaluate model-extraction or membership-inference risk.
+
+The reconstruction model predicts a behavioral feature from permitted context; it
+does not recover the original value exactly. Cross-fitting reduces own-record
+training leakage and train-serving mismatch, but it does not prove transfer to a
+different population or policy environment.
+
 Aggregate statistics are fitted on training households and mapped onto the holdout
 split. This reduces preprocessing leakage, but the benchmark still uses a simplified
 evaluation design rather than a full temporal or geographic validation study.

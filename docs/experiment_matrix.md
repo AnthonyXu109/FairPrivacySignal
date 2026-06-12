@@ -4,6 +4,20 @@ This document summarizes the current and planned FairPrivacySignal experiments.
 
 ## Current Experiments
 
+### Primary recovery method
+
+| Experiment | Purpose | Serving-time behavioral signal | Recovery input | Main metric |
+|---|---|---:|---|---|
+| Policy-aware recovery under complete loss | Use the stable train-fitted aggregate path when no event-level signal remains | no | Thresholded, noise-stressed aggregates | NDCG@3 and full-signal gap closed |
+| Policy-aware recovery under partial restriction | Preserve permitted values and reconstruct unavailable values before aggregate fusion | partial | Cross-fitted reconstruction plus aggregates | NDCG@3 and full-signal gap closed |
+| Missingness-indicator comparator | Test whether explicitly marking unavailable values explains the gain | partial or none | Availability indicator only | NDCG@3 |
+| Reconstruction-only ablation | Isolate the contribution of cross-fitted feature reconstruction | reconstructed | Permitted context and candidate attributes | NDCG@3 |
+
+The primary method uses five household-grouped folds for reconstruction and five
+paired synthetic-data seeds for final evaluation.
+
+### Supporting baselines
+
 | Experiment | Purpose | Individual behavioral signal | Privacy-safe aggregates | Main metric |
 |---|---|---:|---:|---|
 | Full signal raw baseline | Upper-bound utility comparison | yes | no | NDCG@3 |

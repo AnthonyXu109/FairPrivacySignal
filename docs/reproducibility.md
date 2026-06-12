@@ -20,6 +20,8 @@ This command regenerates:
 - signal-loss summaries
 - baseline ranking metrics
 - privacy-safe recovery metrics
+- policy-aware signal-recovery metrics with five-fold household-grouped
+  reconstruction
 - train-fitted aggregate preprocessing for holdout evaluation
 - fairness-aware recovery diagnostics
 - multi-seed benchmark results
@@ -52,6 +54,7 @@ Signal-suppression scenarios and privacy-exposure weights are loaded from:
 ## 3. Key result files
 
     docs/assets/multiseed_privacy_recovery_ndcg.png
+    docs/assets/policy_aware_signal_recovery.png
     docs/assets/multiseed_fairness_gap.png
     docs/assets/benchmark_overview.png
     docs/assets/privacy_utility_tradeoff.png
@@ -75,6 +78,7 @@ Signal-suppression scenarios and privacy-exposure weights are loaded from:
     docs/assets/community_holdout_robustness.png
     docs/assets/heldout_context_shift.png
     docs/multiseed_results.md
+    docs/policy_aware_signal_recovery.md
     docs/model_sensitivity.md
     docs/aggregate_alignment_negative_control.md
     docs/missingness_mechanism_sensitivity.md
@@ -83,6 +87,8 @@ Signal-suppression scenarios and privacy-exposure weights are loaded from:
     docs/validation_report.md
     docs/benchmark_card.md
     outputs/tables/multiseed_privacy_recovery_summary.csv
+    outputs/tables/policy_aware_signal_recovery_raw.csv
+    outputs/tables/policy_aware_signal_recovery_summary.csv
     outputs/tables/privacy_recovery_metrics.csv
     outputs/tables/capacity_allocation_metrics.csv
     outputs/tables/capacity_sensitivity_metrics.csv

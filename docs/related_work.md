@@ -5,6 +5,27 @@ single prior system, and it does not claim that its simplified mechanisms solve 
 broader research problems below. The benchmark design is informed by several public
 research directions.
 
+## Training-Only Features and Serving-Time Recovery
+
+[Generalized Distillation](https://arxiv.org/abs/1503.02531) unifies knowledge
+distillation and learning using privileged information: a training process may use
+richer information than the deployed predictor receives.
+[Toward Understanding Privileged Features Distillation in Learning-to-Rank](https://arxiv.org/abs/2209.08754)
+studies that pattern directly in ranking systems and shows that privileged-feature
+distillation can help, but that teacher variance and bias can also make naive
+distillation unreliable.
+[Calibration-compatible Listwise Distillation of Privileged Features for CTR Prediction](https://arxiv.org/abs/2404.03868)
+further studies listwise transfer from privileged features when ranking quality and
+score calibration both matter.
+
+FairPrivacySignal uses a related but distinct recovery design. It reconstructs the
+unavailable behavioral feature from permitted context using household-grouped
+cross-fitting, preserves observed values when policy allows them, and combines the
+reconstruction with thresholded aggregate signals only in the partial-loss regime.
+The full-signal model is an oracle comparison rather than a teacher whose scores are
+assumed to be correct. This choice follows a repository experiment in which naive
+pointwise teacher-score imitation did not improve the strict signal-loss setting.
+
 ## Fairness-Utility Tradeoffs in Ranking
 
 Fair ranking research often treats utility and fairness as competing objectives

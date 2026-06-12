@@ -141,6 +141,18 @@ EXPECTED_CONTEXT_SHIFT_VARIANTS = {
     "privacy_safe_aggregates",
 }
 EXPECTED_CONTEXT_SHIFT_SEEDS = {7, 42, 101}
+EXPECTED_POLICY_AWARE_RECOVERY_SCENARIOS = {
+    "severe_signal_loss",
+    "policy_restricted",
+}
+EXPECTED_POLICY_AWARE_RECOVERY_VARIANTS = {
+    "full_signal_oracle",
+    "no_recovery",
+    "missingness_indicator",
+    "flat_privacy_safe_aggregates",
+    "signal_reconstruction",
+    "policy_aware_signal_recovery",
+}
 
 
 def _check(
@@ -184,6 +196,7 @@ def build_validation_checks(
     underserved_recovery_profile_raw: pd.DataFrame,
     community_holdout_robustness_raw: pd.DataFrame,
     heldout_context_shift_raw: pd.DataFrame,
+    policy_aware_signal_recovery_raw: pd.DataFrame,
     multiseed_recovery_raw: pd.DataFrame,
     multiseed_capacity_raw: pd.DataFrame,
 ) -> pd.DataFrame:
@@ -847,6 +860,104 @@ def build_validation_checks(
         )
     )
 
+    policy_recovery_seed_counts = policy_aware_signal_recovery_raw.groupby(
+        ["scenario", "variant"]
+    )["seed"].nunique()
+    policy_recovery_metrics = policy_aware_signal_recovery_raw[
+        [
+            "overall_auc",
+            "overall_ndcg_at_3",
+            "low_signal_ndcg_at_3",
+            "not_low_signal_ndcg_at_3",
+            "avg_privacy_exposure_score",
+            "behavioral_available_share",
+            "reconstruction_applied_share",
+        ]
+    ]
+    checks.append(
+        _check(
+            "policy-aware signal-recovery coverage is complete",
+            "recovery method",
+            set(policy_aware_signal_recovery_raw["scenario"])
+            == EXPECTED_POLICY_AWARE_RECOVERY_SCENARIOS
+            and set(policy_aware_signal_recovery_raw["variant"])
+            == EXPECTED_POLICY_AWARE_RECOVERY_VARIANTS
+            and set(policy_aware_signal_recovery_raw["seed"]) == EXPECTED_SEEDS
+            and (policy_recovery_seed_counts == len(EXPECTED_SEEDS)).all()
+            and _columns_are_bounded(
+                policy_recovery_metrics,
+                list(policy_recovery_metrics.columns),
+            )
+            and (
+                policy_aware_signal_recovery_raw["reconstruction_folds"] == 5
+            ).all()
+            and np.isfinite(
+                policy_aware_signal_recovery_raw[
+                    ["reconstruction_oof_mae", "reconstruction_oof_correlation"]
+                ].to_numpy(dtype=float)
+            ).all(),
+            "two policy regimes cover six recovery variants and five paired seeds; reconstruction uses five household-grouped folds",
+        )
+    )
+
+    policy_recovery_baseline = policy_aware_signal_recovery_raw[
+        policy_aware_signal_recovery_raw["variant"] == "no_recovery"
+    ][
+        [
+            "scenario",
+            "seed",
+            "overall_ndcg_at_3",
+            "low_signal_ndcg_at_3",
+            "avg_privacy_exposure_score",
+        ]
+    ].rename(
+        columns={
+            "overall_ndcg_at_3": "baseline_overall_ndcg_at_3",
+            "low_signal_ndcg_at_3": "baseline_low_signal_ndcg_at_3",
+            "avg_privacy_exposure_score": "baseline_privacy_exposure",
+        }
+    )
+    policy_recovery_method = policy_aware_signal_recovery_raw[
+        policy_aware_signal_recovery_raw["variant"]
+        == "policy_aware_signal_recovery"
+    ][
+        [
+            "scenario",
+            "seed",
+            "overall_ndcg_at_3",
+            "low_signal_ndcg_at_3",
+            "avg_privacy_exposure_score",
+        ]
+    ]
+    paired_policy_recovery = policy_recovery_method.merge(
+        policy_recovery_baseline,
+        on=["scenario", "seed"],
+        how="inner",
+        validate="one_to_one",
+    )
+    checks.append(
+        _check(
+            "policy-aware recovery improves paired ranking utility",
+            "recovery method",
+            len(paired_policy_recovery)
+            == len(EXPECTED_POLICY_AWARE_RECOVERY_SCENARIOS)
+            * len(EXPECTED_SEEDS)
+            and (
+                paired_policy_recovery["overall_ndcg_at_3"]
+                > paired_policy_recovery["baseline_overall_ndcg_at_3"]
+            ).all()
+            and (
+                paired_policy_recovery["low_signal_ndcg_at_3"]
+                > paired_policy_recovery["baseline_low_signal_ndcg_at_3"]
+            ).all()
+            and np.isclose(
+                paired_policy_recovery["avg_privacy_exposure_score"],
+                paired_policy_recovery["baseline_privacy_exposure"],
+            ).all(),
+            "policy-aware recovery improves overall and low-signal NDCG@3 in every paired seed without increasing the exposure proxy",
+        )
+    )
+
     recovery_seed_counts = multiseed_recovery_raw.groupby("experiment")["seed"].nunique()
     checks.append(
         _check(
@@ -972,6 +1083,9 @@ def main() -> None:
         ),
         heldout_context_shift_raw=pd.read_csv(
             tables_dir / "heldout_context_shift_raw.csv"
+        ),
+        policy_aware_signal_recovery_raw=pd.read_csv(
+            tables_dir / "policy_aware_signal_recovery_raw.csv"
         ),
         multiseed_recovery_raw=pd.read_csv(
             tables_dir / "multiseed_privacy_recovery_raw.csv"
