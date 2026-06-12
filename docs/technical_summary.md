@@ -7,11 +7,16 @@
 
 ## 1. Project Purpose
 
-FairPrivacySignal is a public, non-confidential synthetic-data benchmark for evaluating privacy, utility, and fairness tradeoffs in AI ranking and matching systems under signal loss.
+FairPrivacySignal is a public, non-confidential signal-recovery method and
+synthetic evaluation suite for AI ranking and matching systems operating under
+privacy-driven behavioral feature loss.
 
 The project studies a common challenge in modern AI systems: ranking and matching models often rely on individual-level behavioral signals, but privacy requirements, consent restrictions, data minimization rules, and policy constraints may reduce access to those signals. When signal loss occurs, model utility can decline, and low-signal or underserved participants may be disproportionately affected.
 
-FairPrivacySignal uses a synthetic public-service outreach scenario to demonstrate how privacy-safe aggregate and contextual features can partially recover ranking utility while reducing exposure to individual-level behavioral data.
+FairPrivacySignal uses a synthetic public-service outreach scenario to demonstrate
+how a policy-conditioned combination of train-fitted aggregates and cross-fitted
+signal reconstruction can recover part of the lost ranking utility without
+restoring unavailable raw behavioral values to the serving model.
 
 ## 2. Synthetic Public-Service Scenario
 
@@ -129,12 +134,23 @@ FairPrivacySignal currently includes:
     Uses household-bootstrap ensembles to compare prediction variability and Top-3
     membership stability across signal groups and recovery variants.
 
+28. **Policy-Aware Signal Recovery**
+    Uses stable cohort aggregates under complete signal loss and fuses five-fold
+    household-grouped signal reconstruction with aggregate features under partial
+    restriction. Required validation checks enforce positive paired overall and
+    low-signal NDCG@3 recovery without increasing the exposure proxy.
+
 ## 4. Current Benchmark Results
 
 The current benchmark results show:
 
 - Full-signal ranking achieved the highest utility.
 - Severe signal loss reduced ranking utility.
+- Policy-Aware Signal Recovery improves overall and low-signal NDCG@3 over the
+  matching no-recovery baseline in every paired seed across both tested policy
+  regimes.
+- The method closes about 31% of the complete-loss full-signal utility gap and 56%
+  of the policy-restricted gap in the current five-seed synthetic evaluation.
 - Privacy-safe aggregate features partially recovered utility under severe signal loss.
 - A hybrid policy-restricted setting using available policy-permitted signals plus privacy-safe aggregate features improved ranking utility over the policy-restricted baseline.
 - Fairness-aware recovery variants produced mixed low-signal gap effects across the
@@ -171,9 +187,13 @@ These results support the project’s core hypothesis: privacy-preserving AI sys
 
 ## 5. Privacy and Confidentiality
 
-FairPrivacySignal does not use real personal data, private datasets, proprietary systems, internal business metrics, confidential architecture, or confidential implementation details from any organization.
+FairPrivacySignal does not use real personal data, private datasets, proprietary
+systems, non-public organizational metrics, confidential architecture, or
+confidential implementation details from any organization.
 
-The project is designed as an educational and research-oriented synthetic benchmark. It does not provide production-grade privacy guarantees, and its DP-style noise mechanism is included only as a simplified demonstration of aggregate privacy-preserving feature design.
+The project is a synthetic research prototype. It does not provide production-grade
+privacy guarantees, and its DP-style noise mechanism is a sensitivity control
+rather than formal privacy accounting.
 
 ## 6. Broader Relevance
 

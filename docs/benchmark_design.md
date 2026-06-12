@@ -139,7 +139,40 @@ ranking utility, subgroup incidence, or aggregate recovery. The mechanism names
 describe controlled synthetic analogues rather than empirical diagnoses. See
 [`docs/missingness_mechanism_sensitivity.md`](missingness_mechanism_sensitivity.md).
 
-## 7. Privacy-Safe Recovery Design
+## 7. Policy-Aware Signal Recovery
+
+The repository's primary contribution is a policy-conditioned recovery method,
+not the benchmark alone. The method selects between two recovery paths according
+to the serving-time signal boundary.
+
+### 7.1 Complete-loss path
+
+When no event-level behavioral signal remains, the method uses train-fitted cohort
+aggregates with minimum-size thresholds, broad service fallbacks, and reproducible
+noise stress. This path is more stable than attempting to reconstruct every event
+without any observed serving-time anchor.
+
+### 7.2 Partial-loss path
+
+When policy permits signal for some events, the method:
+
+1. fits a nonlinear reconstruction model to training-only behavioral signal
+2. produces downstream training proxies with five-fold household-grouped
+   cross-fitting
+3. retains observed values where permitted and substitutes reconstructed values
+   only where signal is unavailable
+4. fuses the reconstructed signal with train-fitted aggregate features
+
+The holdout split never contributes to the reconstruction model or aggregate
+mapping. The serving ranker never receives an unavailable raw behavioral value.
+
+This method assumes historical signal may be processed inside a controlled offline
+training or aggregation environment. It is not applicable when policy prohibits
+that offline use.
+
+See [`docs/policy_aware_signal_recovery.md`](policy_aware_signal_recovery.md).
+
+## 8. Privacy-Safe Aggregate Design
 
 The privacy-safe recovery layer adds non-raw aggregate and contextual signals:
 
@@ -156,7 +189,7 @@ are learned from training households only. The same learned mapping is then appl
 to both training and test events. Test households do not contribute to aggregate
 feature construction.
 
-### 7.1 Aggregate-Noise Sensitivity
+### 8.1 Aggregate-Noise Sensitivity
 
 The benchmark fixes one synthetic dataset and repeats privacy-safe recovery across
 multiple DP-style aggregate-noise stress scales and reproducible noise seeds. This
@@ -166,7 +199,7 @@ population and makes the default noise setting auditable.
 The sweep is not a formal privacy-budget analysis. See
 [`docs/aggregate_noise_sensitivity.md`](aggregate_noise_sensitivity.md).
 
-### 7.2 Cohort-Threshold Sensitivity
+### 8.2 Cohort-Threshold Sensitivity
 
 The benchmark also sweeps the minimum cohort size required before a cohort
 aggregate can be used. More restrictive thresholds route more events to broad
@@ -174,7 +207,7 @@ service-level fallback signals. The diagnostic reports fallback coverage alongsi
 overall and low-signal utility recovery. See
 [`docs/cohort_threshold_sensitivity.md`](cohort_threshold_sensitivity.md).
 
-### 7.3 Recovery Feature Ablation
+### 8.3 Recovery Feature Ablation
 
 The benchmark separates the privacy-safe recovery layer into four feature sets:
 no aggregate substitutes, an engagement aggregate only, cohort-context aggregates
@@ -185,7 +218,7 @@ This ablation makes the source of utility recovery inspectable rather than
 attributing the result to an undifferentiated feature bundle. See
 [`docs/recovery_feature_ablation.md`](recovery_feature_ablation.md).
 
-### 7.4 Aggregate-Alignment Negative Control
+### 8.4 Aggregate-Alignment Negative Control
 
 The benchmark adds a structural negative control that cyclically permutes service
 categories in the training reference before privacy-safe aggregates are
@@ -200,7 +233,7 @@ rather than the mere presence of additional numeric columns. It is not a causal
 identification strategy. See
 [`docs/aggregate_alignment_negative_control.md`](aggregate_alignment_negative_control.md).
 
-### 7.5 Model-Class Sensitivity Diagnostic
+### 8.5 Model-Class Sensitivity Diagnostic
 
 The benchmark compares its interpretable logistic primary baseline with histogram
 gradient boosting across three paired synthetic draws. Both models receive the same
@@ -211,7 +244,7 @@ This lightweight comparison shows whether recovery is stable across model classe
 It is not a ranking-specific learning objective and does not replace the logistic
 primary baseline. See [`docs/model_sensitivity.md`](model_sensitivity.md).
 
-### 7.6 Disparate-Uncertainty and Ranking-Stability Audit
+### 8.6 Disparate-Uncertainty and Ranking-Stability Audit
 
 The benchmark fits six household-bootstrap models for each experiment on the same
 holdout split. It reports the standard deviation of predicted relevance across
@@ -225,7 +258,7 @@ scored. The resulting variability is a training-resample diagnostic, not calibra
 posterior uncertainty. See
 [`docs/disparate_uncertainty_audit.md`](disparate_uncertainty_audit.md).
 
-### 7.7 Ranking-Objective Sensitivity Diagnostic
+### 8.7 Ranking-Objective Sensitivity Diagnostic
 
 The benchmark compares its pointwise logistic primary baseline with a lightweight
 linear pairwise ranker and a lightweight linear listwise ranker. Within each
@@ -243,7 +276,7 @@ inspired by top-one listwise formulations but is not an implementation of the
 original neural ListNet architecture. See
 [`docs/pairwise_ranking_sensitivity.md`](pairwise_ranking_sensitivity.md).
 
-### 7.8 Underserved Quartile Recovery Profile
+### 8.8 Underserved Quartile Recovery Profile
 
 The benchmark groups distinct synthetic communities into underserved-score
 quartiles before comparing privacy-safe aggregates with the same-seed signal-loss
@@ -255,7 +288,7 @@ community contexts. The quartiles are synthetic benchmark constructs, not
 real-world demographic groups. See
 [`docs/underserved_recovery_profile.md`](underserved_recovery_profile.md).
 
-### 7.9 Community-Held-Out Robustness Diagnostic
+### 8.9 Community-Held-Out Robustness Diagnostic
 
 The primary protocol uses a household-level holdout. The benchmark also runs a
 paired synthetic community-held-out stress test using the same signal-loss
@@ -268,7 +301,7 @@ of generated community contexts. It is not a real geographic, temporal, or
 deployment validation study. See
 [`docs/community_holdout_robustness.md`](community_holdout_robustness.md).
 
-### 7.10 Heldout Context-Shift Stress Test
+### 8.10 Heldout Context-Shift Stress Test
 
 The benchmark adds a paired controlled covariate-drift diagnostic after the
 household-level train/test split. Training households, relevance labels, and
@@ -296,7 +329,7 @@ This is a controlled covariate-drift proxy with fixed labels, not a temporal
 validation study or an estimate of real-world distribution shift. See
 [`docs/heldout_context_shift.md`](heldout_context_shift.md).
 
-### 7.11 Fairness-Aware Recovery Variant
+### 8.11 Fairness-Aware Recovery Variant
 
 The fairness-aware variant trains a low-signal-specific model after privacy-safe aggregate recovery. Relevant low-signal examples receive additional training weight, and the low-signal-specific predictions are blended with predictions from the global model.
 
@@ -304,7 +337,7 @@ Extra positive weighting shifts the probability scale of a logistic model. Befor
 
 This variant is an experimental baseline, not a claim that fairness gaps are solved. The benchmark reports its utility and low-signal metrics alongside the simpler privacy-safe aggregate baseline.
 
-## 8. Ranking Model
+## 9. Ranking Model
 
 The current benchmark uses an interpretable baseline model rather than a complex neural model.
 
@@ -320,30 +353,30 @@ pairwise, and linear listwise sensitivity checks while keeping logistic regressi
 as the primary baseline. Future versions can add neural ranking models, but the
 v0.x baseline prioritizes transparency.
 
-## 9. Evaluation Metrics
+## 10. Evaluation Metrics
 
 FairPrivacySignal reports three categories of metrics.
 
-### 9.1 Utility
+### 10.1 Utility
 
 - AUC
 - NDCG@3
 
 NDCG@3 is emphasized because the benchmark is a ranking task: the system must recommend the most relevant services near the top of the list.
 
-### 9.2 Privacy Exposure
+### 10.2 Privacy Exposure
 
 The benchmark uses an interpretable privacy exposure score. Higher scores indicate more individual-level behavioral signal remains available to the model.
 
 This is not a formal privacy guarantee. It is a diagnostic proxy used to compare scenarios.
 
-### 9.3 Low-Signal Fairness Diagnostics
+### 10.3 Low-Signal Fairness Diagnostics
 
 The benchmark tracks low-signal NDCG@3 and the NDCG gap between not-low-signal and low-signal households.
 
 The project does not claim that the current privacy-safe recovery layer solves fairness. Instead, it reports fairness gaps explicitly so that utility recovery does not hide unequal downstream effects.
 
-### 9.4 Score-Matched Subgroup Calibration
+### 10.4 Score-Matched Subgroup Calibration
 
 The benchmark also places test-set events into shared predicted-score bins and
 compares observed relevance rates for low-signal and not-low-signal groups within
@@ -353,7 +386,7 @@ absolute matched relevance gap.
 This is a lightweight diagnostic inspired by ranking-calibration research. It does
 not implement a formal matched-pair estimator or prove that a ranking policy is fair.
 
-## 10. Multi-Seed Evaluation
+## 11. Multi-Seed Evaluation
 
 The benchmark runs the privacy-recovery experiment across multiple synthetic seeds.
 
@@ -364,18 +397,23 @@ This reduces the risk that results are driven by one favorable random draw and m
 The current multi-seed result shows:
 
 - severe signal loss consistently reduces ranking utility
-- privacy-safe aggregate/contextual features partially recover ranking utility
-- policy-restricted + privacy-safe recovery improves utility over the policy-restricted baseline
+- policy-aware recovery closes part of the full-signal utility gap in both tested
+  policy regimes
+- the partial-loss path improves both overall and low-signal ranking utility over
+  flat aggregates in the current five-seed result
 - fairness-aware variants have mixed low-signal gap effects across the current synthetic scenarios
 - fairness gaps remain diagnostic and require further evaluation
 
-## 11. What the Current Benchmark Shows
+## 12. What the Current Benchmark Shows
 
 The current version supports a modest, evidence-aligned claim:
 
-> Privacy-driven signal loss can reduce ranking utility in synthetic public-service matching. Privacy-safe aggregate and contextual features can partially recover utility while keeping individual behavioral exposure reduced. Low-signal fairness gaps should be separately measured rather than assumed to improve automatically.
+> Privacy-driven signal loss can reduce ranking utility in synthetic public-service
+> matching. A policy-conditioned combination of train-fitted aggregates and
+> cross-fitted signal reconstruction can recover part of that lost utility without
+> restoring unavailable raw behavioral values to the serving ranker.
 
-## 12. What the Current Benchmark Does Not Claim
+## 13. What the Current Benchmark Does Not Claim
 
 FairPrivacySignal does not claim that:
 
@@ -386,7 +424,7 @@ FairPrivacySignal does not claim that:
 - it should be used directly for public-service eligibility decisions
 - synthetic results alone prove real-world effectiveness or adoption
 
-## 13. Planned Extensions
+## 14. Planned Extensions
 
 Near-term planned extensions include:
 
@@ -394,7 +432,7 @@ Near-term planned extensions include:
 2. adding public-reference uncertainty metadata while keeping mappings explicit
 3. improving the technical whitepaper for independent expert review
 
-## 14. Why This Matters
+## 15. Why This Matters
 
 Privacy regulations and data minimization practices can reduce access to individual-level behavioral signals. This is often necessary for protecting users, but it can also degrade ranking quality and disproportionately affect low-signal groups.
 

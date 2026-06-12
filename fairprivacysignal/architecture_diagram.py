@@ -123,7 +123,7 @@ def plot_architecture_diagram(out_path: Path) -> None:
     axis.axis("off")
 
     fig.suptitle(
-        "FairPrivacySignal benchmark system map",
+        "FairPrivacySignal recovery method and evidence system",
         x=0.045,
         y=0.975,
         ha="left",
@@ -134,7 +134,7 @@ def plot_architecture_diagram(out_path: Path) -> None:
     fig.text(
         0.047,
         0.925,
-        "A synthetic, auditable pipeline for measuring privacy-driven signal loss, aggregate recovery, fairness diagnostics, and allocation tradeoffs.",
+        "A deployable signal-recovery pattern backed by leakage-controlled evaluation, subgroup diagnostics, and reproducible validation.",
         ha="left",
         fontsize=11,
         color=COLORS["muted"],
@@ -167,13 +167,13 @@ def plot_architecture_diagram(out_path: Path) -> None:
         card_y,
         card_width,
         card_height,
-        "2. Privacy and recovery",
+        "2. Policy-aware recovery",
         [
             f"{len(EXPECTED_SIGNAL_SCENARIOS)} signal-loss scenarios",
-            "Consent and policy suppression",
             "Train-fitted cohort aggregates",
-            "k-threshold service fallback",
-            "DP-style aggregate-noise stress",
+            "Cross-fitted signal reconstruction",
+            "Availability-aware substitution",
+            "Policy-conditioned path selection",
         ],
         COLORS["privacy"],
     )
@@ -183,12 +183,12 @@ def plot_architecture_diagram(out_path: Path) -> None:
         card_y,
         card_width,
         card_height,
-        "3. Ranking and allocation",
+        "3. Serving ranker",
         [
             f"{len(EXPECTED_RANKING_OBJECTIVES)} ranking objectives",
-            "Logistic and boosted model checks",
-            "Privacy-safe recovery variants",
-            "Low-signal recovery diagnostic",
+            "No unavailable raw signal",
+            "Recovered context and aggregates",
+            "Ranked candidate services",
             "Capacity-constrained allocation",
         ],
         COLORS["model"],
@@ -204,7 +204,7 @@ def plot_architecture_diagram(out_path: Path) -> None:
             "AUC and NDCG@3 utility",
             "Privacy-exposure proxy",
             "Low-signal and calibration gaps",
-            "Feature and model ablations",
+            "Method and feature ablations",
             "Grouped and context-shift stress",
         ],
         COLORS["evaluation"],
@@ -228,7 +228,7 @@ def plot_architecture_diagram(out_path: Path) -> None:
         axis,
         5.9,
         2.55,
-        "train-only aggregate references",
+        "household-grouped cross-fitting",
         COLORS["privacy"],
     )
     _draw_badge(
@@ -269,7 +269,7 @@ def plot_architecture_diagram(out_path: Path) -> None:
     axis.text(
         5.05,
         1.22,
-        "coverage invariants",
+        "method coverage",
         ha="center",
         va="center",
         fontsize=9.7,
@@ -296,7 +296,7 @@ def plot_architecture_diagram(out_path: Path) -> None:
     axis.text(
         13.4,
         1.22,
-        "benchmark card + reproducible outputs",
+        "method card + reproducible outputs",
         ha="center",
         va="center",
         fontsize=9.7,
