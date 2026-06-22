@@ -4,6 +4,52 @@
 [![Benchmark checks](https://github.com/AnthonyXu109/FairPrivacySignal/actions/workflows/benchmark-checks.yml/badge.svg)](https://github.com/AnthonyXu109/FairPrivacySignal/actions/workflows/benchmark-checks.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+## In plain language
+
+Computer systems in many fields rank options to offer people — which health program
+to suggest, which course or support service, which local resource. To do this well,
+they often rely on a person's past activity. New U.S. privacy rules increasingly
+restrict that data. That protects people, but it also makes these systems less
+accurate, and it tends to hurt the people and small organizations with the least
+data to begin with.
+
+**FairPrivacySignal is a free, public, open-source tool** showing how such a system
+can stay useful *without* using restricted personal data — by rebuilding a
+privacy-safe stand-in from information it is still allowed to use. It ships the
+method, a test harness, and honest measurements.
+
+**What it shows, in plain terms:** when the behavioral data is fully removed, the
+method recovers roughly a *third* of the lost ranking quality; when some data
+remains, it recovers *more than half*. These are results on controlled, synthetic
+test data, reported with their limits — not a claim of real-world deployment.
+
+**Why it matters beyond any one company:** the same problem recurs across U.S.
+healthcare, education, public services, financial access, and online marketplaces.
+Released openly rather than kept inside a single company, the method can be
+inspected, reproduced, and reused by anyone working on it.
+
+*Bottom line: a privacy-era capability that many U.S. sectors need, built in the open so the whole field — not a single employer — can inspect and use it.*
+
+## Open, public, and independently verifiable
+
+FairPrivacySignal is an independent, open-source project, public and non-proprietary by design: the full method, code, synthetic-data generator, and
+results are MIT-licensed and permanently archived with a citable DOI
+([10.5281/zenodo.20130952](https://doi.org/10.5281/zenodo.20130952)).
+
+No result has to be taken on trust. With no special access or data, anyone can
+reproduce everything from a clean checkout:
+
+```bash
+git clone https://github.com/AnthonyXu109/FairPrivacySignal
+cd FairPrivacySignal && bash scripts/verify_benchmark.sh
+```
+
+Using synthetic data is deliberate: it lets the entire method and its evaluation be
+examined in public, with no personal, proprietary, or confidential data involved.
+What the study does and does not claim is stated plainly in
+[docs/limitations.md](docs/limitations.md); the U.S. public-interest context, with
+sources, is in [docs/policy_context.md](docs/policy_context.md).
+
 Behavioral signals often help ranking systems distinguish among otherwise similar
 candidates. Those signals can become incomplete or unavailable when consent,
 privacy, retention, or data-minimization rules change. Removing them protects
