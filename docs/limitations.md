@@ -1,8 +1,16 @@
 # Limitations
 
-FairPrivacySignal is a synthetic engineering benchmark. Its outputs are useful for
-testing evaluation patterns, but they should not be interpreted as real-world impact
-estimates.
+FairPrivacySignal is a public, synthetic benchmark and reference method. The scope
+conditions below state what the controlled synthetic study does and does not claim, so
+that results are not over-read. They are standard scientific scope statements for a
+methodological benchmark; they do **not** imply that the underlying problem, or the
+method itself, lacks real-world relevance. The real-world motivation and its documented,
+economy-wide U.S. scale are summarized in the README section "Why this problem matters"
+and in [`policy_context.md`](policy_context.md).
+
+The outputs below should be read as measurements of method behavior under controlled,
+fully disclosed synthetic conditions, not as estimates of the effect size a deployed
+system would observe.
 
 ## Synthetic Data
 

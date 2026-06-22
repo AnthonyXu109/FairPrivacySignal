@@ -1,0 +1,4 @@
+# Unify all commit identities to one canonical author.
+# GitHub account AnthonyXu109 and commit names Anthony/Chang are the same person: Chang Xu.
+Chang Xu <changxu109@gmail.com> <changxu109@gmail.com>
+Chang Xu <changxu109@gmail.com> <33390021+AnthonyXu109@users.noreply.github.com>

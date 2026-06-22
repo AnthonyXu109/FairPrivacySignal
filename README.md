@@ -22,7 +22,39 @@ ranked for services under limited behavioral history. The same design can be
 studied wherever a system ranks interventions, programs, providers, resources, or
 opportunities using a mixture of contextual and restricted historical signals.
 
+## Why this problem matters
+
+Privacy-driven signal loss is not a single-company concern. It is an economy-wide
+shift in how data-driven systems in the United States are allowed to operate:
+
+- **Regulation is broad and growing.** Roughly twenty U.S. states have comprehensive
+  consumer-privacy laws in effect as of 2026, each constraining how behavioral data is
+  collected, retained, and used
+  ([IAPP U.S. State Privacy Legislation Tracker](https://iapp.org/resources/article/us-state-privacy-legislation-tracker)).
+- **The economic stakes are large.** After Apple's App Tracking Transparency moved
+  mobile tracking to opt-in, opt-in rates fell to roughly 15-25% and major platforms
+  lost on the order of $10B in advertising revenue in the second half of 2021 alone; an
+  economic analysis hosted by the U.S. Federal Trade Commission estimated a U.S. impact
+  on the order of $15B
+  ([FTC-hosted economic analysis](https://www.ftc.gov/system/files/ftc_gov/pdf/3-Skiera-Economic-Impact-of-Opt-in-versus-Opt-out-Requirements-for-Personal-Data-Usage.pdf)).
+- **Federal risk guidance expects it.** The NIST AI Risk Management Framework,
+  referenced across U.S. federal agencies, treats data minimization and privacy as core
+  components of trustworthy AI
+  ([NIST AI RMF](https://www.nist.gov/itl/ai-risk-management-framework)).
+- **It bears on U.S. AI competitiveness.** Keeping model quality and evaluation
+  reliability stable as usable signal shrinks is part of keeping U.S. AI systems
+  effective, a stated national priority
+  ([2025 U.S. federal AI policy direction](https://www.whitehouse.gov/presidential-actions/2025/01/removing-barriers-to-american-leadership-in-artificial-intelligence/)).
+
+FairPrivacySignal studies the core technical question these forces create: how can a
+ranking or matching system stay useful, reliable, and stable when privacy rules remove
+the individual-level signals it once relied on, without re-introducing restricted raw
+data? The method and evaluation are released publicly, on synthetic data under an open
+license, so the approach can be examined and reused across sectors rather than remaining
+internal to any one company.
+
 ## At a glance
+
 
 | Component | What the repository provides |
 |---|---|
@@ -264,12 +296,7 @@ Useful entry points:
 
 ## Interpretation and limits
 
-FairPrivacySignal measures controlled synthetic behavior. It does not establish
-population representativeness, real-world effectiveness, or adoption in any
-sector. The comparative exposure score is a diagnostic proxy, not a formal privacy
-guarantee. The implementation does not provide differential privacy, prove
-protection against model extraction, or establish that a particular fairness
-constraint is appropriate for every allocation setting.
+FairPrivacySignal is a methodological contribution: a public, reusable, and fully reproducible way to study privacy-driven signal loss and recovery on synthetic data. Running on synthetic data is a deliberate design choice, because it lets the method and its evaluation be inspected and reused publicly with no personal or proprietary data. Accordingly, the numbers here characterize how the method behaves under controlled, explicitly stated conditions; they are scoped to this benchmark and are not presented as the effect size a specific production deployment would observe. The comparative exposure score is a diagnostic proxy, not a formal privacy guarantee, and the implementation does not provide differential privacy or evaluate model-extraction risk. These are scope conditions for a public benchmark, not statements about the importance of the underlying problem, whose documented U.S. scale is summarized in [Why this problem matters](#why-this-problem-matters).
 
 The project reports these limitations alongside the results so that utility gains
 can be reviewed together with the assumptions that produce them:

@@ -5,6 +5,34 @@ single prior system, and it does not claim that its simplified mechanisms solve 
 broader research problems below. The benchmark design is informed by several public
 research directions.
 
+## What is novel here
+
+FairPrivacySignal does not claim a new state-of-the-art ranking algorithm. Its
+contribution is a specific, inspectable *combination* that, to our knowledge, is not
+packaged together in existing public work:
+
+1. **Policy-conditioned recovery, not unconditional distillation.** Prior
+   privileged-feature distillation assumes the richer signal may inform a single deployed
+   predictor. FairPrivacySignal instead selects among observed values, a cross-fitted
+   reconstruction, and thresholded aggregates *according to an explicit availability
+   policy*, and treats the full-signal model as an oracle baseline rather than a trusted
+   teacher.
+2. **Signal loss as a multi-mechanism axis, not a single rate.** The benchmark holds the
+   overall retention rate fixed while varying *which* records lose signal (uniform-random,
+   context-dependent, signal-dependent), exposing that an aggregate availability rate
+   hides who is actually affected.
+3. **Structural-validity controls.** A service-permuted negative control tests whether
+   recovery comes from preserved structure rather than from merely adding a numeric
+   feature -- a control rarely shipped alongside recovery methods.
+4. **From ranking quality to constrained allocation.** Evaluation continues past NDCG into
+   a capacity-constrained allocation frontier, making the downstream policy tradeoff
+   explicit rather than implied.
+5. **Public, reproducible, non-confidential by construction.** The whole pipeline runs on
+   synthetic data with one-command regeneration and multi-seed reporting, so the method
+   can be inspected and reused across sectors rather than remaining internal to one company.
+
+The sections below place each of these against the specific prior work that informed it.
+
 ## Training-Only Features and Serving-Time Recovery
 
 [Generalized Distillation](https://arxiv.org/abs/1503.02531) unifies knowledge
