@@ -291,6 +291,7 @@ Supporting reports include:
 - [cohort threshold sensitivity](docs/cohort_threshold_sensitivity.md)
 - [disparate uncertainty audit](docs/disparate_uncertainty_audit.md)
 - [education student performance public-data validation](docs/education_student_performance_validation.md)
+- [finance German Credit public-data validation](docs/finance_german_credit_validation.md)
 - [low-signal fairness metrics](docs/fairness_metrics.md)
 - [MovieLens marketplace public-data validation](docs/movielens_marketplace_validation.md)
 - [public reference calibration](docs/public_reference_calibration.md)
@@ -322,13 +323,15 @@ public-data pilots that could test the same signal-loss and recovery pattern in
 healthcare, education, public services, financial access, and marketplaces without
 using confidential data.
 
-Two external public-data pilots are now included:
+Three external public-data pilots are now included:
 [MovieLens marketplace validation](docs/movielens_marketplace_validation.md)
 tests held-out movie ranking after user-history signal loss, and
 [education student performance validation](docs/education_student_performance_validation.md)
-tests student-support ranking after prior-grade signal loss. Together they show
-the same signal-loss and privacy-preserving recovery pattern outside the
-repository's synthetic benchmark.
+tests student-support ranking after prior-grade signal loss, and
+[finance German Credit validation](docs/finance_german_credit_validation.md)
+tests credit-application review ranking after financial-history signal loss.
+Together they show the same signal-loss and privacy-preserving recovery pattern
+outside the repository's synthetic benchmark.
 
 ## Reproduce the benchmark
 
@@ -356,6 +359,7 @@ Useful entry points:
 | [`docs/benchmark_design.md`](docs/benchmark_design.md) | Task definition, controls, and evaluation protocol |
 | [`docs/experiment_matrix.md`](docs/experiment_matrix.md) | Scenario and sensitivity coverage |
 | [`docs/education_student_performance_validation.md`](docs/education_student_performance_validation.md) | Public education support validation |
+| [`docs/finance_german_credit_validation.md`](docs/finance_german_credit_validation.md) | Public financial-access validation |
 | [`docs/movielens_marketplace_validation.md`](docs/movielens_marketplace_validation.md) | Public MovieLens marketplace validation |
 | [`docs/sector_adaptation.md`](docs/sector_adaptation.md) | Public-data roadmap for cross-sector validation |
 | [`docs/reproducibility.md`](docs/reproducibility.md) | Runtime guidance and generated output locations |

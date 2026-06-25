@@ -37,7 +37,7 @@ The pilot should report the same evidence surface used in the main benchmark:
 | Healthcare outreach | Synthea synthetic EHR records | Rank care-gap outreach, screening, or follow-up options for synthetic patients | Prior encounters, portal response, medication or care-plan history | Sparse visit or engagement history | Strong first healthcare pilot because records are synthetic and non-confidential |
 | Education | UCI Student Performance | Rank student-course records for support triage | Prior grades from earlier periods | Low-absence records with weaker administrative warning signals | Implemented as the second external public-data pilot |
 | Public and nonprofit services | ACS PUMS plus public service/resource metadata | Rank benefit, outreach, or resource options for synthetic households | Prior service engagement, simulated because ACS is not an intervention log | Low-observability household or community contexts | Best treated as an expanded synthetic scenario anchored to public population data |
-| Financial access | CFPB/FFIEC HMDA mortgage data | Rank review, assistance, or outreach pathways for mortgage applicants | Prior digital interaction or response history, simulated because HMDA is not clickstream data | Thin-context or under-observed applicant segments | Useful for public financial-access framing, but not a direct behavioral-history dataset |
+| Financial access | UCI German Credit | Rank credit applications for review or assistance triage | Checking-account status, credit-history status, and savings status | Thin-file applicants with one or fewer existing credits | Implemented as the third external public-data pilot |
 | Marketplaces | MovieLens ratings data | Rank items for users under rating-history loss | Prior ratings, tags, or interactions | New, sparse-history, or niche-preference users/items | Implemented as the first external public-data pilot |
 
 ## Recommended Execution Order
@@ -53,10 +53,11 @@ The pilot should report the same evidence surface used in the main benchmark:
    learning-activity pilot.
 3. **Synthea healthcare pilot.** It keeps healthcare non-confidential while
    showing how the method maps to patient outreach and care-navigation tasks.
-4. **HMDA financial-access pilot.** Use it as a public financial decisioning
-   stress test, but state clearly that the behavioral signal is simulated or
-   derived because HMDA is a loan-application dataset, not a product-interaction
-   log.
+4. **UCI German Credit financial-access pilot.** Implemented in
+   [finance German Credit validation](finance_german_credit_validation.md). It is
+   a compact public credit dataset with a clear historical financial-signal loss
+   setup. HMDA remains useful for a future policy-facing stress test, but its
+   behavioral signal would need to be simulated or derived.
 5. **ACS-anchored public-services scenario.** Extend the current synthetic
    public-service benchmark by calibrating household and community priors to ACS
    PUMS, while retaining synthetic labels and simulated service histories.
@@ -90,6 +91,7 @@ A sector pilot is ready to include in the main README only when it has:
 - Synthea synthetic patient generator: https://github.com/synthetichealth/synthea
 - Open University Learning Analytics Dataset overview: https://analyse.kmi.open.ac.uk/open_dataset
 - UCI Student Performance dataset: https://archive.ics.uci.edu/dataset/320/student+performance
+- UCI German Credit dataset: https://archive.ics.uci.edu/dataset/144/statlog+german+credit+data
 - CFPB HMDA data: https://www.consumerfinance.gov/data-research/hmda/
 - ACS Public Use Microdata Sample: https://www.census.gov/programs-surveys/acs/microdata.html
 - MovieLens datasets: https://grouplens.org/datasets/movielens/
