@@ -291,6 +291,7 @@ Supporting reports include:
 - [cohort threshold sensitivity](docs/cohort_threshold_sensitivity.md)
 - [disparate uncertainty audit](docs/disparate_uncertainty_audit.md)
 - [low-signal fairness metrics](docs/fairness_metrics.md)
+- [MovieLens marketplace public-data validation](docs/movielens_marketplace_validation.md)
 - [public reference calibration](docs/public_reference_calibration.md)
 - [sector adaptation roadmap](docs/sector_adaptation.md)
 - [underserved recovery profile](docs/underserved_recovery_profile.md)
@@ -320,6 +321,11 @@ public-data pilots that could test the same signal-loss and recovery pattern in
 healthcare, education, public services, financial access, and marketplaces without
 using confidential data.
 
+The first external public-data pilot is now included for marketplaces:
+[MovieLens marketplace validation](docs/movielens_marketplace_validation.md). It
+tests held-out movie ranking after user-history signal loss and reports aggregate
+recovery on a public recommender dataset.
+
 ## Reproduce the benchmark
 
 FairPrivacySignal is designed to run on an ordinary laptop with NumPy, pandas,
@@ -345,6 +351,7 @@ Useful entry points:
 | [`scripts/verify_benchmark.sh`](scripts/verify_benchmark.sh) | End-to-end verification |
 | [`docs/benchmark_design.md`](docs/benchmark_design.md) | Task definition, controls, and evaluation protocol |
 | [`docs/experiment_matrix.md`](docs/experiment_matrix.md) | Scenario and sensitivity coverage |
+| [`docs/movielens_marketplace_validation.md`](docs/movielens_marketplace_validation.md) | Public MovieLens marketplace validation |
 | [`docs/sector_adaptation.md`](docs/sector_adaptation.md) | Public-data roadmap for cross-sector validation |
 | [`docs/reproducibility.md`](docs/reproducibility.md) | Runtime guidance and generated output locations |
 | [`tests/`](tests/) | Regression and validation tests |

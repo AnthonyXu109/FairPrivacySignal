@@ -38,13 +38,14 @@ The pilot should report the same evidence surface used in the main benchmark:
 | Education | Open University Learning Analytics Dataset (OULAD) | Rank support, advising, or course-resource interventions for students | Prior virtual-learning-environment activity and assessment interactions | Sparse learning-platform activity | Strong first education pilot because the data has student-course interactions and outcomes |
 | Public and nonprofit services | ACS PUMS plus public service/resource metadata | Rank benefit, outreach, or resource options for synthetic households | Prior service engagement, simulated because ACS is not an intervention log | Low-observability household or community contexts | Best treated as an expanded synthetic scenario anchored to public population data |
 | Financial access | CFPB/FFIEC HMDA mortgage data | Rank review, assistance, or outreach pathways for mortgage applicants | Prior digital interaction or response history, simulated because HMDA is not clickstream data | Thin-context or under-observed applicant segments | Useful for public financial-access framing, but not a direct behavioral-history dataset |
-| Marketplaces | MovieLens ratings data | Rank items for users under rating-history loss | Prior ratings, tags, or interactions | New, sparse-history, or niche-preference users/items | Strong first marketplace pilot because recommender signal loss is native to the dataset |
+| Marketplaces | MovieLens ratings data | Rank items for users under rating-history loss | Prior ratings, tags, or interactions | New, sparse-history, or niche-preference users/items | Implemented as the first external public-data pilot |
 
 ## Recommended Execution Order
 
-1. **MovieLens marketplace pilot.** It is the cleanest public ranking analogue:
-   users, items, historical ratings, sparse users, and top-k ranking are already
-   native to the data.
+1. **MovieLens marketplace pilot.** Implemented in
+   [MovieLens marketplace validation](movielens_marketplace_validation.md). It is
+   the cleanest public ranking analogue: users, items, historical ratings, sparse
+   users, and top-k ranking are already native to the data.
 2. **OULAD education pilot.** It offers a second domain where behavioral-history
    loss has a natural interpretation: student activity data may be incomplete or
    unavailable, while course and assessment context may remain usable.
