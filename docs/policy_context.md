@@ -15,13 +15,15 @@ sources here establish the importance of the *problem* the method studies.
   opt-out requirements that reduce the individual-level behavioral signal available to
   data-driven systems. See the IAPP U.S. State Privacy Legislation Tracker.
 - **Platform privacy changes have removed measurable economic value.** After Apple's
-  App Tracking Transparency (ATT) moved mobile tracking to opt-in, opt-in rates fell to
-  roughly 15-25%, and major platforms lost on the order of \$10 billion in advertising
-  revenue in the second half of 2021 alone. An economic analysis hosted by the U.S.
-  Federal Trade Commission estimated a U.S. impact on the order of \$15 billion.
-  Marketers commonly report seeing only ~40-60% of real conversions after signal loss.
-  These figures quantify the same technical problem the benchmark studies: useful signal
-  disappears, and systems must remain effective without it.
+  App Tracking Transparency (ATT) moved mobile tracking to opt-in, an economic analysis
+  hosted by the U.S. Federal Trade Commission reported that the trackable share of U.S.
+  Apple traffic fell from 73% to 18%, that trackable ad impressions carried 51% higher
+  prices, and that the change implied a 21% fall in publisher ad revenue from Apple
+  users. The same analysis estimated a U.S. monetary loss of about \$15 billion and
+  found that Meta's public \$10 billion annual-loss estimate was directionally
+  consistent with its calculation. These figures quantify the same technical problem
+  the benchmark studies: useful signal disappears, and systems must remain effective
+  without it.
 
 ## 2. The problem is recognized in U.S. federal AI risk guidance
 
@@ -63,7 +65,7 @@ contribution is methodological: a reusable evaluation protocol, a recovery metho
 set of controls for testing *why* recovery occurs. The synthetic design is intentional --
 it enables fully public, non-confidential, reproducible study of a real and documented
 problem. What the synthetic benchmark does and does not claim is stated in
-[\`limitations.md\`](limitations.md).
+[limitations.md](limitations.md).
 
 ## References
 

@@ -35,6 +35,8 @@ inspected, reproduced, and reused by anyone working on it.
 FairPrivacySignal is an independent, open-source project, public and non-proprietary by design: the full method, code, synthetic-data generator, and
 results are MIT-licensed and permanently archived with a citable DOI
 ([10.5281/zenodo.20130952](https://doi.org/10.5281/zenodo.20130952)).
+The repository is maintained by Chang Xu; the GitHub account `AnthonyXu109`
+belongs to the same author.
 
 No result has to be taken on trust. With no special access or data, anyone can
 reproduce everything from a clean checkout:
@@ -78,10 +80,12 @@ shift in how data-driven systems in the United States are allowed to operate:
   collected, retained, and used
   ([IAPP U.S. State Privacy Legislation Tracker](https://iapp.org/resources/article/us-state-privacy-legislation-tracker)).
 - **The economic stakes are large.** After Apple's App Tracking Transparency moved
-  mobile tracking to opt-in, opt-in rates fell to roughly 15-25% and major platforms
-  lost on the order of $10B in advertising revenue in the second half of 2021 alone; an
-  economic analysis hosted by the U.S. Federal Trade Commission estimated a U.S. impact
-  on the order of $15B
+  mobile tracking to opt-in, an economic analysis hosted by the U.S. Federal Trade
+  Commission reported that the trackable share of U.S. Apple traffic fell from 73% to
+  18%, that trackable ad impressions carried 51% higher prices, and that the change
+  implied a 21% fall in publisher ad revenue from Apple users. The same analysis
+  estimated a U.S. monetary loss of about $15B and found that Meta's public $10B
+  annual-loss estimate was directionally consistent with its calculation
   ([FTC-hosted economic analysis](https://www.ftc.gov/system/files/ftc_gov/pdf/3-Skiera-Economic-Impact-of-Opt-in-versus-Opt-out-Requirements-for-Personal-Data-Usage.pdf)).
 - **Federal risk guidance expects it.** The NIST AI Risk Management Framework,
   referenced across U.S. federal agencies, treats data minimization and privacy as core
@@ -288,6 +292,7 @@ Supporting reports include:
 - [disparate uncertainty audit](docs/disparate_uncertainty_audit.md)
 - [low-signal fairness metrics](docs/fairness_metrics.md)
 - [public reference calibration](docs/public_reference_calibration.md)
+- [sector adaptation roadmap](docs/sector_adaptation.md)
 - [underserved recovery profile](docs/underserved_recovery_profile.md)
 
 The generated [benchmark card](docs/benchmark_card.md) summarizes the evaluated
@@ -310,7 +315,10 @@ examined independently of a specific application dataset.
 These examples describe a common system shape, not validated deployments. Applying
 the method to any domain requires a domain-specific policy review, outcome
 definition, subgroup analysis, and evaluation against locally appropriate
-baselines.
+baselines. The [sector adaptation roadmap](docs/sector_adaptation.md) lays out
+public-data pilots that could test the same signal-loss and recovery pattern in
+healthcare, education, public services, financial access, and marketplaces without
+using confidential data.
 
 ## Reproduce the benchmark
 
@@ -337,6 +345,7 @@ Useful entry points:
 | [`scripts/verify_benchmark.sh`](scripts/verify_benchmark.sh) | End-to-end verification |
 | [`docs/benchmark_design.md`](docs/benchmark_design.md) | Task definition, controls, and evaluation protocol |
 | [`docs/experiment_matrix.md`](docs/experiment_matrix.md) | Scenario and sensitivity coverage |
+| [`docs/sector_adaptation.md`](docs/sector_adaptation.md) | Public-data roadmap for cross-sector validation |
 | [`docs/reproducibility.md`](docs/reproducibility.md) | Runtime guidance and generated output locations |
 | [`tests/`](tests/) | Regression and validation tests |
 
