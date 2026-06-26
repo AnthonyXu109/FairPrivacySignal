@@ -34,7 +34,7 @@ The pilot should report the same evidence surface used in the main benchmark:
 
 | Sector | Public data candidate | Ranking or matching task | Restricted signal analogue | Low-signal group | Status |
 |---|---|---|---|---|---|
-| Healthcare outreach | Synthea synthetic EHR records | Rank care-gap outreach, screening, or follow-up options for synthetic patients | Prior encounters, portal response, medication or care-plan history | Sparse visit or engagement history | Strong first healthcare pilot because records are synthetic and non-confidential |
+| Healthcare triage | UCI Wisconsin Diagnostic Breast Cancer | Rank diagnostic cases for review triage | Granular detailed measurement features | Low permitted-context score cases | Implemented as the fourth external public-data pilot |
 | Education | UCI Student Performance | Rank student-course records for support triage | Prior grades from earlier periods | Low-absence records with weaker administrative warning signals | Implemented as the second external public-data pilot |
 | Public and nonprofit services | ACS PUMS plus public service/resource metadata | Rank benefit, outreach, or resource options for synthetic households | Prior service engagement, simulated because ACS is not an intervention log | Low-observability household or community contexts | Best treated as an expanded synthetic scenario anchored to public population data |
 | Financial access | UCI German Credit | Rank credit applications for review or assistance triage | Checking-account status, credit-history status, and savings status | Thin-file applicants with one or fewer existing credits | Implemented as the third external public-data pilot |
@@ -51,8 +51,11 @@ The pilot should report the same evidence surface used in the main benchmark:
    UCI was selected before OULAD because it has a stable public download and a
    clear prior-grade signal-loss setup; OULAD remains useful for a future richer
    learning-activity pilot.
-3. **Synthea healthcare pilot.** It keeps healthcare non-confidential while
-   showing how the method maps to patient outreach and care-navigation tasks.
+3. **UCI WDBC healthcare pilot.** Implemented in
+   [healthcare WDBC validation](healthcare_wdbc_validation.md). WDBC was selected
+   because it gives a clean public healthcare signal-loss setup: detailed clinical
+   measurements can be suppressed while summary measurements remain available.
+   Synthea remains useful for a future richer EHR outreach scenario.
 4. **UCI German Credit financial-access pilot.** Implemented in
    [finance German Credit validation](finance_german_credit_validation.md). It is
    a compact public credit dataset with a clear historical financial-signal loss
@@ -89,6 +92,7 @@ A sector pilot is ready to include in the main README only when it has:
 ## Public Data References
 
 - Synthea synthetic patient generator: https://github.com/synthetichealth/synthea
+- UCI Wisconsin Diagnostic Breast Cancer dataset: https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic
 - Open University Learning Analytics Dataset overview: https://analyse.kmi.open.ac.uk/open_dataset
 - UCI Student Performance dataset: https://archive.ics.uci.edu/dataset/320/student+performance
 - UCI German Credit dataset: https://archive.ics.uci.edu/dataset/144/statlog+german+credit+data
