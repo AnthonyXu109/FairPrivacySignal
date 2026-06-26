@@ -36,7 +36,7 @@ The pilot should report the same evidence surface used in the main benchmark:
 |---|---|---|---|---|---|
 | Healthcare triage | UCI Wisconsin Diagnostic Breast Cancer | Rank diagnostic cases for review triage | Granular detailed measurement features | Low permitted-context score cases | Implemented as the fourth external public-data pilot |
 | Education | UCI Student Performance | Rank student-course records for support triage | Prior grades from earlier periods | Low-absence records with weaker administrative warning signals | Implemented as the second external public-data pilot |
-| Public and nonprofit services | ACS PUMS plus public service/resource metadata | Rank benefit, outreach, or resource options for synthetic households | Prior service engagement, simulated because ACS is not an intervention log | Low-observability household or community contexts | Best treated as an expanded synthetic scenario anchored to public population data |
+| Public and nonprofit services | UCI Adult/Census Income | Rank adults for low-income support outreach | Detailed employment and economic fields | Low permitted-context score adults | Implemented as the fifth external public-data pilot |
 | Financial access | UCI German Credit | Rank credit applications for review or assistance triage | Checking-account status, credit-history status, and savings status | Thin-file applicants with one or fewer existing credits | Implemented as the third external public-data pilot |
 | Marketplaces | MovieLens ratings data | Rank items for users under rating-history loss | Prior ratings, tags, or interactions | New, sparse-history, or niche-preference users/items | Implemented as the first external public-data pilot |
 
@@ -61,9 +61,11 @@ The pilot should report the same evidence surface used in the main benchmark:
    a compact public credit dataset with a clear historical financial-signal loss
    setup. HMDA remains useful for a future policy-facing stress test, but its
    behavioral signal would need to be simulated or derived.
-5. **ACS-anchored public-services scenario.** Extend the current synthetic
-   public-service benchmark by calibrating household and community priors to ACS
-   PUMS, while retaining synthetic labels and simulated service histories.
+5. **UCI Adult public-services pilot.** Implemented in
+   [public services Adult Census validation](public_services_adult_validation.md).
+   It gives a stable census-like outreach task with detailed economic signal
+   suppression. ACS PUMS remains useful for a future public-statistics calibration
+   layer with richer household geography.
 
 ## Figure Plan
 
@@ -96,6 +98,7 @@ A sector pilot is ready to include in the main README only when it has:
 - Open University Learning Analytics Dataset overview: https://analyse.kmi.open.ac.uk/open_dataset
 - UCI Student Performance dataset: https://archive.ics.uci.edu/dataset/320/student+performance
 - UCI German Credit dataset: https://archive.ics.uci.edu/dataset/144/statlog+german+credit+data
+- UCI Adult/Census Income dataset: https://archive.ics.uci.edu/dataset/2/adult
 - CFPB HMDA data: https://www.consumerfinance.gov/data-research/hmda/
 - ACS Public Use Microdata Sample: https://www.census.gov/programs-surveys/acs/microdata.html
 - MovieLens datasets: https://grouplens.org/datasets/movielens/

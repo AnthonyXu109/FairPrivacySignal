@@ -7,6 +7,7 @@ python -m fairprivacysignal.movielens_marketplace_validation
 python -m fairprivacysignal.education_student_performance_validation
 python -m fairprivacysignal.finance_german_credit_validation
 python -m fairprivacysignal.healthcare_wdbc_validation
+python -m fairprivacysignal.public_services_adult_validation
 
 echo "Public-data validation pilots completed."
 echo "Key outputs:"
@@ -22,3 +23,6 @@ echo "- outputs/tables/finance_german_credit_validation_summary.csv"
 echo "- docs/healthcare_wdbc_validation.md"
 echo "- docs/assets/healthcare_wdbc_validation.svg"
 echo "- outputs/tables/healthcare_wdbc_validation_summary.csv"
+echo "- docs/public_services_adult_validation.md"
+echo "- docs/assets/public_services_adult_validation.svg"
+echo "- outputs/tables/public_services_adult_validation_summary.csv"

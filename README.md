@@ -295,6 +295,7 @@ Supporting reports include:
 - [healthcare WDBC public-data validation](docs/healthcare_wdbc_validation.md)
 - [low-signal fairness metrics](docs/fairness_metrics.md)
 - [MovieLens marketplace public-data validation](docs/movielens_marketplace_validation.md)
+- [public services Adult Census public-data validation](docs/public_services_adult_validation.md)
 - [public reference calibration](docs/public_reference_calibration.md)
 - [sector adaptation roadmap](docs/sector_adaptation.md)
 - [underserved recovery profile](docs/underserved_recovery_profile.md)
@@ -324,7 +325,7 @@ public-data pilots that could test the same signal-loss and recovery pattern in
 healthcare, education, public services, financial access, and marketplaces without
 using confidential data.
 
-Four external public-data pilots are now included:
+Five external public-data pilots are now included:
 [MovieLens marketplace validation](docs/movielens_marketplace_validation.md)
 tests held-out movie ranking after user-history signal loss, and
 [education student performance validation](docs/education_student_performance_validation.md)
@@ -332,7 +333,9 @@ tests student-support ranking after prior-grade signal loss, and
 [finance German Credit validation](docs/finance_german_credit_validation.md)
 tests credit-application review ranking after financial-history signal loss, and
 [healthcare WDBC validation](docs/healthcare_wdbc_validation.md)
-tests diagnostic-case triage after detailed clinical-measurement signal loss.
+tests diagnostic-case triage after detailed clinical-measurement signal loss, and
+[public services Adult Census validation](docs/public_services_adult_validation.md)
+tests low-income support outreach after detailed economic signal loss.
 Together they show the same signal-loss and privacy-preserving recovery pattern
 outside the repository's synthetic benchmark.
 
@@ -365,6 +368,7 @@ Useful entry points:
 | [`docs/finance_german_credit_validation.md`](docs/finance_german_credit_validation.md) | Public financial-access validation |
 | [`docs/healthcare_wdbc_validation.md`](docs/healthcare_wdbc_validation.md) | Public healthcare triage validation |
 | [`docs/movielens_marketplace_validation.md`](docs/movielens_marketplace_validation.md) | Public MovieLens marketplace validation |
+| [`docs/public_services_adult_validation.md`](docs/public_services_adult_validation.md) | Public services outreach validation |
 | [`docs/sector_adaptation.md`](docs/sector_adaptation.md) | Public-data roadmap for cross-sector validation |
 | [`docs/reproducibility.md`](docs/reproducibility.md) | Runtime guidance and generated output locations |
 | [`tests/`](tests/) | Regression and validation tests |
