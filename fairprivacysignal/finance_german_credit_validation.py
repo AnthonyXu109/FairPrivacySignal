@@ -6,6 +6,8 @@ from urllib.request import urlretrieve
 import numpy as np
 import pandas as pd
 
+from fairprivacysignal.public_data_visuals import write_recovery_profile_svg
+
 
 DATA_URL = "https://archive.ics.uci.edu/ml/machine-learning-databases/statlog/german/german.data"
 DATA_DIR = Path("data/raw/finance_german")
@@ -13,6 +15,7 @@ TABLE_DIR = Path("outputs/tables")
 ASSET_DIR = Path("docs/assets")
 REPORT_PATH = Path("docs/finance_german_credit_validation.md")
 FIGURE_PATH = ASSET_DIR / "finance_german_credit_validation.svg"
+PROFILE_FIGURE_PATH = ASSET_DIR / "finance_german_credit_recovery_profile.svg"
 
 K = 100
 COLUMN_NAMES = [
@@ -415,6 +418,8 @@ The raw UCI file is downloaded at runtime and is not redistributed in this repos
 
 ![Financial-access public-data validation](assets/finance_german_credit_validation.svg)
 
+![Financial-access recovery profile](assets/finance_german_credit_recovery_profile.svg)
+
 ## Task
 
 - **Ranked candidate:** credit applications for review triage
@@ -456,6 +461,16 @@ def run_validation() -> pd.DataFrame:
     scored.to_csv(TABLE_DIR / "finance_german_credit_scored_applications.csv", index=False)
     summary.to_csv(TABLE_DIR / "finance_german_credit_validation_summary.csv", index=False)
     write_svg(summary)
+    write_recovery_profile_svg(
+        summary,
+        PROFILE_FIGURE_PATH,
+        title="Financial-Access Recovery Profile",
+        subtitle="Credit-application review under financial-history signal loss.",
+        metric_col="overall_ndcg_at_100",
+        low_signal_col="thin_file_ndcg_at_100",
+        exposure_col="history_signal_exposure",
+        low_signal_label="Thin-file NDCG@100",
+    )
     write_report(summary)
     return summary
 
@@ -466,6 +481,7 @@ def main() -> None:
     print(summary.round(4).to_string(index=False))
     print(f"\nWrote: {REPORT_PATH}")
     print(f"Wrote: {FIGURE_PATH}")
+    print(f"Wrote: {PROFILE_FIGURE_PATH}")
 
 
 if __name__ == "__main__":

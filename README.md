@@ -339,6 +339,26 @@ tests low-income support outreach after detailed economic signal loss.
 Together they show the same signal-loss and privacy-preserving recovery pattern
 outside the repository's synthetic benchmark.
 
+### Public-Data Evidence Gallery
+
+Each panel summarizes one public-data pilot with the same visual grammar: full-signal
+gap closed, low-signal lift, and restricted-signal exposure.
+
+<table>
+  <tr>
+    <td><strong>Healthcare</strong><br><img src="docs/assets/healthcare_wdbc_recovery_profile.svg" width="420"></td>
+    <td><strong>Education</strong><br><img src="docs/assets/education_student_performance_recovery_profile.svg" width="420"></td>
+  </tr>
+  <tr>
+    <td><strong>Public Services</strong><br><img src="docs/assets/public_services_adult_recovery_profile.svg" width="420"></td>
+    <td><strong>Financial Access</strong><br><img src="docs/assets/finance_german_credit_recovery_profile.svg" width="420"></td>
+  </tr>
+  <tr>
+    <td><strong>Marketplaces</strong><br><img src="docs/assets/movielens_marketplace_recovery_profile.svg" width="420"></td>
+    <td></td>
+  </tr>
+</table>
+
 ## Reproduce the benchmark
 
 FairPrivacySignal is designed to run on an ordinary laptop with NumPy, pandas,

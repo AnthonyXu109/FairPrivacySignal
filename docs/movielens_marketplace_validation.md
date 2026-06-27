@@ -11,6 +11,8 @@ redistributed in this repository. The pilot uses only public ratings and movie g
 
 ![MovieLens public-data marketplace validation](assets/movielens_marketplace_validation.svg)
 
+![MovieLens recovery profile](assets/movielens_marketplace_recovery_profile.svg)
+
 ## Task
 
 - **Ranked candidate:** held-out rated movies plus sampled unrated candidate movies

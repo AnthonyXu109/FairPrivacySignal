@@ -6,6 +6,8 @@ from urllib.request import urlretrieve
 import numpy as np
 import pandas as pd
 
+from fairprivacysignal.public_data_visuals import write_recovery_profile_svg
+
 
 TRAIN_URL = "https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data"
 TEST_URL = "https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.test"
@@ -14,6 +16,7 @@ TABLE_DIR = Path("outputs/tables")
 ASSET_DIR = Path("docs/assets")
 REPORT_PATH = Path("docs/public_services_adult_validation.md")
 FIGURE_PATH = ASSET_DIR / "public_services_adult_validation.svg"
+PROFILE_FIGURE_PATH = ASSET_DIR / "public_services_adult_recovery_profile.svg"
 
 K = 1000
 COLUMN_NAMES = [
@@ -437,6 +440,8 @@ The raw UCI files are downloaded at runtime and are not redistributed in this re
 
 ![Public-services public-data validation](assets/public_services_adult_validation.svg)
 
+![Public-services recovery profile](assets/public_services_adult_recovery_profile.svg)
+
 ## Task
 
 - **Ranked candidate:** adults for public or nonprofit support outreach
@@ -478,6 +483,16 @@ def run_validation() -> pd.DataFrame:
     scored.to_csv(TABLE_DIR / "public_services_adult_scored_people.csv", index=False)
     summary.to_csv(TABLE_DIR / "public_services_adult_validation_summary.csv", index=False)
     write_svg(summary)
+    write_recovery_profile_svg(
+        summary,
+        PROFILE_FIGURE_PATH,
+        title="Public-Services Recovery Profile",
+        subtitle="Low-income outreach ranking under detailed economic signal loss.",
+        metric_col="overall_ndcg_at_1000",
+        low_signal_col="low_signal_ndcg_at_1000",
+        exposure_col="economic_signal_exposure",
+        low_signal_label="Low-signal NDCG@1000",
+    )
     write_report(summary)
     return summary
 
@@ -488,6 +503,7 @@ def main() -> None:
     print(summary.round(4).to_string(index=False))
     print(f"\nWrote: {REPORT_PATH}")
     print(f"Wrote: {FIGURE_PATH}")
+    print(f"Wrote: {PROFILE_FIGURE_PATH}")
 
 
 if __name__ == "__main__":

@@ -10,6 +10,8 @@ The raw UCI files are downloaded at runtime and are not redistributed in this re
 
 ![Public-services public-data validation](assets/public_services_adult_validation.svg)
 
+![Public-services recovery profile](assets/public_services_adult_recovery_profile.svg)
+
 ## Task
 
 - **Ranked candidate:** adults for public or nonprofit support outreach

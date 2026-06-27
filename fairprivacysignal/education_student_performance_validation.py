@@ -7,6 +7,8 @@ from zipfile import ZipFile
 import numpy as np
 import pandas as pd
 
+from fairprivacysignal.public_data_visuals import write_recovery_profile_svg
+
 
 DATA_URL = "https://archive.ics.uci.edu/ml/machine-learning-databases/00320/student.zip"
 DATA_DIR = Path("data/raw/education")
@@ -14,6 +16,7 @@ TABLE_DIR = Path("outputs/tables")
 ASSET_DIR = Path("docs/assets")
 REPORT_PATH = Path("docs/education_student_performance_validation.md")
 FIGURE_PATH = ASSET_DIR / "education_student_performance_validation.svg"
+PROFILE_FIGURE_PATH = ASSET_DIR / "education_student_performance_recovery_profile.svg"
 
 K = 50
 RECONSTRUCTION_FEATURES = [
@@ -398,6 +401,8 @@ The raw UCI files are downloaded at runtime and are not redistributed in this re
 
 ![Education public-data validation](assets/education_student_performance_validation.svg)
 
+![Education recovery profile](assets/education_student_performance_recovery_profile.svg)
+
 ## Task
 
 - **Ranked candidate:** student-course records for support triage
@@ -437,6 +442,16 @@ def run_validation() -> pd.DataFrame:
     scored.to_csv(TABLE_DIR / "education_student_performance_scored_events.csv", index=False)
     summary.to_csv(TABLE_DIR / "education_student_performance_validation_summary.csv", index=False)
     write_svg(summary)
+    write_recovery_profile_svg(
+        summary,
+        PROFILE_FIGURE_PATH,
+        title="Education Recovery Profile",
+        subtitle="Student-support ranking under prior-grade signal loss.",
+        metric_col="overall_ndcg_at_50",
+        low_signal_col="low_signal_ndcg_at_50",
+        exposure_col="prior_grade_exposure",
+        low_signal_label="Low-signal NDCG@50",
+    )
     write_report(summary)
     return summary
 
@@ -447,6 +462,7 @@ def main() -> None:
     print(summary.round(4).to_string(index=False))
     print(f"\nWrote: {REPORT_PATH}")
     print(f"Wrote: {FIGURE_PATH}")
+    print(f"Wrote: {PROFILE_FIGURE_PATH}")
 
 
 if __name__ == "__main__":

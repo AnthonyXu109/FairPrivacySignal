@@ -10,6 +10,8 @@ The raw UCI file is downloaded at runtime and is not redistributed in this repos
 
 ![Financial-access public-data validation](assets/finance_german_credit_validation.svg)
 
+![Financial-access recovery profile](assets/finance_german_credit_recovery_profile.svg)
+
 ## Task
 
 - **Ranked candidate:** credit applications for review triage

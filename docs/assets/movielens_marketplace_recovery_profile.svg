@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="700" viewBox="0 0 1280 700">
+<rect width="100%" height="100%" fill="#fbfbf8"/>
+<text x="40" y="38" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#111827">MovieLens Marketplace Recovery Profile</text>
+<text x="40" y="64" font-family="Arial, sans-serif" font-size="13" fill="#4b5563">Held-out movie ranking under user-history signal loss.</text>
+<text x="64" y="96" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#111827">Recovery ladder</text>
+<text x="542" y="96" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#111827">Utility vs exposure</text>
+<line x1="200" y1="350" x2="560" y2="350" stroke="#d1d5db" stroke-width="1"/>
+<line x1="200.0" y1="334" x2="200.0" y2="358" stroke="#d1d5db" stroke-width="1"/>
+<text x="200.0" y="378" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#6b7280">0%</text>
+<line x1="380.0" y1="334" x2="380.0" y2="358" stroke="#d1d5db" stroke-width="1"/>
+<text x="380.0" y="378" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#6b7280">50%</text>
+<line x1="560.0" y1="334" x2="560.0" y2="358" stroke="#d1d5db" stroke-width="1"/>
+<text x="560.0" y="378" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#6b7280">100%</text>
+<text x="64" y="113" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#111827">Full</text>
+<line x1="200" y1="108" x2="560.0" y2="108" stroke="#047857" stroke-width="7" stroke-linecap="round" opacity="0.28"/>
+<circle cx="560.0" cy="108" r="9" fill="#047857"/>
+<text x="584" y="113" font-family="Arial, sans-serif" font-size="12" fill="#374151">100% closed</text>
+<text x="584" y="130" font-family="Arial, sans-serif" font-size="11" fill="#6b7280">metric 0.174, exposure 100%</text>
+<text x="64" y="177" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#111827">Baseline</text>
+<line x1="200" y1="172" x2="200.0" y2="172" stroke="#6b7280" stroke-width="7" stroke-linecap="round" opacity="0.28"/>
+<circle cx="200.0" cy="172" r="9" fill="#6b7280"/>
+<text x="584" y="177" font-family="Arial, sans-serif" font-size="12" fill="#374151">0% closed</text>
+<text x="584" y="194" font-family="Arial, sans-serif" font-size="11" fill="#6b7280">metric 0.129, exposure 0%</text>
+<text x="64" y="241" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#111827">Aggregate</text>
+<line x1="200" y1="236" x2="303.9" y2="236" stroke="#0f766e" stroke-width="7" stroke-linecap="round" opacity="0.28"/>
+<circle cx="303.9" cy="236" r="9" fill="#0f766e"/>
+<text x="584" y="241" font-family="Arial, sans-serif" font-size="12" fill="#374151">29% closed</text>
+<text x="584" y="258" font-family="Arial, sans-serif" font-size="11" fill="#6b7280">metric 0.142, exposure 0%</text>
+<text x="64" y="305" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#111827">Policy-aware</text>
+<line x1="200" y1="300" x2="556.4" y2="300" stroke="#be123c" stroke-width="7" stroke-linecap="round" opacity="0.28"/>
+<circle cx="556.4" cy="300" r="9" fill="#be123c"/>
+<text x="584" y="305" font-family="Arial, sans-serif" font-size="12" fill="#374151">99% closed</text>
+<text x="584" y="322" font-family="Arial, sans-serif" font-size="11" fill="#6b7280">metric 0.174, exposure 81%</text>
+<rect x="742" y="114" width="468" height="222" rx="8" fill="#ffffff" stroke="#e5e7eb"/>
+<text x="760" y="140" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#111827">Gap closed vs restricted-signal exposure</text>
+<line x1="776" y1="302" x2="1180" y2="302" stroke="#9ca3af"/>
+<line x1="776" y1="156" x2="776" y2="302" stroke="#9ca3af"/>
+<text x="1180" y="324" text-anchor="end" font-family="Arial, sans-serif" font-size="11" fill="#6b7280">gap closed</text>
+<text x="756" y="166" transform="rotate(-90 756 166)" text-anchor="end" font-family="Arial, sans-serif" font-size="11" fill="#6b7280">exposure</text>
+<line x1="776.0" y1="302" x2="776.0" y2="308" stroke="#9ca3af"/>
+<text x="776.0" y="320" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">0</text>
+<line x1="770" y1="302.0" x2="776" y2="302.0" stroke="#9ca3af"/>
+<text x="765" y="306.0" text-anchor="end" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">0</text>
+<line x1="971.0" y1="302" x2="971.0" y2="308" stroke="#9ca3af"/>
+<text x="971.0" y="320" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">50</text>
+<line x1="770" y1="227.0" x2="776" y2="227.0" stroke="#9ca3af"/>
+<text x="765" y="231.0" text-anchor="end" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">50</text>
+<line x1="1166.0" y1="302" x2="1166.0" y2="308" stroke="#9ca3af"/>
+<text x="1166.0" y="320" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">100</text>
+<line x1="770" y1="152.0" x2="776" y2="152.0" stroke="#9ca3af"/>
+<text x="765" y="156.0" text-anchor="end" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">100</text>
+<circle cx="1166.0" cy="152.0" r="8" fill="#047857" opacity="0.88"/>
+<text x="1177.0" y="144.0" font-family="Arial, sans-serif" font-size="11" fill="#374151">Full</text>
+<circle cx="776.0" cy="302.0" r="8" fill="#6b7280" opacity="0.88"/>
+<text x="787.0" y="294.0" font-family="Arial, sans-serif" font-size="11" fill="#374151">Baseline</text>
+<circle cx="888.6" cy="302.0" r="8" fill="#0f766e" opacity="0.88"/>
+<text x="899.6" y="294.0" font-family="Arial, sans-serif" font-size="11" fill="#374151">Aggregate</text>
+<circle cx="1162.1" cy="180.9" r="8" fill="#be123c" opacity="0.88"/>
+<text x="1173.1" y="172.9" font-family="Arial, sans-serif" font-size="11" fill="#374151">Policy-aware</text>
+<rect x="742" y="392" width="468" height="128" rx="8" fill="#ffffff" stroke="#e5e7eb"/>
+<text x="760" y="418" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#111827">Low-signal NDCG@10 lift vs baseline</text>
+<line x1="858" y1="432" x2="858" y2="498" stroke="#d1d5db" stroke-width="1"/>
+<text x="760" y="449" font-family="Arial, sans-serif" font-size="12" fill="#374151">Full</text>
+<rect x="858.0" y="436" width="159.0" height="14" rx="3" fill="#047857" opacity="0.82"/>
+<text x="1025.0" y="449" font-family="Arial, sans-serif" font-size="11" fill="#374151">+0.021</text>
+<text x="760" y="473" font-family="Arial, sans-serif" font-size="12" fill="#374151">Aggregate</text>
+<rect x="858.0" y="460" width="145.2" height="14" rx="3" fill="#0f766e" opacity="0.82"/>
+<text x="1011.2" y="473" font-family="Arial, sans-serif" font-size="11" fill="#374151">+0.019</text>
+<text x="760" y="497" font-family="Arial, sans-serif" font-size="12" fill="#374151">Policy-aware</text>
+<rect x="858.0" y="484" width="145.2" height="14" rx="3" fill="#be123c" opacity="0.82"/>
+<text x="1011.2" y="497" font-family="Arial, sans-serif" font-size="11" fill="#374151">+0.019</text>
+<text x="64" y="636" font-family="Arial, sans-serif" font-size="11" fill="#6b7280">Gap closed compares each method with the no-signal baseline and full-signal reference for this public-data pilot.</text>
+</svg>

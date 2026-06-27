@@ -11,6 +11,8 @@ The raw UCI file is downloaded at runtime and is not redistributed in this repos
 
 ![Healthcare public-data validation](assets/healthcare_wdbc_validation.svg)
 
+![Healthcare recovery profile](assets/healthcare_wdbc_recovery_profile.svg)
+
 ## Task
 
 - **Ranked candidate:** diagnostic cases for review triage

@@ -9,6 +9,8 @@ The raw UCI files are downloaded at runtime and are not redistributed in this re
 
 ![Education public-data validation](assets/education_student_performance_validation.svg)
 
+![Education recovery profile](assets/education_student_performance_recovery_profile.svg)
+
 ## Task
 
 - **Ranked candidate:** student-course records for support triage

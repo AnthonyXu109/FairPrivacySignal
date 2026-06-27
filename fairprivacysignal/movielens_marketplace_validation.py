@@ -8,6 +8,8 @@ from zipfile import ZipFile
 import numpy as np
 import pandas as pd
 
+from fairprivacysignal.public_data_visuals import write_recovery_profile_svg
+
 
 DATA_URL = "https://files.grouplens.org/datasets/movielens/ml-latest-small.zip"
 DATA_DIR = Path("data/raw/movielens")
@@ -15,6 +17,7 @@ TABLE_DIR = Path("outputs/tables")
 ASSET_DIR = Path("docs/assets")
 REPORT_PATH = Path("docs/movielens_marketplace_validation.md")
 FIGURE_PATH = ASSET_DIR / "movielens_marketplace_validation.svg"
+PROFILE_FIGURE_PATH = ASSET_DIR / "movielens_marketplace_recovery_profile.svg"
 
 K = 10
 
@@ -441,6 +444,8 @@ redistributed in this repository. The pilot uses only public ratings and movie g
 
 ![MovieLens public-data marketplace validation](assets/movielens_marketplace_validation.svg)
 
+![MovieLens recovery profile](assets/movielens_marketplace_recovery_profile.svg)
+
 ## Task
 
 - **Ranked candidate:** held-out rated movies plus sampled unrated candidate movies
@@ -482,6 +487,16 @@ def run_validation() -> pd.DataFrame:
     scored.to_csv(TABLE_DIR / "movielens_marketplace_scored_events.csv", index=False)
     summary.to_csv(TABLE_DIR / "movielens_marketplace_validation_summary.csv", index=False)
     write_svg(summary)
+    write_recovery_profile_svg(
+        summary,
+        PROFILE_FIGURE_PATH,
+        title="MovieLens Marketplace Recovery Profile",
+        subtitle="Held-out movie ranking under user-history signal loss.",
+        metric_col="overall_ndcg_at_10",
+        low_signal_col="low_signal_ndcg_at_10",
+        exposure_col="individual_history_exposure",
+        low_signal_label="Low-signal NDCG@10",
+    )
     write_report(summary)
     return summary
 
@@ -492,6 +507,7 @@ def main() -> None:
     print(summary.round(4).to_string(index=False))
     print(f"\nWrote: {REPORT_PATH}")
     print(f"Wrote: {FIGURE_PATH}")
+    print(f"Wrote: {PROFILE_FIGURE_PATH}")
 
 
 if __name__ == "__main__":
