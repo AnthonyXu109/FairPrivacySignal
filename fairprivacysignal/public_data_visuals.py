@@ -178,3 +178,77 @@ def write_recovery_profile_svg(
         ]
     )
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def write_gallery_card_svg(
+    summary: pd.DataFrame,
+    path: Path,
+    title: str,
+    subtitle: str,
+    metric_col: str,
+    exposure_col: str,
+) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    rows = summary.copy()
+    rows["short_label"] = rows["method"].map(_short_method_label)
+    width = 980
+    height = 330
+    left = 54
+    top = 92
+    label_w = 128
+    axis_x0 = left + label_w
+    axis_x1 = width - 210
+    value_x = axis_x1 + 26
+    row_gap = 52
+
+    colors = {
+        "Full": "#047857",
+        "Baseline": "#6b7280",
+        "Aggregate": "#0f766e",
+        "Recovered": "#2563eb",
+        "Policy-aware": "#be123c",
+    }
+
+    def gap_x(value: float) -> float:
+        clipped = max(0.0, min(1.0, float(value)))
+        return axis_x0 + clipped * (axis_x1 - axis_x0)
+
+    lines: list[str] = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
+        '<rect width="100%" height="100%" fill="#fbfbf8"/>',
+        f'<text x="{left}" y="36" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#111827">{escape(title)}</text>',
+        f'<text x="{left}" y="62" font-family="Arial, sans-serif" font-size="13" fill="#4b5563">{escape(subtitle)}</text>',
+        f'<line x1="{axis_x0}" y1="{height - 54}" x2="{axis_x1}" y2="{height - 54}" stroke="#d1d5db" stroke-width="1"/>',
+    ]
+
+    for pct in [0.0, 0.25, 0.5, 0.75, 1.0]:
+        x = gap_x(pct)
+        lines.append(f'<line x1="{x:.1f}" y1="{top - 20}" x2="{x:.1f}" y2="{height - 48}" stroke="#e5e7eb" stroke-width="1"/>')
+        lines.append(f'<text x="{x:.1f}" y="{height - 30}" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#6b7280">{int(pct * 100)}%</text>')
+
+    for idx, row in rows.iterrows():
+        y = top + idx * row_gap
+        label = str(row["short_label"])
+        color = colors.get(label, "#2563eb")
+        gap = max(0.0, min(1.0, float(row["full_signal_gap_closed"])))
+        metric = float(row[metric_col])
+        exposure = float(row[exposure_col])
+        x = gap_x(gap)
+        lines.extend(
+            [
+                f'<text x="{left}" y="{y + 5}" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#111827">{escape(label)}</text>',
+                f'<line x1="{axis_x0}" y1="{y}" x2="{x:.1f}" y2="{y}" stroke="{color}" stroke-width="13" stroke-linecap="round" opacity="0.22"/>',
+                f'<circle cx="{x:.1f}" cy="{y}" r="10" fill="{color}"/>',
+                f'<text x="{value_x}" y="{y - 3}" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#111827">{_format_percent(gap)} closed</text>',
+                f'<text x="{value_x}" y="{y + 15}" font-family="Arial, sans-serif" font-size="11" fill="#6b7280">metric {metric:.3f}, exposure {_format_percent(exposure)}</text>',
+            ]
+        )
+
+    lines.extend(
+        [
+            f'<text x="{axis_x1}" y="{height - 10}" text-anchor="end" font-family="Arial, sans-serif" font-size="11" fill="#6b7280">full-signal gap closed</text>',
+            "</svg>",
+        ]
+    )
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")

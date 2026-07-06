@@ -341,21 +341,24 @@ outside the repository's synthetic benchmark.
 
 ### Public-Data Evidence Gallery
 
-Each panel summarizes one public-data pilot with the same visual grammar: full-signal
-gap closed, low-signal lift, and restricted-signal exposure.
+Each panel uses the same single-view ladder: how much of the full-signal gap is
+closed, and how much restricted signal exposure each method uses.
 
 <table>
   <tr>
-    <td><strong>Healthcare</strong><br><img src="docs/assets/healthcare_wdbc_recovery_profile.svg" width="420"></td>
-    <td><strong>Education</strong><br><img src="docs/assets/education_student_performance_recovery_profile.svg" width="420"></td>
+    <td><strong>Healthcare</strong><br><img src="docs/assets/healthcare_wdbc_gallery.svg" width="760"></td>
   </tr>
   <tr>
-    <td><strong>Public Services</strong><br><img src="docs/assets/public_services_adult_recovery_profile.svg" width="420"></td>
-    <td><strong>Financial Access</strong><br><img src="docs/assets/finance_german_credit_recovery_profile.svg" width="420"></td>
+    <td><strong>Education</strong><br><img src="docs/assets/education_student_performance_gallery.svg" width="760"></td>
   </tr>
   <tr>
-    <td><strong>Marketplaces</strong><br><img src="docs/assets/movielens_marketplace_recovery_profile.svg" width="420"></td>
-    <td></td>
+    <td><strong>Public Services</strong><br><img src="docs/assets/public_services_adult_gallery.svg" width="760"></td>
+  </tr>
+  <tr>
+    <td><strong>Financial Access</strong><br><img src="docs/assets/finance_german_credit_gallery.svg" width="760"></td>
+  </tr>
+  <tr>
+    <td><strong>Marketplaces</strong><br><img src="docs/assets/movielens_marketplace_gallery.svg" width="760"></td>
   </tr>
 </table>
 

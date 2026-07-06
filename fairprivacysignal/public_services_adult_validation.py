@@ -6,7 +6,10 @@ from urllib.request import urlretrieve
 import numpy as np
 import pandas as pd
 
-from fairprivacysignal.public_data_visuals import write_recovery_profile_svg
+from fairprivacysignal.public_data_visuals import (
+    write_gallery_card_svg,
+    write_recovery_profile_svg,
+)
 
 
 TRAIN_URL = "https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data"
@@ -17,6 +20,7 @@ ASSET_DIR = Path("docs/assets")
 REPORT_PATH = Path("docs/public_services_adult_validation.md")
 FIGURE_PATH = ASSET_DIR / "public_services_adult_validation.svg"
 PROFILE_FIGURE_PATH = ASSET_DIR / "public_services_adult_recovery_profile.svg"
+GALLERY_FIGURE_PATH = ASSET_DIR / "public_services_adult_gallery.svg"
 
 K = 1000
 COLUMN_NAMES = [
@@ -493,6 +497,14 @@ def run_validation() -> pd.DataFrame:
         exposure_col="economic_signal_exposure",
         low_signal_label="Low-signal NDCG@1000",
     )
+    write_gallery_card_svg(
+        summary,
+        GALLERY_FIGURE_PATH,
+        title="Public Services",
+        subtitle="Low-income outreach under detailed economic signal loss.",
+        metric_col="overall_ndcg_at_1000",
+        exposure_col="economic_signal_exposure",
+    )
     write_report(summary)
     return summary
 
@@ -504,6 +516,7 @@ def main() -> None:
     print(f"\nWrote: {REPORT_PATH}")
     print(f"Wrote: {FIGURE_PATH}")
     print(f"Wrote: {PROFILE_FIGURE_PATH}")
+    print(f"Wrote: {GALLERY_FIGURE_PATH}")
 
 
 if __name__ == "__main__":

@@ -7,7 +7,10 @@ from zipfile import ZipFile
 import numpy as np
 import pandas as pd
 
-from fairprivacysignal.public_data_visuals import write_recovery_profile_svg
+from fairprivacysignal.public_data_visuals import (
+    write_gallery_card_svg,
+    write_recovery_profile_svg,
+)
 
 
 DATA_URL = "https://archive.ics.uci.edu/ml/machine-learning-databases/00320/student.zip"
@@ -17,6 +20,7 @@ ASSET_DIR = Path("docs/assets")
 REPORT_PATH = Path("docs/education_student_performance_validation.md")
 FIGURE_PATH = ASSET_DIR / "education_student_performance_validation.svg"
 PROFILE_FIGURE_PATH = ASSET_DIR / "education_student_performance_recovery_profile.svg"
+GALLERY_FIGURE_PATH = ASSET_DIR / "education_student_performance_gallery.svg"
 
 K = 50
 RECONSTRUCTION_FEATURES = [
@@ -452,6 +456,14 @@ def run_validation() -> pd.DataFrame:
         exposure_col="prior_grade_exposure",
         low_signal_label="Low-signal NDCG@50",
     )
+    write_gallery_card_svg(
+        summary,
+        GALLERY_FIGURE_PATH,
+        title="Education",
+        subtitle="Student-support ranking under prior-grade signal loss.",
+        metric_col="overall_ndcg_at_50",
+        exposure_col="prior_grade_exposure",
+    )
     write_report(summary)
     return summary
 
@@ -463,6 +475,7 @@ def main() -> None:
     print(f"\nWrote: {REPORT_PATH}")
     print(f"Wrote: {FIGURE_PATH}")
     print(f"Wrote: {PROFILE_FIGURE_PATH}")
+    print(f"Wrote: {GALLERY_FIGURE_PATH}")
 
 
 if __name__ == "__main__":

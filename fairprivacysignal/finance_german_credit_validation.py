@@ -6,7 +6,10 @@ from urllib.request import urlretrieve
 import numpy as np
 import pandas as pd
 
-from fairprivacysignal.public_data_visuals import write_recovery_profile_svg
+from fairprivacysignal.public_data_visuals import (
+    write_gallery_card_svg,
+    write_recovery_profile_svg,
+)
 
 
 DATA_URL = "https://archive.ics.uci.edu/ml/machine-learning-databases/statlog/german/german.data"
@@ -16,6 +19,7 @@ ASSET_DIR = Path("docs/assets")
 REPORT_PATH = Path("docs/finance_german_credit_validation.md")
 FIGURE_PATH = ASSET_DIR / "finance_german_credit_validation.svg"
 PROFILE_FIGURE_PATH = ASSET_DIR / "finance_german_credit_recovery_profile.svg"
+GALLERY_FIGURE_PATH = ASSET_DIR / "finance_german_credit_gallery.svg"
 
 K = 100
 COLUMN_NAMES = [
@@ -471,6 +475,14 @@ def run_validation() -> pd.DataFrame:
         exposure_col="history_signal_exposure",
         low_signal_label="Thin-file NDCG@100",
     )
+    write_gallery_card_svg(
+        summary,
+        GALLERY_FIGURE_PATH,
+        title="Financial Access",
+        subtitle="Credit-review ranking under financial-history signal loss.",
+        metric_col="overall_ndcg_at_100",
+        exposure_col="history_signal_exposure",
+    )
     write_report(summary)
     return summary
 
@@ -482,6 +494,7 @@ def main() -> None:
     print(f"\nWrote: {REPORT_PATH}")
     print(f"Wrote: {FIGURE_PATH}")
     print(f"Wrote: {PROFILE_FIGURE_PATH}")
+    print(f"Wrote: {GALLERY_FIGURE_PATH}")
 
 
 if __name__ == "__main__":

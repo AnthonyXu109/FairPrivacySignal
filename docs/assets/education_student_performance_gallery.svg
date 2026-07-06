@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="330" viewBox="0 0 980 330">
+<rect width="100%" height="100%" fill="#fbfbf8"/>
+<text x="54" y="36" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#111827">Education</text>
+<text x="54" y="62" font-family="Arial, sans-serif" font-size="13" fill="#4b5563">Student-support ranking under prior-grade signal loss.</text>
+<line x1="182" y1="276" x2="770" y2="276" stroke="#d1d5db" stroke-width="1"/>
+<line x1="182.0" y1="72" x2="182.0" y2="282" stroke="#e5e7eb" stroke-width="1"/>
+<text x="182.0" y="300" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#6b7280">0%</text>
+<line x1="329.0" y1="72" x2="329.0" y2="282" stroke="#e5e7eb" stroke-width="1"/>
+<text x="329.0" y="300" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#6b7280">25%</text>
+<line x1="476.0" y1="72" x2="476.0" y2="282" stroke="#e5e7eb" stroke-width="1"/>
+<text x="476.0" y="300" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#6b7280">50%</text>
+<line x1="623.0" y1="72" x2="623.0" y2="282" stroke="#e5e7eb" stroke-width="1"/>
+<text x="623.0" y="300" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#6b7280">75%</text>
+<line x1="770.0" y1="72" x2="770.0" y2="282" stroke="#e5e7eb" stroke-width="1"/>
+<text x="770.0" y="300" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#6b7280">100%</text>
+<text x="54" y="97" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#111827">Full</text>
+<line x1="182" y1="92" x2="770.0" y2="92" stroke="#047857" stroke-width="13" stroke-linecap="round" opacity="0.22"/>
+<circle cx="770.0" cy="92" r="10" fill="#047857"/>
+<text x="796" y="89" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#111827">100% closed</text>
+<text x="796" y="107" font-family="Arial, sans-serif" font-size="11" fill="#6b7280">metric 0.857, exposure 100%</text>
+<text x="54" y="149" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#111827">Baseline</text>
+<line x1="182" y1="144" x2="182.0" y2="144" stroke="#6b7280" stroke-width="13" stroke-linecap="round" opacity="0.22"/>
+<circle cx="182.0" cy="144" r="10" fill="#6b7280"/>
+<text x="796" y="141" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#111827">0% closed</text>
+<text x="796" y="159" font-family="Arial, sans-serif" font-size="11" fill="#6b7280">metric 0.687, exposure 0%</text>
+<text x="54" y="201" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#111827">Recovered</text>
+<line x1="182" y1="196" x2="402.4" y2="196" stroke="#2563eb" stroke-width="13" stroke-linecap="round" opacity="0.22"/>
+<circle cx="402.4" cy="196" r="10" fill="#2563eb"/>
+<text x="796" y="193" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#111827">37% closed</text>
+<text x="796" y="211" font-family="Arial, sans-serif" font-size="11" fill="#6b7280">metric 0.751, exposure 0%</text>
+<text x="54" y="253" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#111827">Policy-aware</text>
+<line x1="182" y1="248" x2="623.7" y2="248" stroke="#be123c" stroke-width="13" stroke-linecap="round" opacity="0.22"/>
+<circle cx="623.7" cy="248" r="10" fill="#be123c"/>
+<text x="796" y="245" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#111827">75% closed</text>
+<text x="796" y="263" font-family="Arial, sans-serif" font-size="11" fill="#6b7280">metric 0.815, exposure 43%</text>
+<text x="770" y="320" text-anchor="end" font-family="Arial, sans-serif" font-size="11" fill="#6b7280">full-signal gap closed</text>
+</svg>

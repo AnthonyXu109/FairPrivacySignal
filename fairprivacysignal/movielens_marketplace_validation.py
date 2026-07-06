@@ -8,7 +8,10 @@ from zipfile import ZipFile
 import numpy as np
 import pandas as pd
 
-from fairprivacysignal.public_data_visuals import write_recovery_profile_svg
+from fairprivacysignal.public_data_visuals import (
+    write_gallery_card_svg,
+    write_recovery_profile_svg,
+)
 
 
 DATA_URL = "https://files.grouplens.org/datasets/movielens/ml-latest-small.zip"
@@ -18,6 +21,7 @@ ASSET_DIR = Path("docs/assets")
 REPORT_PATH = Path("docs/movielens_marketplace_validation.md")
 FIGURE_PATH = ASSET_DIR / "movielens_marketplace_validation.svg"
 PROFILE_FIGURE_PATH = ASSET_DIR / "movielens_marketplace_recovery_profile.svg"
+GALLERY_FIGURE_PATH = ASSET_DIR / "movielens_marketplace_gallery.svg"
 
 K = 10
 
@@ -497,6 +501,14 @@ def run_validation() -> pd.DataFrame:
         exposure_col="individual_history_exposure",
         low_signal_label="Low-signal NDCG@10",
     )
+    write_gallery_card_svg(
+        summary,
+        GALLERY_FIGURE_PATH,
+        title="Marketplace",
+        subtitle="MovieLens ranking under user-history signal loss.",
+        metric_col="overall_ndcg_at_10",
+        exposure_col="individual_history_exposure",
+    )
     write_report(summary)
     return summary
 
@@ -508,6 +520,7 @@ def main() -> None:
     print(f"\nWrote: {REPORT_PATH}")
     print(f"Wrote: {FIGURE_PATH}")
     print(f"Wrote: {PROFILE_FIGURE_PATH}")
+    print(f"Wrote: {GALLERY_FIGURE_PATH}")
 
 
 if __name__ == "__main__":
