@@ -48,6 +48,10 @@ PERMITTED_FEATURES = [
     "sex",
     "native_country",
 ]
+ERROR_FLOOR = 1e-6
+RELIABILITY_SHRINKAGE = 100.0
+MIN_RECONSTRUCTION_WEIGHT = 0.10
+MAX_RECONSTRUCTION_WEIGHT = 0.95
 
 
 def ensure_adult_data(data_dir: Path = DATA_DIR) -> tuple[Path, Path]:
@@ -213,6 +217,75 @@ def cohort_economic_signal(train: pd.DataFrame, apply_to: pd.DataFrame) -> pd.Se
             fallback.get(row["relationship"], global_mean),
         ),
         axis=1,
+    )
+
+
+def _reconstruction_weight(
+    reconstruction_error: float,
+    cohort_error: float,
+    min_weight: float,
+    max_weight: float,
+) -> float:
+    reconstruction_error = max(float(reconstruction_error), ERROR_FLOOR)
+    cohort_error = max(float(cohort_error), ERROR_FLOOR)
+    weight = cohort_error / (reconstruction_error + cohort_error)
+    return float(np.clip(weight, min_weight, max_weight))
+
+
+def estimate_reliability_weights(
+    calibration: pd.DataFrame,
+    shrinkage: float = RELIABILITY_SHRINKAGE,
+    min_weight: float = MIN_RECONSTRUCTION_WEIGHT,
+    max_weight: float = MAX_RECONSTRUCTION_WEIGHT,
+) -> tuple[float, dict[object, float]]:
+    errors = calibration.assign(
+        reconstruction_error=(
+            calibration["reconstructed_economic_signal"]
+            - calibration["restricted_economic_signal"]
+        ).abs(),
+        cohort_error=(
+            calibration["cohort_economic_signal"]
+            - calibration["restricted_economic_signal"]
+        ).abs(),
+    )
+    global_reconstruction_error = float(errors["reconstruction_error"].mean())
+    global_cohort_error = float(errors["cohort_error"].mean())
+    global_weight = _reconstruction_weight(
+        global_reconstruction_error,
+        global_cohort_error,
+        min_weight,
+        max_weight,
+    )
+
+    relationship_weights: dict[object, float] = {}
+    for relationship, group in errors.groupby("relationship", dropna=False):
+        support = float(len(group))
+        reconstruction_error = (
+            support * float(group["reconstruction_error"].mean())
+            + shrinkage * global_reconstruction_error
+        ) / (support + shrinkage)
+        cohort_error = (
+            support * float(group["cohort_error"].mean())
+            + shrinkage * global_cohort_error
+        ) / (support + shrinkage)
+        relationship_weights[relationship] = _reconstruction_weight(
+            reconstruction_error,
+            cohort_error,
+            min_weight,
+            max_weight,
+        )
+    return global_weight, relationship_weights
+
+
+def reliability_weighted_signal(
+    frame: pd.DataFrame,
+    global_weight: float,
+    relationship_weights: dict[object, float],
+) -> pd.Series:
+    weights = frame["relationship"].map(relationship_weights).fillna(global_weight)
+    return (
+        weights * frame["reconstructed_economic_signal"]
+        + (1.0 - weights) * frame["cohort_economic_signal"]
     )
 
 
