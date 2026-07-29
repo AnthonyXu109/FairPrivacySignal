@@ -339,6 +339,12 @@ tests low-income support outreach after detailed economic signal loss.
 Together they show the same signal-loss and privacy-preserving recovery pattern
 outside the repository's synthetic benchmark.
 
+The public-services pilot also evaluates a five-fold, training-only
+reliability-weighted blend. On the untouched UCI Adult test split, it raises
+overall NDCG@1000 from `0.950` to `0.951`, increases full-signal gap closed from
+`38.7%` to `39.9%`, preserves low-signal NDCG@1000 at `0.855`, and keeps
+restricted-signal exposure at `0.000`.
+
 ### Public-Data Evidence Gallery
 
 Each panel uses the same single-view ladder: how much of the full-signal gap is

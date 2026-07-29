@@ -24,10 +24,10 @@
 <text x="796" y="141" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#111827">0% closed</text>
 <text x="796" y="159" font-family="Arial, sans-serif" font-size="11" fill="#6b7280">metric 0.923, exposure 0%</text>
 <text x="54" y="201" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#111827">Recovered</text>
-<line x1="182" y1="196" x2="409.7" y2="196" stroke="#2563eb" stroke-width="13" stroke-linecap="round" opacity="0.22"/>
-<circle cx="409.7" cy="196" r="10" fill="#2563eb"/>
-<text x="796" y="193" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#111827">39% closed</text>
-<text x="796" y="211" font-family="Arial, sans-serif" font-size="11" fill="#6b7280">metric 0.950, exposure 0%</text>
+<line x1="182" y1="196" x2="416.5" y2="196" stroke="#2563eb" stroke-width="13" stroke-linecap="round" opacity="0.22"/>
+<circle cx="416.5" cy="196" r="10" fill="#2563eb"/>
+<text x="796" y="193" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#111827">40% closed</text>
+<text x="796" y="211" font-family="Arial, sans-serif" font-size="11" fill="#6b7280">metric 0.951, exposure 0%</text>
 <text x="54" y="253" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#111827">Policy-aware</text>
 <line x1="182" y1="248" x2="770.0" y2="248" stroke="#be123c" stroke-width="13" stroke-linecap="round" opacity="0.22"/>
 <circle cx="770.0" cy="248" r="10" fill="#be123c"/>
