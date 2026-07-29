@@ -7,6 +7,7 @@ from fairprivacysignal.public_services_adult_validation import (
     estimate_reliability_weights,
     reliability_weighted_signal,
     score_people,
+    select_ranking_calibrated_weight,
     summarize_recovery_comparison,
     summarize_results,
 )
@@ -85,6 +86,7 @@ def test_reliability_weighted_signal_uses_global_weight_for_unseen_group() -> No
     frame = pd.DataFrame(
         {
             "relationship": ["known", "unseen"],
+            "low_signal": [False, False],
             "reconstructed_economic_signal": [0.8, 0.8],
             "cohort_economic_signal": [0.2, 0.2],
         }
@@ -97,6 +99,47 @@ def test_reliability_weighted_signal_uses_global_weight_for_unseen_group() -> No
     )
 
     assert result.tolist() == pytest.approx([0.65, 0.35])
+
+
+def test_reliability_weighted_signal_keeps_low_signal_weight_fixed() -> None:
+    frame = pd.DataFrame(
+        {
+            "relationship": ["known", "known"],
+            "low_signal": [True, False],
+            "reconstructed_economic_signal": [0.8, 0.8],
+            "cohort_economic_signal": [0.2, 0.2],
+        }
+    )
+
+    result = reliability_weighted_signal(
+        frame,
+        global_weight=0.25,
+        relationship_weights={"known": 0.75},
+        low_signal_weight=0.85,
+    )
+
+    assert result.tolist() == pytest.approx([0.71, 0.65])
+
+
+def test_ranking_calibration_selects_the_weight_with_better_ordering() -> None:
+    calibration = pd.DataFrame(
+        {
+            "needs_support": [0, 1, 0, 1],
+            "low_signal": [False, False, False, False],
+            "context_score": [0.0, 0.0, 0.0, 0.0],
+            "reconstructed_economic_signal": [0.1, 0.9, 0.2, 0.8],
+            "cohort_economic_signal": [0.9, 0.1, 0.8, 0.2],
+        }
+    )
+
+    selected = select_ranking_calibrated_weight(
+        calibration,
+        candidate_weights=[0.1, 0.5, 0.9],
+        baseline_weight=0.5,
+        low_signal_tolerance=0.0,
+    )
+
+    assert selected == 0.9
 
 
 def test_cross_fitted_recovery_calibration_is_deterministic() -> None:
@@ -112,6 +155,9 @@ def test_cross_fitted_recovery_calibration_is_deterministic() -> None:
         "restricted_economic_signal",
         "reconstructed_economic_signal",
         "cohort_economic_signal",
+        "context_score",
+        "needs_support",
+        "low_signal",
     }
 
 
@@ -128,6 +174,9 @@ def test_score_people_reports_fixed_and_reliability_weighted_recovery() -> None:
         "signal_recovery_score",
         "reconstruction_weight",
     }.issubset(scored.columns)
+    assert (
+        scored.loc[scored["low_signal"], "reconstruction_weight"] == 0.85
+    ).all()
     assert comparison["method"].tolist() == [
         "Fixed 85/15 recovery",
         "Reliability-weighted recovery",

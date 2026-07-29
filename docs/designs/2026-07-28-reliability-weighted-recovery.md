@@ -89,3 +89,19 @@ Adult test split, it:
 
 If these conditions are not met, the result will not be described or visualized
 as a superior recovery method.
+
+## Training-Objective Refinement
+
+The first held-out publication gate showed that inverse-error weighting improved
+neither ranking outcome: signal-reconstruction error and ranking utility were not
+interchangeable objectives. The published implementation therefore keeps the
+relationship-level error estimates only as relative reliability adjustments and
+selects their global anchor by NDCG@1000 on the same deterministic out-of-fold
+training predictions.
+
+Because fold diagnostics showed that low-signal ranking was less stable across
+candidate weights, low-signal records retain the fixed `85/15` blend. Ranking
+calibration applies only to non-low-signal records, and the official test split
+remains excluded from fitting. This refinement directly aligns model selection
+with the stated ranking outcome while enforcing the low-signal guardrail by
+construction.
