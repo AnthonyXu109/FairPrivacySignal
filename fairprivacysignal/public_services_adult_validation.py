@@ -52,6 +52,8 @@ ERROR_FLOOR = 1e-6
 RELIABILITY_SHRINKAGE = 100.0
 MIN_RECONSTRUCTION_WEIGHT = 0.10
 MAX_RECONSTRUCTION_WEIGHT = 0.95
+CROSS_FIT_SPLITS = 5
+CROSS_FIT_SEED = 42
 
 
 def ensure_adult_data(data_dir: Path = DATA_DIR) -> tuple[Path, Path]:
@@ -289,22 +291,90 @@ def reliability_weighted_signal(
     )
 
 
+def cross_fitted_recovery_calibration(
+    train_raw: pd.DataFrame,
+    n_splits: int = CROSS_FIT_SPLITS,
+    seed: int = CROSS_FIT_SEED,
+) -> pd.DataFrame:
+    if n_splits < 2 or n_splits > len(train_raw):
+        raise ValueError(
+            "n_splits must be between 2 and the number of training rows"
+        )
+
+    rng = np.random.default_rng(seed)
+    shuffled_positions = rng.permutation(len(train_raw))
+    fold_ids = np.empty(len(train_raw), dtype=int)
+    fold_ids[shuffled_positions] = np.arange(len(train_raw)) % n_splits
+    parts = []
+
+    for fold_id in range(n_splits):
+        fit_raw = train_raw.iloc[fold_ids != fold_id]
+        holdout_raw = train_raw.iloc[fold_ids == fold_id]
+        fit = add_signal_features(fit_raw, fit_raw)
+        holdout = add_signal_features(fit_raw, holdout_raw)
+        holdout["reconstructed_economic_signal"] = reconstruct_economic_signal(
+            fit,
+            holdout,
+        )
+        holdout["cohort_economic_signal"] = cohort_economic_signal(fit, holdout)
+        holdout["_original_position"] = np.flatnonzero(fold_ids == fold_id)
+        parts.append(
+            holdout[
+                [
+                    "_original_position",
+                    "relationship",
+                    "restricted_economic_signal",
+                    "reconstructed_economic_signal",
+                    "cohort_economic_signal",
+                ]
+            ]
+        )
+
+    return (
+        pd.concat(parts)
+        .sort_values("_original_position")
+        .drop(columns="_original_position")
+        .reset_index(drop=True)
+    )
+
+
+def learn_reliability_weights(
+    train_raw: pd.DataFrame,
+) -> tuple[float, dict[object, float]]:
+    calibration = cross_fitted_recovery_calibration(train_raw)
+    return estimate_reliability_weights(calibration)
+
+
 def score_people(train_raw: pd.DataFrame, test_raw: pd.DataFrame) -> pd.DataFrame:
     train = add_signal_features(train_raw, train_raw)
     scored = add_signal_features(train_raw, test_raw)
 
     scored["reconstructed_economic_signal"] = reconstruct_economic_signal(train, scored)
     scored["cohort_economic_signal"] = cohort_economic_signal(train, scored)
-    recovered_signal = (
+    fixed_recovered_signal = (
         0.85 * scored["reconstructed_economic_signal"]
         + 0.15 * scored["cohort_economic_signal"]
+    )
+    global_weight, relationship_weights = learn_reliability_weights(train_raw)
+    reliability_recovered_signal = reliability_weighted_signal(
+        scored,
+        global_weight,
+        relationship_weights,
+    )
+    scored["reconstruction_weight"] = (
+        scored["relationship"].map(relationship_weights).fillna(global_weight)
     )
 
     scored["full_signal_score"] = (
         scored["context_score"] + 2.0 * scored["restricted_economic_signal"]
     )
     scored["context_only_score"] = scored["context_score"]
-    scored["signal_recovery_score"] = scored["context_score"] + 2.0 * recovered_signal
+    scored["fixed_signal_recovery_score"] = (
+        scored["context_score"] + 2.0 * fixed_recovered_signal
+    )
+    scored["signal_recovery_score"] = (
+        scored["context_score"] + 2.0 * reliability_recovered_signal
+    )
     scored["policy_aware_score"] = np.where(
         scored["low_signal"],
         scored["signal_recovery_score"],
@@ -365,7 +435,12 @@ def summarize_results(scored: pd.DataFrame) -> pd.DataFrame:
     rows = [
         summarize_method(scored, "Full detailed-economic signal", "full_signal_score", 1.0),
         summarize_method(scored, "Context-only baseline", "context_only_score", 0.0),
-        summarize_method(scored, "Train-fitted signal recovery", "signal_recovery_score", 0.0),
+        summarize_method(
+            scored,
+            "Train-fitted reliability-weighted recovery",
+            "signal_recovery_score",
+            0.0,
+        ),
         summarize_method(scored, "Policy-aware partial recovery", "policy_aware_score", policy_exposure),
     ]
     summary = pd.DataFrame(rows)
@@ -396,6 +471,25 @@ def summarize_results(scored: pd.DataFrame) -> pd.DataFrame:
         "full_signal_gap_closed",
     ] = 0.0
     return summary
+
+
+def summarize_recovery_comparison(scored: pd.DataFrame) -> pd.DataFrame:
+    return pd.DataFrame(
+        [
+            summarize_method(
+                scored,
+                "Fixed 85/15 recovery",
+                "fixed_signal_recovery_score",
+                0.0,
+            ),
+            summarize_method(
+                scored,
+                "Reliability-weighted recovery",
+                "signal_recovery_score",
+                0.0,
+            ),
+        ]
+    )
 
 
 def format_percent(value: float) -> str:
