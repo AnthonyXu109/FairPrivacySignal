@@ -26,10 +26,10 @@ The raw UCI files are downloaded at runtime and are not redistributed in this re
 | --- | --- | --- | --- | --- |
 | Full detailed-economic signal | 0.992 | 0.926 | 100.0% | 1.000 |
 | Context-only baseline | 0.923 | 0.772 | 0.0% | 0.000 |
-| Train-fitted reliability-weighted recovery | 0.951 | 0.855 | 39.9% | 0.000 |
-| Policy-aware partial recovery | 0.992 | 0.855 | 100.0% | 0.500 |
+| Train-fitted nonlinear recovery | 0.953 | 0.881 | 43.7% | 0.000 |
+| Policy-aware partial recovery | 0.992 | 0.881 | 100.0% | 0.500 |
 
-The train-fitted reliability-weighted recovery path closes 39.9%
+The train-fitted nonlinear recovery path closes 43.7%
 of the full-signal NDCG@1000 gap without exposing the restricted detailed
 economic features at scoring time. The policy-aware partial path keeps detailed
 economic signal for higher-signal records while substituting recovered signal for
@@ -42,16 +42,19 @@ of the same gap in this pilot.
 | --- | --- | --- | --- | --- |
 | Fixed 85/15 recovery | 0.950 | 0.855 | 38.7% | 0.000 |
 | Reliability-weighted recovery | 0.951 | 0.855 | 39.9% | 0.000 |
+| OOF-selected nonlinear recovery | 0.953 | 0.881 | 43.7% | 0.000 |
 
-Five-fold out-of-fold predictions on the UCI training split select a
-ranking-calibrated reconstruction anchor for non-low-signal records. Shrunk
-relationship-level reconstruction errors provide small reliability adjustments.
-Low-signal records retain the fixed `85/15` blend as an explicit guardrail.
-Relative to that fixed blend, the new method changes held-out overall NDCG@1000 by
-`+0.000794` and low-signal NDCG@1000 by
-`+0.000000` while keeping restricted-signal exposure at `0.000`.
-The official test split is not used to fit either base estimator or any blend
-weight.
+Five-fold out-of-fold predictions on the UCI training split compare a linear
+ridge reconstruction, a histogram gradient-boosted reconstruction, and a
+cohort aggregate. Convex weights are selected by out-of-fold reconstruction
+error among candidates that preserve low-signal NDCG. The selected ridge,
+nonlinear, and cohort weights are `0.00`,
+`1.00`, and `0.00`. The official test
+split is not used to fit either base estimator or select the weights. Relative
+to the reliability-weighted recovery method, the selected nonlinear recovery
+changes held-out overall NDCG@1000 by
+`+0.002650` and low-signal NDCG@1000 by
+`+0.026245` while keeping restricted-signal exposure at `0.000`.
 
 ## Interpretation
 
@@ -59,7 +62,7 @@ This is an external public-data validation of the system shape, not a deployed
 benefits or nonprofit-service model. It shows how the method can be instantiated
 in a census-like public-services workflow: define detailed economic signals,
 suppress them at scoring time, substitute a train-fitted reconstruction with a
-cohort stabilizer, calibrate their relative reliability on training-only folds,
-and measure outreach-ranking recovery. The dataset is a public income benchmark
+richer nonlinear candidate, select it on training-only folds with a low-signal
+guardrail, and measure outreach-ranking recovery. The dataset is a public income benchmark
 rather than a service-interaction log, so the availability policy is simulated
 for evaluation.

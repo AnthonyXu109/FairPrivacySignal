@@ -54,6 +54,27 @@ The full-signal model is an oracle comparison rather than a teacher whose scores
 assumed to be correct. This choice follows a repository experiment in which naive
 pointwise teacher-score imitation did not improve the strict signal-loss setting.
 
+## Cross-Fitted Nonlinear Tabular Recovery
+
+[Why Do Tree-Based Models Still Outperform Deep Learning on Typical Tabular Data?](https://proceedings.neurips.cc/paper_files/paper/2022/hash/0378c7692da36807bdec87ab043cdadc-Abstract-Datasets_and_Benchmarks.html)
+finds that tree ensembles remain strong on medium-sized heterogeneous tabular
+datasets. The more recent
+[TabArena living benchmark](https://proceedings.neurips.cc/paper_files/paper/2025/hash/1697e3fb412da11dc9488249f9e7bbc9-Abstract-Datasets_and_Benchmarks_Track.html)
+similarly reports that gradient-boosted trees remain competitive and that
+validation-aware model ensembling can improve tabular performance.
+[Prediction Models That Learn to Avoid Missing Values](https://proceedings.mlr.press/v267/stempfle25a.html)
+develops specialized missingness-avoiding tree and linear estimators for test-time
+feature unavailability.
+
+The UCI Adult public-services pilot adds a standard histogram gradient-boosted
+reconstruction candidate alongside its ridge and cohort candidates. Five-fold
+out-of-fold reconstruction error selects convex weights subject to a low-signal
+ranking guardrail, before the selected recovery is evaluated on the untouched
+official test split. This is not an implementation of the missingness-avoiding
+estimators above and does not claim state-of-the-art performance; it is a
+lightweight application of public tabular-model and validation practice to the
+repository's restricted-signal setting.
+
 ## Fairness-Utility Tradeoffs in Ranking
 
 Fair ranking research often treats utility and fairness as competing objectives
