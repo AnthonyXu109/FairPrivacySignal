@@ -5,6 +5,7 @@ from urllib.request import urlretrieve
 
 import numpy as np
 import pandas as pd
+from sklearn.ensemble import HistGradientBoostingRegressor
 
 from fairprivacysignal.public_data_visuals import (
     write_gallery_card_svg,
@@ -56,9 +57,16 @@ CROSS_FIT_SPLITS = 5
 CROSS_FIT_SEED = 42
 FIXED_RECONSTRUCTION_WEIGHT = 0.85
 LOW_SIGNAL_NDCG_TOLERANCE = 0.0005
+FIXED_RECOVERY_WEIGHTS = (0.85, 0.0, 0.15)
 RANKING_WEIGHT_CANDIDATES = tuple(
     float(value) for value in np.round(np.arange(0.10, 1.00, 0.05), 2)
 )
+RECOVERY_WEIGHT_CANDIDATES = tuple(
+    (ridge / 10.0, nonlinear / 10.0, cohort / 10.0)
+    for ridge in range(11)
+    for nonlinear in range(11 - ridge)
+    for cohort in [10 - ridge - nonlinear]
+) + (FIXED_RECOVERY_WEIGHTS,)
 
 
 def ensure_adult_data(data_dir: Path = DATA_DIR) -> tuple[Path, Path]:
@@ -212,6 +220,27 @@ def reconstruct_economic_signal(
     return np.clip(apply_matrix @ coefficients, 0.0, 1.0)
 
 
+def reconstruct_nonlinear_economic_signal(
+    train: pd.DataFrame,
+    apply_to: pd.DataFrame,
+    seed: int = CROSS_FIT_SEED,
+) -> np.ndarray:
+    train_matrix, apply_matrix = design_matrices(train, apply_to, PERMITTED_FEATURES)
+    model = HistGradientBoostingRegressor(
+        learning_rate=0.05,
+        max_iter=100,
+        max_leaf_nodes=15,
+        min_samples_leaf=10,
+        l2_regularization=0.5,
+        random_state=seed,
+    )
+    model.fit(
+        train_matrix,
+        train["restricted_economic_signal"].to_numpy(dtype=float),
+    )
+    return np.clip(model.predict(apply_matrix), 0.0, 1.0)
+
+
 def cohort_economic_signal(train: pd.DataFrame, apply_to: pd.DataFrame) -> pd.Series:
     grouped = train.groupby(["marital_status", "relationship", "sex"])[
         "restricted_economic_signal"
@@ -348,6 +377,69 @@ def select_ranking_calibrated_weight(
     return max(eligible)[-1]
 
 
+def select_recovery_weights(
+    calibration: pd.DataFrame,
+    candidate_weights: list[tuple[float, float, float]],
+    baseline_weights: tuple[float, float, float],
+    low_signal_tolerance: float = LOW_SIGNAL_NDCG_TOLERANCE,
+) -> tuple[float, float, float]:
+    signal_columns = [
+        "reconstructed_economic_signal",
+        "nonlinear_economic_signal",
+        "cohort_economic_signal",
+    ]
+
+    def recovered_signal(weights: tuple[float, float, float]) -> pd.Series:
+        return sum(
+            float(weight) * calibration[column]
+            for weight, column in zip(weights, signal_columns)
+        )
+
+    def low_signal_ndcg(weights: tuple[float, float, float]) -> float:
+        scored = calibration.assign(
+            _candidate_score=(
+                calibration["context_score"] + 2.0 * recovered_signal(weights)
+            )
+        )
+        low_signal = scored[scored["low_signal"]]
+        return (
+            ndcg_at_k(low_signal, "_candidate_score")
+            if not low_signal.empty
+            else 1.0
+        )
+
+    baseline_low_signal = low_signal_ndcg(baseline_weights)
+    eligible: list[
+        tuple[float, float, float, tuple[float, float, float]]
+    ] = []
+    for candidate in candidate_weights:
+        weights = tuple(float(value) for value in candidate)
+        candidate_signal = recovered_signal(weights)
+        reconstruction_mae = float(
+            (candidate_signal - calibration["restricted_economic_signal"])
+            .abs()
+            .mean()
+        )
+        candidate_low_signal_ndcg = low_signal_ndcg(weights)
+        if candidate_low_signal_ndcg >= baseline_low_signal - low_signal_tolerance:
+            distance = sum(
+                abs(value - baseline)
+                for value, baseline in zip(weights, baseline_weights)
+            )
+            eligible.append(
+                (
+                    -reconstruction_mae,
+                    candidate_low_signal_ndcg,
+                    -distance,
+                    weights,
+                )
+            )
+
+    if not eligible:
+        return baseline_weights
+    return max(eligible)[-1]
+
+
 def cross_fitted_recovery_calibration(
     train_raw: pd.DataFrame,
     n_splits: int = CROSS_FIT_SPLITS,
@@ -373,6 +465,13 @@ def cross_fitted_recovery_calibration(
             fit,
             holdout,
         )
+        holdout["nonlinear_economic_signal"] = (
+            reconstruct_nonlinear_economic_signal(
+                fit,
+                holdout,
+                seed=seed + fold_id,
+            )
+        )
         holdout["cohort_economic_signal"] = cohort_economic_signal(fit, holdout)
         holdout["_original_position"] = np.flatnonzero(fold_ids == fold_id)
         parts.append(
@@ -382,6 +481,7 @@ def cross_fitted_recovery_calibration(
                     "relationship",
                     "restricted_economic_signal",
                     "reconstructed_economic_signal",
+                    "nonlinear_economic_signal",
                     "cohort_economic_signal",
                     "context_score",
                     "needs_support",
@@ -400,8 +500,10 @@ def cross_fitted_recovery_calibration(
 
 def learn_reliability_weights(
     train_raw: pd.DataFrame,
+    calibration: pd.DataFrame | None = None,
 ) -> tuple[float, dict[object, float]]:
-    calibration = cross_fitted_recovery_calibration(train_raw)
+    if calibration is None:
+        calibration = cross_fitted_recovery_calibration(train_raw)
     error_weight, error_relationship_weights = estimate_reliability_weights(
         calibration
     )
@@ -424,13 +526,21 @@ def score_people(train_raw: pd.DataFrame, test_raw: pd.DataFrame) -> pd.DataFram
     scored = add_signal_features(train_raw, test_raw)
 
     scored["reconstructed_economic_signal"] = reconstruct_economic_signal(train, scored)
+    scored["nonlinear_economic_signal"] = reconstruct_nonlinear_economic_signal(
+        train,
+        scored,
+    )
     scored["cohort_economic_signal"] = cohort_economic_signal(train, scored)
     fixed_recovered_signal = (
         FIXED_RECONSTRUCTION_WEIGHT * scored["reconstructed_economic_signal"]
         + (1.0 - FIXED_RECONSTRUCTION_WEIGHT)
         * scored["cohort_economic_signal"]
     )
-    global_weight, relationship_weights = learn_reliability_weights(train_raw)
+    calibration = cross_fitted_recovery_calibration(train_raw)
+    global_weight, relationship_weights = learn_reliability_weights(
+        train_raw,
+        calibration=calibration,
+    )
     reliability_recovered_signal = reliability_weighted_signal(
         scored,
         global_weight,
@@ -444,6 +554,19 @@ def score_people(train_raw: pd.DataFrame, test_raw: pd.DataFrame) -> pd.DataFram
         ~scored["low_signal"],
         FIXED_RECONSTRUCTION_WEIGHT,
     )
+    selected_weights = select_recovery_weights(
+        calibration,
+        candidate_weights=list(RECOVERY_WEIGHT_CANDIDATES),
+        baseline_weights=FIXED_RECOVERY_WEIGHTS,
+    )
+    selected_recovered_signal = (
+        selected_weights[0] * scored["reconstructed_economic_signal"]
+        + selected_weights[1] * scored["nonlinear_economic_signal"]
+        + selected_weights[2] * scored["cohort_economic_signal"]
+    )
+    scored["selected_ridge_weight"] = selected_weights[0]
+    scored["selected_nonlinear_weight"] = selected_weights[1]
+    scored["selected_cohort_weight"] = selected_weights[2]
 
     scored["full_signal_score"] = (
         scored["context_score"] + 2.0 * scored["restricted_economic_signal"]
@@ -455,9 +578,12 @@ def score_people(train_raw: pd.DataFrame, test_raw: pd.DataFrame) -> pd.DataFram
     scored["signal_recovery_score"] = (
         scored["context_score"] + 2.0 * reliability_recovered_signal
     )
+    scored["selected_signal_recovery_score"] = (
+        scored["context_score"] + 2.0 * selected_recovered_signal
+    )
     scored["policy_aware_score"] = np.where(
         scored["low_signal"],
-        scored["signal_recovery_score"],
+        scored["selected_signal_recovery_score"],
         scored["full_signal_score"],
     )
     return scored
@@ -517,8 +643,8 @@ def summarize_results(scored: pd.DataFrame) -> pd.DataFrame:
         summarize_method(scored, "Context-only baseline", "context_only_score", 0.0),
         summarize_method(
             scored,
-            "Train-fitted reliability-weighted recovery",
-            "signal_recovery_score",
+            "Train-fitted nonlinear recovery",
+            "selected_signal_recovery_score",
             0.0,
         ),
         summarize_method(scored, "Policy-aware partial recovery", "policy_aware_score", policy_exposure),
@@ -568,6 +694,12 @@ def summarize_recovery_comparison(scored: pd.DataFrame) -> pd.DataFrame:
                 "signal_recovery_score",
                 0.0,
             ),
+            summarize_method(
+                scored,
+                "OOF-selected nonlinear recovery",
+                "selected_signal_recovery_score",
+                0.0,
+            ),
         ]
     )
     full = ndcg_at_k(scored, "full_signal_score")
@@ -578,7 +710,42 @@ def summarize_recovery_comparison(scored: pd.DataFrame) -> pd.DataFrame:
         comparison["full_signal_gap_closed"] = (
             comparison["overall_ndcg_at_1000"] - loss
         ) / denominator
+    comparison["ridge_weight"] = [
+        FIXED_RECOVERY_WEIGHTS[0],
+        np.nan,
+        float(scored["selected_ridge_weight"].iloc[0]),
+    ]
+    comparison["nonlinear_weight"] = [
+        FIXED_RECOVERY_WEIGHTS[1],
+        np.nan,
+        float(scored["selected_nonlinear_weight"].iloc[0]),
+    ]
+    comparison["cohort_weight"] = [
+        FIXED_RECOVERY_WEIGHTS[2],
+        np.nan,
+        float(scored["selected_cohort_weight"].iloc[0]),
+    ]
     return comparison
+
+
+def validate_recovery_comparison(comparison: pd.DataFrame) -> None:
+    reliability = comparison[
+        comparison["method"] == "Reliability-weighted recovery"
+    ].iloc[0]
+    selected = comparison[
+        comparison["method"] == "OOF-selected nonlinear recovery"
+    ].iloc[0]
+
+    if float(selected["overall_ndcg_at_1000"]) <= float(
+        reliability["overall_ndcg_at_1000"]
+    ):
+        raise ValueError("Selected recovery must improve overall NDCG@1000")
+    if float(selected["low_signal_ndcg_at_1000"]) < float(
+        reliability["low_signal_ndcg_at_1000"]
+    ):
+        raise ValueError("Selected recovery must preserve low-signal NDCG@1000")
+    if not np.isclose(float(selected["economic_signal_exposure"]), 0.0):
+        raise ValueError("Selected recovery must keep restricted-signal exposure at zero")
 
 
 def format_percent(value: float) -> str:
@@ -714,20 +881,27 @@ def write_report(
     )
 
     recovery = summary[
-        summary["method"] == "Train-fitted reliability-weighted recovery"
+        summary["method"] == "Train-fitted nonlinear recovery"
     ].iloc[0]
     policy = summary[summary["method"] == "Policy-aware partial recovery"].iloc[0]
-    fixed = comparison[comparison["method"] == "Fixed 85/15 recovery"].iloc[0]
     weighted = comparison[
         comparison["method"] == "Reliability-weighted recovery"
     ].iloc[0]
+    selected = comparison[
+        comparison["method"] == "OOF-selected nonlinear recovery"
+    ].iloc[0]
     overall_change = (
-        float(weighted["overall_ndcg_at_1000"])
-        - float(fixed["overall_ndcg_at_1000"])
+        float(selected["overall_ndcg_at_1000"])
+        - float(weighted["overall_ndcg_at_1000"])
     )
     low_signal_change = (
-        float(weighted["low_signal_ndcg_at_1000"])
-        - float(fixed["low_signal_ndcg_at_1000"])
+        float(selected["low_signal_ndcg_at_1000"])
+        - float(weighted["low_signal_ndcg_at_1000"])
+    )
+    selected_weights = (
+        float(selected["ridge_weight"]),
+        float(selected["nonlinear_weight"]),
+        float(selected["cohort_weight"]),
     )
 
     content = f"""# Public Services Adult Census Validation
@@ -756,7 +930,7 @@ The raw UCI files are downloaded at runtime and are not redistributed in this re
 
 {table}
 
-The train-fitted reliability-weighted recovery path closes {format_percent(float(recovery["full_signal_gap_closed"]))}
+The train-fitted nonlinear recovery path closes {format_percent(float(recovery["full_signal_gap_closed"]))}
 of the full-signal NDCG@1000 gap without exposing the restricted detailed
 economic features at scoring time. The policy-aware partial path keeps detailed
 economic signal for higher-signal records while substituting recovered signal for
@@ -767,15 +941,17 @@ of the same gap in this pilot.
 
 {comparison_table}
 
-Five-fold out-of-fold predictions on the UCI training split select a
-ranking-calibrated reconstruction anchor for non-low-signal records. Shrunk
-relationship-level reconstruction errors provide small reliability adjustments.
-Low-signal records retain the fixed `85/15` blend as an explicit guardrail.
-Relative to that fixed blend, the new method changes held-out overall NDCG@1000 by
+Five-fold out-of-fold predictions on the UCI training split compare a linear
+ridge reconstruction, a histogram gradient-boosted reconstruction, and a
+cohort aggregate. Convex weights are selected by out-of-fold reconstruction
+error among candidates that preserve low-signal NDCG. The selected ridge,
+nonlinear, and cohort weights are `{selected_weights[0]:.2f}`,
+`{selected_weights[1]:.2f}`, and `{selected_weights[2]:.2f}`. The official test
+split is not used to fit either base estimator or select the weights. Relative
+to the reliability-weighted recovery method, the selected nonlinear recovery
+changes held-out overall NDCG@1000 by
 `{overall_change:+.6f}` and low-signal NDCG@1000 by
 `{low_signal_change:+.6f}` while keeping restricted-signal exposure at `0.000`.
-The official test split is not used to fit either base estimator or any blend
-weight.
 
 ## Interpretation
 
@@ -783,8 +959,8 @@ This is an external public-data validation of the system shape, not a deployed
 benefits or nonprofit-service model. It shows how the method can be instantiated
 in a census-like public-services workflow: define detailed economic signals,
 suppress them at scoring time, substitute a train-fitted reconstruction with a
-cohort stabilizer, calibrate their relative reliability on training-only folds,
-and measure outreach-ranking recovery. The dataset is a public income benchmark
+richer nonlinear candidate, select it on training-only folds with a low-signal
+guardrail, and measure outreach-ranking recovery. The dataset is a public income benchmark
 rather than a service-interaction log, so the availability policy is simulated
 for evaluation.
 """
@@ -796,6 +972,7 @@ def run_validation() -> pd.DataFrame:
     scored = score_people(train, test)
     summary = summarize_results(scored)
     comparison = summarize_recovery_comparison(scored)
+    validate_recovery_comparison(comparison)
 
     TABLE_DIR.mkdir(parents=True, exist_ok=True)
     scored.to_csv(TABLE_DIR / "public_services_adult_scored_people.csv", index=False)

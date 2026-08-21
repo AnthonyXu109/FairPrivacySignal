@@ -3,13 +3,18 @@ import pandas as pd
 import pytest
 
 from fairprivacysignal.public_services_adult_validation import (
+    add_signal_features,
     cross_fitted_recovery_calibration,
     estimate_reliability_weights,
+    reconstruct_nonlinear_economic_signal,
     reliability_weighted_signal,
     score_people,
+    select_recovery_weights,
     select_ranking_calibrated_weight,
     summarize_recovery_comparison,
     summarize_results,
+    validate_recovery_comparison,
+    write_report,
 )
 
 
@@ -142,6 +147,66 @@ def test_ranking_calibration_selects_the_weight_with_better_ordering() -> None:
     assert selected == 0.9
 
 
+def test_nonlinear_reconstruction_is_deterministic_and_bounded() -> None:
+    train_raw = adult_fixture(90)
+    apply_raw = adult_fixture(18)
+    train = add_signal_features(train_raw, train_raw)
+    apply_to = add_signal_features(train_raw, apply_raw)
+
+    first = reconstruct_nonlinear_economic_signal(train, apply_to, seed=17)
+    second = reconstruct_nonlinear_economic_signal(train, apply_to, seed=17)
+
+    assert first == pytest.approx(second)
+    assert np.ptp(first) > 0.0
+    assert np.all((0.0 <= first) & (first <= 1.0))
+
+
+def test_recovery_selection_prefers_lower_oof_reconstruction_error() -> None:
+    calibration = pd.DataFrame(
+        {
+            "needs_support": [0, 1, 0, 1],
+            "low_signal": [False, False, False, False],
+            "context_score": [0.0, 0.0, 0.0, 0.0],
+            "restricted_economic_signal": [0.9, 0.1, 0.8, 0.2],
+            "reconstructed_economic_signal": [0.1, 0.9, 0.2, 0.8],
+            "nonlinear_economic_signal": [0.9, 0.1, 0.8, 0.2],
+            "cohort_economic_signal": [0.5, 0.5, 0.5, 0.5],
+        }
+    )
+
+    selected = select_recovery_weights(
+        calibration,
+        candidate_weights=[(1.0, 0.0, 0.0), (0.0, 1.0, 0.0)],
+        baseline_weights=(1.0, 0.0, 0.0),
+        low_signal_tolerance=0.0,
+    )
+
+    assert selected == (0.0, 1.0, 0.0)
+
+
+def test_recovery_selection_rejects_low_signal_regression() -> None:
+    calibration = pd.DataFrame(
+        {
+            "needs_support": [1, 0, 1, 0],
+            "low_signal": [False, False, True, True],
+            "context_score": [0.0, 0.0, 0.0, 0.0],
+            "restricted_economic_signal": [0.9, 0.1, 0.1, 0.9],
+            "reconstructed_economic_signal": [0.9, 0.1, 0.9, 0.1],
+            "nonlinear_economic_signal": [0.9, 0.1, 0.1, 0.9],
+            "cohort_economic_signal": [0.5, 0.5, 0.5, 0.5],
+        }
+    )
+
+    selected = select_recovery_weights(
+        calibration,
+        candidate_weights=[(1.0, 0.0, 0.0), (0.0, 1.0, 0.0)],
+        baseline_weights=(1.0, 0.0, 0.0),
+        low_signal_tolerance=0.0,
+    )
+
+    assert selected == (1.0, 0.0, 0.0)
+
+
 def test_cross_fitted_recovery_calibration_is_deterministic() -> None:
     train = adult_fixture()
 
@@ -154,6 +219,7 @@ def test_cross_fitted_recovery_calibration_is_deterministic() -> None:
         "relationship",
         "restricted_economic_signal",
         "reconstructed_economic_signal",
+        "nonlinear_economic_signal",
         "cohort_economic_signal",
         "context_score",
         "needs_support",
@@ -172,7 +238,12 @@ def test_score_people_reports_fixed_and_reliability_weighted_recovery() -> None:
     assert {
         "fixed_signal_recovery_score",
         "signal_recovery_score",
+        "selected_signal_recovery_score",
+        "nonlinear_economic_signal",
         "reconstruction_weight",
+        "selected_ridge_weight",
+        "selected_nonlinear_weight",
+        "selected_cohort_weight",
     }.issubset(scored.columns)
     assert (
         scored.loc[scored["low_signal"], "reconstruction_weight"] == 0.85
@@ -180,8 +251,65 @@ def test_score_people_reports_fixed_and_reliability_weighted_recovery() -> None:
     assert comparison["method"].tolist() == [
         "Fixed 85/15 recovery",
         "Reliability-weighted recovery",
+        "OOF-selected nonlinear recovery",
     ]
     recovery = summary.loc[
-        summary["method"].eq("Train-fitted reliability-weighted recovery")
+        summary["method"].eq("Train-fitted nonlinear recovery")
     ].iloc[0]
     assert recovery["economic_signal_exposure"] == 0.0
+    assert scored[
+        [
+            "selected_ridge_weight",
+            "selected_nonlinear_weight",
+            "selected_cohort_weight",
+        ]
+    ].sum(axis=1).tolist() == pytest.approx([1.0] * len(scored))
+
+
+def test_report_generation_accepts_the_nonlinear_recovery_summary(tmp_path) -> None:
+    scored = score_people(adult_fixture(36), adult_fixture(12))
+    summary = summarize_results(scored)
+    comparison = summarize_recovery_comparison(scored)
+    report_path = tmp_path / "adult.md"
+
+    write_report(summary, comparison, path=report_path)
+
+    assert report_path.is_file()
+
+
+def recovery_comparison_fixture(
+    selected_overall: float = 0.82,
+    selected_low_signal: float = 0.76,
+    selected_exposure: float = 0.0,
+) -> pd.DataFrame:
+    return pd.DataFrame(
+        {
+            "method": [
+                "Reliability-weighted recovery",
+                "OOF-selected nonlinear recovery",
+            ],
+            "overall_ndcg_at_1000": [0.80, selected_overall],
+            "low_signal_ndcg_at_1000": [0.75, selected_low_signal],
+            "economic_signal_exposure": [0.0, selected_exposure],
+        }
+    )
+
+
+def test_recovery_validation_accepts_improvement_without_exposure() -> None:
+    validate_recovery_comparison(recovery_comparison_fixture())
+
+
+@pytest.mark.parametrize(
+    ("comparison", "message"),
+    [
+        (recovery_comparison_fixture(selected_overall=0.79), "overall NDCG"),
+        (recovery_comparison_fixture(selected_low_signal=0.74), "low-signal NDCG"),
+        (recovery_comparison_fixture(selected_exposure=0.01), "exposure"),
+    ],
+)
+def test_recovery_validation_rejects_failed_acceptance_gate(
+    comparison: pd.DataFrame,
+    message: str,
+) -> None:
+    with pytest.raises(ValueError, match=message):
+        validate_recovery_comparison(comparison)
